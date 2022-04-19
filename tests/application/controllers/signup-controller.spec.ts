@@ -106,4 +106,13 @@ describe('SignUpController', () => {
     expect(statusCode).toBe(500)
     expect(data).toEqual(new ServerError(new Error(error)))
   })
+
+  it('Should returns serverError if have any throw a non error object', async () => {
+    authentication.mockRejectedValueOnce(error)
+
+    const { statusCode, data } = await sut.perform({ name, email, password, passwordConfirmation })
+
+    expect(statusCode).toBe(500)
+    expect(data).toEqual(new ServerError())
+  })
 })
