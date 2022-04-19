@@ -12,6 +12,7 @@ describe('SignUpController', () => {
   let passwordConfirmation: string
   let hashedPassword: string
   let addAccount: jest.Mock
+  let authentication: jest.Mock
 
   beforeAll(() => {
     id = faker.datatype.uuid()
@@ -23,10 +24,11 @@ describe('SignUpController', () => {
 
     addAccount = jest.fn()
     addAccount.mockResolvedValue({ id, name, email, password: hashedPassword })
+    authentication = jest.fn()
   })
 
   beforeEach(() => {
-    sut = new SignUpController(addAccount)
+    sut = new SignUpController(addAccount, authentication)
   })
 
   it('Should call addAccount with correct values', async () => {
@@ -43,5 +45,12 @@ describe('SignUpController', () => {
 
     expect(statusCode).toBe(403)
     expect(data).toEqual(new ForbiddenError())
+  })
+
+  it('Should call authentication with correct values', async () => {
+    await sut.perform({ name, email, password, passwordConfirmation })
+
+    expect(authentication).toHaveBeenCalledWith({ email, password })
+    expect(authentication).toHaveBeenCalledTimes(1)
   })
 })
