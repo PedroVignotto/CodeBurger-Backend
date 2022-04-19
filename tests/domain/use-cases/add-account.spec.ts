@@ -11,6 +11,7 @@ describe('AddAccount', () => {
   beforeAll(() => {
     email = 'any_email@mail.com'
     checkAccountByEmailRepository = mock()
+    checkAccountByEmailRepository.checkByEmail.mockResolvedValue(false)
   })
 
   beforeEach(() => {
@@ -22,5 +23,13 @@ describe('AddAccount', () => {
 
     expect(checkAccountByEmailRepository.checkByEmail).toHaveBeenCalledWith({ email })
     expect(checkAccountByEmailRepository.checkByEmail).toHaveBeenCalledTimes(1)
+  })
+
+  it('Should return undefined if checkAccountByEmailRepository return true', async () => {
+    checkAccountByEmailRepository.checkByEmail.mockResolvedValueOnce(true)
+
+    const account = await sut({ email })
+
+    expect(account).toBeUndefined()
   })
 })
