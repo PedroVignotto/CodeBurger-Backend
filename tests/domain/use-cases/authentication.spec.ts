@@ -62,4 +62,12 @@ describe('Authentication', () => {
     expect(hashComparer.compare).toHaveBeenCalledWith({ plaintext: password, digest: hashedPassword })
     expect(hashComparer.compare).toHaveBeenCalledTimes(1)
   })
+
+  it('Should rethrow if HashComparer throws', async () => {
+    hashComparer.compare.mockRejectedValueOnce(new Error(error))
+
+    const promise = sut({ email, password })
+
+    await expect(promise).rejects.toThrow(new Error(error))
+  })
 })
