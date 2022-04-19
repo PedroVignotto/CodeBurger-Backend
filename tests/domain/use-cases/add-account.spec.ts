@@ -9,6 +9,7 @@ describe('AddAccount', () => {
   let name: string
   let email: string
   let password: string
+  let hashedPassword: string
   let checkAccountByEmailRepository: MockProxy<CheckAccountByEmailRepository>
   let hasher: MockProxy<Hasher>
   let addAccountRepository: MockProxy<AddAccountRepository>
@@ -17,10 +18,11 @@ describe('AddAccount', () => {
     name = 'any_name'
     email = 'any_email@mail.com'
     password = 'any_password'
+    hashedPassword = 'any_hashed_password'
     checkAccountByEmailRepository = mock()
     checkAccountByEmailRepository.checkByEmail.mockResolvedValue(false)
     hasher = mock()
-    hasher.hash.mockResolvedValue('any_digest')
+    hasher.hash.mockResolvedValue(hashedPassword)
     addAccountRepository = mock()
   })
 
@@ -69,7 +71,7 @@ describe('AddAccount', () => {
   it('Should call AddAccountRepository with correct values', async () => {
     await sut({ name, email, password })
 
-    expect(addAccountRepository.create).toHaveBeenCalledWith({ name, email, password: 'any_digest' })
+    expect(addAccountRepository.create).toHaveBeenCalledWith({ name, email, password: hashedPassword })
     expect(addAccountRepository.create).toHaveBeenCalledTimes(1)
   })
 })
