@@ -12,6 +12,7 @@ describe('Authentication', () => {
   let email: string
   let password: string
   let hashedPassword: string
+  let accessToken: string
   let error: string
   let loadAccountByEmailRepository: MockProxy<LoadAccountByEmailRepository>
   let hashComparer: MockProxy<HashComparer>
@@ -23,6 +24,7 @@ describe('Authentication', () => {
     email = faker.internet.email()
     password = faker.internet.password(8)
     hashedPassword = faker.internet.password(16)
+    accessToken = faker.datatype.uuid()
     error = faker.random.word()
 
     loadAccountByEmailRepository = mock()
@@ -30,6 +32,7 @@ describe('Authentication', () => {
     hashComparer = mock()
     hashComparer.compare.mockResolvedValue(true)
     token = mock()
+    token.generate.mockResolvedValue(accessToken)
   })
 
   beforeEach(() => {
@@ -95,5 +98,11 @@ describe('Authentication', () => {
     const promise = sut({ email, password })
 
     await expect(promise).rejects.toThrow(new Error(error))
+  })
+
+  it('Should return name and accessToken on success', async () => {
+    const result = await sut({ email, password })
+
+    expect(result).toEqual({ name, accessToken })
   })
 })
