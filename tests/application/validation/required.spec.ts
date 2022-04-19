@@ -4,9 +4,11 @@ import { Required } from '@/application/validation'
 import faker from 'faker'
 
 describe('Required', () => {
+  let value: string
   let fieldName: string
 
   beforeEach(() => {
+    value = faker.database.column()
     fieldName = faker.database.column()
   })
 
@@ -32,5 +34,13 @@ describe('Required', () => {
     const error = sut.validate()
 
     expect(error).toEqual(new RequiredFieldError(fieldName))
+  })
+
+  it('Should return undefined if value is not falsy', () => {
+    const sut = new Required(value, fieldName)
+
+    const error = sut.validate()
+
+    expect(error).toBeUndefined()
   })
 })
