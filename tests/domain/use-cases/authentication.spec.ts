@@ -1,4 +1,4 @@
-import { Encrypter, HashComparer } from '@/domain/contracts/gateways'
+import { TokenGenerator, HashComparer } from '@/domain/contracts/gateways'
 import { LoadAccountByEmailRepository } from '@/domain/contracts/repositories'
 import { Authentication, setupAuthentication } from '@/domain/use-cases'
 
@@ -15,7 +15,7 @@ describe('Authentication', () => {
   let error: string
   let loadAccountByEmailRepository: MockProxy<LoadAccountByEmailRepository>
   let hashComparer: MockProxy<HashComparer>
-  let encrypter: MockProxy<Encrypter>
+  let token: MockProxy<TokenGenerator>
 
   beforeAll(() => {
     id = faker.datatype.uuid()
@@ -29,11 +29,11 @@ describe('Authentication', () => {
     loadAccountByEmailRepository.loadByEmail.mockResolvedValue({ id, name, email, password: hashedPassword })
     hashComparer = mock()
     hashComparer.compare.mockResolvedValue(true)
-    encrypter = mock()
+    token = mock()
   })
 
   beforeEach(() => {
-    sut = setupAuthentication(loadAccountByEmailRepository, hashComparer, encrypter)
+    sut = setupAuthentication(loadAccountByEmailRepository, hashComparer, token)
   })
 
   it('Should call LoadAccountByEmailRepository with correct email', async () => {
@@ -82,15 +82,15 @@ describe('Authentication', () => {
     await expect(promise).rejects.toThrow(new Error(error))
   })
 
-  it('Should call Encrypter with correct plaintext', async () => {
+  it('Should call TokenGenerator with correct key', async () => {
     await sut({ email, password })
 
-    expect(encrypter.encrypt).toHaveBeenCalledWith({ plaintext: id })
-    expect(encrypter.encrypt).toHaveBeenCalledTimes(1)
+    expect(token.generate).toHaveBeenCalledWith({ key: id })
+    expect(token.generate).toHaveBeenCalledTimes(1)
   })
 
-  it('Should rethrow if Encrypter throws', async () => {
-    encrypter.encrypt.mockRejectedValueOnce(new Error(error))
+  it('Should rethrow if TokenGenerator throws', async () => {
+    token.generate.mockRejectedValueOnce(new Error(error))
 
     const promise = sut({ email, password })
 
