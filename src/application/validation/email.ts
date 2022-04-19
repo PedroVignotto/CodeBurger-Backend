@@ -5,6 +5,8 @@ export class Email implements Validator {
   constructor (private readonly email: string, private readonly fieldName: string) {}
 
   validate (): Error | undefined {
-    return this.email ? new InvalidFieldError(this.fieldName) : undefined
+    const validEmail = /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/
+
+    return (!this.email || validEmail.test(this.email)) ? undefined : new InvalidFieldError(this.fieldName)
   }
 }
