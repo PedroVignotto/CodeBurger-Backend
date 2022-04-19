@@ -1,7 +1,11 @@
 import { SignUpController } from '@/application/controllers'
 import { ForbiddenError, UnauthorizedError } from '@/application/errors'
 
+import { mocked } from 'jest-mock'
 import faker from 'faker'
+import { Required, ValidationComposite } from '@/application/validation'
+
+jest.mock('@/application/validation/composite')
 
 describe('SignUpController', () => {
   let sut: SignUpController
@@ -12,6 +16,7 @@ describe('SignUpController', () => {
   let passwordConfirmation: string
   let hashedPassword: string
   let accessToken: string
+  let error: string
 
   let addAccount: jest.Mock
   let authentication: jest.Mock
@@ -24,6 +29,7 @@ describe('SignUpController', () => {
     hashedPassword = faker.internet.password(16)
     passwordConfirmation = password
     accessToken = faker.datatype.uuid()
+    error = faker.random.word()
 
     addAccount = jest.fn()
     addAccount.mockResolvedValue({ id, name, email, password: hashedPassword })
@@ -33,6 +39,24 @@ describe('SignUpController', () => {
 
   beforeEach(() => {
     sut = new SignUpController(addAccount, authentication)
+  })
+
+  it('Should return badRequest if any validation fails', async () => {
+    const validations = [
+      new Required(name, 'name'),
+      new Required(email, 'email'),
+      new Required(password, 'password'),
+      new Required(passwordConfirmation, 'passwordConfirmation')
+    ]
+    mocked(ValidationComposite).mockImplementationOnce(
+      jest.fn().mockImplementationOnce(() => ({ validate: jest.fn().mockReturnValueOnce(new Error(error)) }))
+    )
+
+    const { statusCode, data } = await sut.perform({ name, email, password, passwordConfirmation })
+
+    expect(ValidationComposite).toHaveBeenCalledWith(validations)
+    expect(statusCode).toBe(400)
+    expect(data).toEqual(new Error(error))
   })
 
   it('Should call addAccount with correct values', async () => {
