@@ -24,6 +24,7 @@ describe('AddAccount', () => {
     password = faker.internet.password(8)
     hashedPassword = faker.internet.password(16)
     error = faker.random.word()
+
     checkAccountByEmailRepository = mock()
     checkAccountByEmailRepository.checkByEmail.mockResolvedValue(false)
     hasher = mock()
@@ -43,12 +44,12 @@ describe('AddAccount', () => {
     expect(checkAccountByEmailRepository.checkByEmail).toHaveBeenCalledTimes(1)
   })
 
-  it('Should return undefined if CheckAccountByEmailRepository return true', async () => {
+  it('Should return false if CheckAccountByEmailRepository return true', async () => {
     checkAccountByEmailRepository.checkByEmail.mockResolvedValueOnce(true)
 
-    const account = await sut({ name, email, password })
+    const created = await sut({ name, email, password })
 
-    expect(account).toBeUndefined()
+    expect(created).toBe(false)
   })
 
   it('Should rethrow if CheckAccountByEmailRepository throws', async () => {
@@ -89,9 +90,9 @@ describe('AddAccount', () => {
     await expect(promise).rejects.toThrow(new Error(error))
   })
 
-  it('Should return a account on success', async () => {
-    const account = await sut({ name, email, password })
+  it('Should return true on success', async () => {
+    const created = await sut({ name, email, password })
 
-    expect(account).toEqual({ id, name, email, password })
+    expect(created).toBe(true)
   })
 })
