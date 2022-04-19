@@ -11,5 +11,7 @@ export const setupAuthentication: Setup = (loadAccountByEmailRepository, hashCom
 
   if (!account) return undefined
 
-  await hashComparer.compare({ plaintext: password, digest: account.password })
+  const isValid = await hashComparer.compare({ plaintext: password, digest: account.password })
+
+  if (!isValid) return undefined
 }
