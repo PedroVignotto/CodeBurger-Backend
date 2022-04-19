@@ -85,4 +85,10 @@ describe('AddAccount', () => {
 
     await expect(promise).rejects.toThrow(new Error('any_error'))
   })
+
+  it('Should return a account on success', async () => {
+    const account = await sut({ name, email, password })
+
+    expect(account).toEqual({ id, name, email, password })
+  })
 })
