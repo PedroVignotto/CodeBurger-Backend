@@ -3,7 +3,7 @@ import { AddAccountRepository, CheckAccountByEmailRepository } from '@/domain/co
 
 type Setup = (checkAccountByEmailRepository: CheckAccountByEmailRepository, hasher: Hasher, addAccountRepository: AddAccountRepository) => AddAccount
 type Input = { name: string, email: string, password: string }
-type Output = undefined
+type Output = { id: string, name: string, email: string, password: string } | undefined
 export type AddAccount = (input: Input) => Promise<Output>
 
 export const setupAddAccount: Setup = (checkAccountByEmailRepository, hasher, addAccountRepository) => async ({ name, email, password }) => {
@@ -13,5 +13,7 @@ export const setupAddAccount: Setup = (checkAccountByEmailRepository, hasher, ad
 
   const hashedPassword = await hasher.hash({ plaintext: password })
 
-  await addAccountRepository.create({ name, email, password: hashedPassword })
+  const account = await addAccountRepository.create({ name, email, password: hashedPassword })
+
+  return account
 }
