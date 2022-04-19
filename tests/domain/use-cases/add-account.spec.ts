@@ -6,6 +6,7 @@ import { mock, MockProxy } from 'jest-mock-extended'
 
 describe('AddAccount', () => {
   let sut: AddAccount
+  let id: string
   let name: string
   let email: string
   let password: string
@@ -15,6 +16,7 @@ describe('AddAccount', () => {
   let addAccountRepository: MockProxy<AddAccountRepository>
 
   beforeAll(() => {
+    id = 'any_id'
     name = 'any_name'
     email = 'any_email@mail.com'
     password = 'any_password'
@@ -24,6 +26,7 @@ describe('AddAccount', () => {
     hasher = mock()
     hasher.hash.mockResolvedValue(hashedPassword)
     addAccountRepository = mock()
+    addAccountRepository.create.mockResolvedValue({ id, name, email, password })
   })
 
   beforeEach(() => {
@@ -73,5 +76,13 @@ describe('AddAccount', () => {
 
     expect(addAccountRepository.create).toHaveBeenCalledWith({ name, email, password: hashedPassword })
     expect(addAccountRepository.create).toHaveBeenCalledTimes(1)
+  })
+
+  it('Should rethrow if AddAccountRepository throws', async () => {
+    addAccountRepository.create.mockRejectedValueOnce(new Error('any_error'))
+
+    const promise = sut({ name, email, password })
+
+    await expect(promise).rejects.toThrow(new Error('any_error'))
   })
 })
