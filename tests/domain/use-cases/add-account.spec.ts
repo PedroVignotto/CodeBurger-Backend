@@ -3,6 +3,7 @@ import { AddAccountRepository, CheckAccountByEmailRepository } from '@/domain/co
 import { AddAccount, setupAddAccount } from '@/domain/use-cases'
 
 import { mock, MockProxy } from 'jest-mock-extended'
+import faker from 'faker'
 
 describe('AddAccount', () => {
   let sut: AddAccount
@@ -11,16 +12,18 @@ describe('AddAccount', () => {
   let email: string
   let password: string
   let hashedPassword: string
+  let error: string
   let checkAccountByEmailRepository: MockProxy<CheckAccountByEmailRepository>
   let hasher: MockProxy<Hasher>
   let addAccountRepository: MockProxy<AddAccountRepository>
 
   beforeAll(() => {
-    id = 'any_id'
-    name = 'any_name'
-    email = 'any_email@mail.com'
-    password = 'any_password'
-    hashedPassword = 'any_hashed_password'
+    id = faker.datatype.uuid()
+    name = faker.name.findName()
+    email = faker.internet.email()
+    password = faker.internet.password(8)
+    hashedPassword = faker.internet.password(16)
+    error = faker.random.word()
     checkAccountByEmailRepository = mock()
     checkAccountByEmailRepository.checkByEmail.mockResolvedValue(false)
     hasher = mock()
@@ -49,11 +52,11 @@ describe('AddAccount', () => {
   })
 
   it('Should rethrow if CheckAccountByEmailRepository throws', async () => {
-    checkAccountByEmailRepository.checkByEmail.mockRejectedValueOnce(new Error('any_error'))
+    checkAccountByEmailRepository.checkByEmail.mockRejectedValueOnce(new Error(error))
 
     const promise = sut({ name, email, password })
 
-    await expect(promise).rejects.toThrow(new Error('any_error'))
+    await expect(promise).rejects.toThrow(new Error(error))
   })
 
   it('Should call Hasher with correct plaintext', async () => {
@@ -64,11 +67,11 @@ describe('AddAccount', () => {
   })
 
   it('Should rethrow if Hasher throws', async () => {
-    hasher.hash.mockRejectedValueOnce(new Error('any_error'))
+    hasher.hash.mockRejectedValueOnce(new Error(error))
 
     const promise = sut({ name, email, password })
 
-    await expect(promise).rejects.toThrow(new Error('any_error'))
+    await expect(promise).rejects.toThrow(new Error(error))
   })
 
   it('Should call AddAccountRepository with correct values', async () => {
@@ -79,11 +82,11 @@ describe('AddAccount', () => {
   })
 
   it('Should rethrow if AddAccountRepository throws', async () => {
-    addAccountRepository.create.mockRejectedValueOnce(new Error('any_error'))
+    addAccountRepository.create.mockRejectedValueOnce(new Error(error))
 
     const promise = sut({ name, email, password })
 
-    await expect(promise).rejects.toThrow(new Error('any_error'))
+    await expect(promise).rejects.toThrow(new Error(error))
   })
 
   it('Should return a account on success', async () => {
