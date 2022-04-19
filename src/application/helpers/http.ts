@@ -7,6 +7,11 @@ export const ok = <T = any> (data: T): HttpResponse<T> => ({
   data
 })
 
+export const created = <T = any> (data: T): HttpResponse<T> => ({
+  statusCode: 201,
+  data
+})
+
 export const unauthorized = (): HttpResponse<Error> => ({
   statusCode: 401,
   data: new UnauthorizedError()
