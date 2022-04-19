@@ -12,6 +12,11 @@ export const created = <T = any> (data: T): HttpResponse<T> => ({
   data
 })
 
+export const badRequest = (error: Error): HttpResponse<Error> => ({
+  statusCode: 400,
+  data: error
+})
+
 export const unauthorized = (): HttpResponse<Error> => ({
   statusCode: 401,
   data: new UnauthorizedError()
