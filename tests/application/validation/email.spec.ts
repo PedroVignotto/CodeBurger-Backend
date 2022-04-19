@@ -4,16 +4,18 @@ import { Email } from '@/application/validation'
 import faker from 'faker'
 
 describe('Email', () => {
-  let email: string
+  let validEmail: string
+  let invalidEmail: string
   let fieldName: string
 
   beforeEach(() => {
-    email = faker.internet.email()
+    validEmail = faker.internet.email()
+    invalidEmail = faker.random.word()
     fieldName = faker.database.column()
   })
 
   test('Should return InvalidFieldError if email is invalid', () => {
-    const sut = new Email(email, fieldName)
+    const sut = new Email(invalidEmail, fieldName)
 
     const error = sut.validate()
 
@@ -22,6 +24,14 @@ describe('Email', () => {
 
   test('Should return undefined if email is empty', () => {
     const sut = new Email(undefined as any, fieldName)
+
+    const error = sut.validate()
+
+    expect(error).toBeUndefined()
+  })
+
+  test('Should return undefined if email is valid', () => {
+    const sut = new Email(validEmail, fieldName)
 
     const error = sut.validate()
 
