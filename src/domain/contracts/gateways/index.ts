@@ -1,3 +1,2 @@
-export * from './hash-generator'
-export * from './hash-comparer'
+export * from './hash'
 export * from './encrypter'
