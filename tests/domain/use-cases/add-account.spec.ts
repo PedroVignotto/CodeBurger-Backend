@@ -1,31 +1,35 @@
 import { Hasher } from '@/domain/contracts/gateways'
-import { CheckAccountByEmailRepository } from '@/domain/contracts/repositories'
+import { AddAccountRepository, CheckAccountByEmailRepository } from '@/domain/contracts/repositories'
 import { AddAccount, setupAddAccount } from '@/domain/use-cases'
 
 import { mock, MockProxy } from 'jest-mock-extended'
 
 describe('AddAccount', () => {
   let sut: AddAccount
+  let name: string
   let email: string
   let password: string
   let checkAccountByEmailRepository: MockProxy<CheckAccountByEmailRepository>
   let hasher: MockProxy<Hasher>
+  let addAccountRepository: MockProxy<AddAccountRepository>
 
   beforeAll(() => {
+    name = 'any_name'
     email = 'any_email@mail.com'
     password = 'any_password'
     checkAccountByEmailRepository = mock()
     checkAccountByEmailRepository.checkByEmail.mockResolvedValue(false)
     hasher = mock()
     hasher.hash.mockResolvedValue('any_digest')
+    addAccountRepository = mock()
   })
 
   beforeEach(() => {
-    sut = setupAddAccount(checkAccountByEmailRepository, hasher)
+    sut = setupAddAccount(checkAccountByEmailRepository, hasher, addAccountRepository)
   })
 
   it('Should call CheckAccountByEmailRepository with correct email', async () => {
-    await sut({ email, password })
+    await sut({ name, email, password })
 
     expect(checkAccountByEmailRepository.checkByEmail).toHaveBeenCalledWith({ email })
     expect(checkAccountByEmailRepository.checkByEmail).toHaveBeenCalledTimes(1)
@@ -34,7 +38,7 @@ describe('AddAccount', () => {
   it('Should return undefined if CheckAccountByEmailRepository return true', async () => {
     checkAccountByEmailRepository.checkByEmail.mockResolvedValueOnce(true)
 
-    const account = await sut({ email, password })
+    const account = await sut({ name, email, password })
 
     expect(account).toBeUndefined()
   })
@@ -42,13 +46,13 @@ describe('AddAccount', () => {
   it('Should rethrow if CheckAccountByEmailRepository throws', async () => {
     checkAccountByEmailRepository.checkByEmail.mockRejectedValueOnce(new Error('any_error'))
 
-    const promise = sut({ email, password })
+    const promise = sut({ name, email, password })
 
     await expect(promise).rejects.toThrow(new Error('any_error'))
   })
 
   it('Should call Hasher with correct plaintext', async () => {
-    await sut({ email, password })
+    await sut({ name, email, password })
 
     expect(hasher.hash).toHaveBeenCalledWith({ plaintext: password })
     expect(hasher.hash).toHaveBeenCalledTimes(1)
@@ -57,8 +61,15 @@ describe('AddAccount', () => {
   it('Should rethrow if Hasher throws', async () => {
     hasher.hash.mockRejectedValueOnce(new Error('any_error'))
 
-    const promise = sut({ email, password })
+    const promise = sut({ name, email, password })
 
     await expect(promise).rejects.toThrow(new Error('any_error'))
+  })
+
+  it('Should call AddAccountRepository with correct values', async () => {
+    await sut({ name, email, password })
+
+    expect(addAccountRepository.create).toHaveBeenCalledWith({ name, email, password: 'any_digest' })
+    expect(addAccountRepository.create).toHaveBeenCalledTimes(1)
   })
 })
