@@ -3,7 +3,7 @@ import { LoadAccountByEmailRepository } from '@/domain/contracts/repositories'
 
 type Setup = (loadAccountByEmailRepository: LoadAccountByEmailRepository, hashComparer: HashComparer, token: TokenGenerator) => Authentication
 type Input = { email: string, password: string }
-type Output = undefined
+type Output = { name: string, accessToken: string } | undefined
 export type Authentication = (input: Input) => Promise<Output>
 
 export const setupAuthentication: Setup = (loadAccountByEmailRepository, hashComparer, token) => async ({ email, password }) => {
@@ -15,5 +15,7 @@ export const setupAuthentication: Setup = (loadAccountByEmailRepository, hashCom
 
   if (!isValid) return undefined
 
-  await token.generate({ key: account.id })
+  const accessToken = await token.generate({ key: account.id })
+
+  return { name: account.name, accessToken }
 }
