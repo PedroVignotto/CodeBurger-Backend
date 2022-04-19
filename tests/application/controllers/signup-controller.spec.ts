@@ -11,6 +11,7 @@ describe('SignUpController', () => {
   let password: string
   let passwordConfirmation: string
   let hashedPassword: string
+  let accessToken: string
 
   let addAccount: jest.Mock
   let authentication: jest.Mock
@@ -22,10 +23,12 @@ describe('SignUpController', () => {
     password = faker.internet.password(8)
     hashedPassword = faker.internet.password(16)
     passwordConfirmation = password
+    accessToken = faker.datatype.uuid()
 
     addAccount = jest.fn()
     addAccount.mockResolvedValue({ id, name, email, password: hashedPassword })
     authentication = jest.fn()
+    authentication.mockResolvedValue({ name, accessToken })
   })
 
   beforeEach(() => {
@@ -62,5 +65,12 @@ describe('SignUpController', () => {
 
     expect(statusCode).toBe(401)
     expect(data).toEqual(new UnauthorizedError())
+  })
+
+  it('Should return created if valid data is provided', async () => {
+    const { statusCode, data } = await sut.perform({ name, email, password, passwordConfirmation })
+
+    expect(statusCode).toBe(201)
+    expect(data).toEqual({ name, accessToken })
   })
 })
