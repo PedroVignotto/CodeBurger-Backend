@@ -6,7 +6,7 @@ type Output = undefined
 export type AddAccount = (input: Input) => Promise<Output>
 
 export const setupAddAccount: Setup = checkAccountByEmailRepository => async ({ email }) => {
-  await checkAccountByEmailRepository.checkByEmail({ email })
+  const emailExists = await checkAccountByEmailRepository.checkByEmail({ email })
 
-  return undefined
+  if (emailExists) return undefined
 }
