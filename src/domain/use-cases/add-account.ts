@@ -11,7 +11,7 @@ export const setupAddAccount: Setup = (checkAccountByEmailRepository, hashGenera
 
   if (emailExists) return false
 
-  const hashedPassword = await hashGenerator.generator({ plaintext: password })
+  const hashedPassword = await hashGenerator.generate({ plaintext: password })
 
   await addAccountRepository.create({ name, email, password: hashedPassword })
 

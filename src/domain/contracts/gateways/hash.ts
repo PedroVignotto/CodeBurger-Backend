@@ -1,5 +1,5 @@
 export interface HashGenerator {
-  generator: (input: HashGenerator.Input) => Promise<HashGenerator.Output>
+  generate: (input: HashGenerator.Input) => Promise<HashGenerator.Output>
 }
 
 export namespace HashGenerator {

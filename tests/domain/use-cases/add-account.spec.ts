@@ -28,7 +28,7 @@ describe('AddAccount', () => {
     checkAccountByEmailRepository = mock()
     checkAccountByEmailRepository.checkByEmail.mockResolvedValue(false)
     hashGenerator = mock()
-    hashGenerator.generator.mockResolvedValue(hashedPassword)
+    hashGenerator.generate.mockResolvedValue(hashedPassword)
     addAccountRepository = mock()
     addAccountRepository.create.mockResolvedValue({ id, name, email, password })
   })
@@ -63,12 +63,12 @@ describe('AddAccount', () => {
   it('Should call HashGenerator with correct plaintext', async () => {
     await sut({ name, email, password })
 
-    expect(hashGenerator.generator).toHaveBeenCalledWith({ plaintext: password })
-    expect(hashGenerator.generator).toHaveBeenCalledTimes(1)
+    expect(hashGenerator.generate).toHaveBeenCalledWith({ plaintext: password })
+    expect(hashGenerator.generate).toHaveBeenCalledTimes(1)
   })
 
   it('Should rethrow if HashGenerator throws', async () => {
-    hashGenerator.generator.mockRejectedValueOnce(new Error(error))
+    hashGenerator.generate.mockRejectedValueOnce(new Error(error))
 
     const promise = sut({ name, email, password })
 
