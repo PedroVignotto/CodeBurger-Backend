@@ -1,4 +1,4 @@
-import { Hasher } from '@/domain/contracts/gateways'
+import { HashGenerator } from '@/domain/contracts/gateways'
 import { AddAccountRepository, CheckAccountByEmailRepository } from '@/domain/contracts/repositories'
 import { AddAccount, setupAddAccount } from '@/domain/use-cases'
 
@@ -14,7 +14,7 @@ describe('AddAccount', () => {
   let hashedPassword: string
   let error: string
   let checkAccountByEmailRepository: MockProxy<CheckAccountByEmailRepository>
-  let hasher: MockProxy<Hasher>
+  let hashGenerator: MockProxy<HashGenerator>
   let addAccountRepository: MockProxy<AddAccountRepository>
 
   beforeAll(() => {
@@ -27,14 +27,14 @@ describe('AddAccount', () => {
 
     checkAccountByEmailRepository = mock()
     checkAccountByEmailRepository.checkByEmail.mockResolvedValue(false)
-    hasher = mock()
-    hasher.hash.mockResolvedValue(hashedPassword)
+    hashGenerator = mock()
+    hashGenerator.generator.mockResolvedValue(hashedPassword)
     addAccountRepository = mock()
     addAccountRepository.create.mockResolvedValue({ id, name, email, password })
   })
 
   beforeEach(() => {
-    sut = setupAddAccount(checkAccountByEmailRepository, hasher, addAccountRepository)
+    sut = setupAddAccount(checkAccountByEmailRepository, hashGenerator, addAccountRepository)
   })
 
   it('Should call CheckAccountByEmailRepository with correct email', async () => {
@@ -60,15 +60,15 @@ describe('AddAccount', () => {
     await expect(promise).rejects.toThrow(new Error(error))
   })
 
-  it('Should call Hasher with correct plaintext', async () => {
+  it('Should call HashGenerator with correct plaintext', async () => {
     await sut({ name, email, password })
 
-    expect(hasher.hash).toHaveBeenCalledWith({ plaintext: password })
-    expect(hasher.hash).toHaveBeenCalledTimes(1)
+    expect(hashGenerator.generator).toHaveBeenCalledWith({ plaintext: password })
+    expect(hashGenerator.generator).toHaveBeenCalledTimes(1)
   })
 
-  it('Should rethrow if Hasher throws', async () => {
-    hasher.hash.mockRejectedValueOnce(new Error(error))
+  it('Should rethrow if HashGenerator throws', async () => {
+    hashGenerator.generator.mockRejectedValueOnce(new Error(error))
 
     const promise = sut({ name, email, password })
 

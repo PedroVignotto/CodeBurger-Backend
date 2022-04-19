@@ -1,17 +1,17 @@
-import { Hasher } from '@/domain/contracts/gateways'
+import { HashGenerator } from '@/domain/contracts/gateways'
 import { AddAccountRepository, CheckAccountByEmailRepository } from '@/domain/contracts/repositories'
 
-type Setup = (checkAccountByEmailRepository: CheckAccountByEmailRepository, hasher: Hasher, addAccountRepository: AddAccountRepository) => AddAccount
+type Setup = (checkAccountByEmailRepository: CheckAccountByEmailRepository, hashGenerator: HashGenerator, addAccountRepository: AddAccountRepository) => AddAccount
 type Input = { name: string, email: string, password: string }
 type Output = boolean
 export type AddAccount = (input: Input) => Promise<Output>
 
-export const setupAddAccount: Setup = (checkAccountByEmailRepository, hasher, addAccountRepository) => async ({ name, email, password }) => {
+export const setupAddAccount: Setup = (checkAccountByEmailRepository, hashGenerator, addAccountRepository) => async ({ name, email, password }) => {
   const emailExists = await checkAccountByEmailRepository.checkByEmail({ email })
 
   if (emailExists) return false
 
-  const hashedPassword = await hasher.hash({ plaintext: password })
+  const hashedPassword = await hashGenerator.generator({ plaintext: password })
 
   await addAccountRepository.create({ name, email, password: hashedPassword })
 
