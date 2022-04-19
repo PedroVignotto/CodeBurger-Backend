@@ -1,4 +1,4 @@
-import { HttpResponse } from '@/application/helpers'
+import { HttpResponse, ok } from '@/application/helpers'
 import { AddAccount } from '@/domain/use-cases'
 
 type HttpRequest = { name: string, email: string, password: string, passwordConfirmation: string }
@@ -9,6 +9,6 @@ export class SignUpController {
   async perform ({ name, email, password }: HttpRequest): Promise<HttpResponse<Model>> {
     await this.addAccount({ name, email, password })
 
-    return { statusCode: 200, data: undefined }
+    return ok(undefined)
   }
 }
