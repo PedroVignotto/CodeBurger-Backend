@@ -10,6 +10,7 @@ describe('Authentication', () => {
   let name: string
   let email: string
   let password: string
+  let error: string
   let loadAccountByEmailRepository: MockProxy<LoadAccountByEmailRepository>
 
   beforeAll(() => {
@@ -17,6 +18,7 @@ describe('Authentication', () => {
     name = faker.name.findName()
     email = faker.internet.email()
     password = faker.internet.password(8)
+    error = faker.random.word()
 
     loadAccountByEmailRepository = mock()
     loadAccountByEmailRepository.loadByEmail.mockResolvedValue({ id, name, email, password })
@@ -39,5 +41,13 @@ describe('Authentication', () => {
     const account = await sut({ email })
 
     expect(account).toBeUndefined()
+  })
+
+  it('Should rethrow if LoadAccountByEmailRepository throws', async () => {
+    loadAccountByEmailRepository.loadByEmail.mockRejectedValueOnce(new Error(error))
+
+    const promise = sut({ email })
+
+    await expect(promise).rejects.toThrow(new Error(error))
   })
 })
