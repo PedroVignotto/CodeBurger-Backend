@@ -6,7 +6,7 @@ type Output = undefined
 export type Authentication = (input: Input) => Promise<Output>
 
 export const setupAuthentication: Setup = loadAccountByEmailRepository => async ({ email }) => {
-  await loadAccountByEmailRepository.loadByEmail({ email })
+  const account = await loadAccountByEmailRepository.loadByEmail({ email })
 
-  return undefined
+  if (!account) return undefined
 }
