@@ -1,21 +1,21 @@
-import { forbidden, HttpResponse, ok, unauthorized } from '@/application/helpers'
+import { forbidden, HttpResponse, created, unauthorized } from '@/application/helpers'
 import { AddAccount, Authentication } from '@/domain/use-cases'
 
 type HttpRequest = { name: string, email: string, password: string, passwordConfirmation: string }
-type Model = undefined | Error
+type Model = { name: string, accessToken: string } | Error
 
 export class SignUpController {
   constructor (private readonly addAccount: AddAccount, private readonly authentication: Authentication) {}
 
   async perform ({ name, email, password }: HttpRequest): Promise<HttpResponse<Model>> {
-    const created = await this.addAccount({ name, email, password })
+    const account = await this.addAccount({ name, email, password })
 
-    if (!created) return forbidden()
+    if (!account) return forbidden()
 
     const data = await this.authentication({ email, password })
 
     if (!data) return unauthorized()
 
-    return ok(undefined)
+    return created(data)
   }
 }
