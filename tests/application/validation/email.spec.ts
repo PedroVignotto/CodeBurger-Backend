@@ -19,4 +19,12 @@ describe('Email', () => {
 
     expect(error).toEqual(new InvalidFieldError(fieldName))
   })
+
+  test('Should return undefined if email is empty', () => {
+    const sut = new Email(undefined as any, fieldName)
+
+    const error = sut.validate()
+
+    expect(error).toBeUndefined()
+  })
 })
