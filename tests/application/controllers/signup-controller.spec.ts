@@ -1,5 +1,5 @@
 import { SignUpController } from '@/application/controllers'
-import { ForbiddenError } from '@/application/errors'
+import { ForbiddenError, UnauthorizedError } from '@/application/errors'
 
 import faker from 'faker'
 
@@ -11,6 +11,7 @@ describe('SignUpController', () => {
   let password: string
   let passwordConfirmation: string
   let hashedPassword: string
+
   let addAccount: jest.Mock
   let authentication: jest.Mock
 
@@ -52,5 +53,14 @@ describe('SignUpController', () => {
 
     expect(authentication).toHaveBeenCalledWith({ email, password })
     expect(authentication).toHaveBeenCalledTimes(1)
+  })
+
+  it('Should return unauthorized if authentication return undefined', async () => {
+    authentication.mockResolvedValueOnce(undefined)
+
+    const { statusCode, data } = await sut.perform({ name, email, password, passwordConfirmation })
+
+    expect(statusCode).toBe(401)
+    expect(data).toEqual(new UnauthorizedError())
   })
 })
