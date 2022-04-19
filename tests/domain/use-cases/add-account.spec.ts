@@ -17,6 +17,7 @@ describe('AddAccount', () => {
     checkAccountByEmailRepository = mock()
     checkAccountByEmailRepository.checkByEmail.mockResolvedValue(false)
     hasher = mock()
+    hasher.hash.mockResolvedValue('any_digest')
   })
 
   beforeEach(() => {
@@ -51,5 +52,13 @@ describe('AddAccount', () => {
 
     expect(hasher.hash).toHaveBeenCalledWith({ plaintext: password })
     expect(hasher.hash).toHaveBeenCalledTimes(1)
+  })
+
+  it('Should rethrow if Hasher throws', async () => {
+    hasher.hash.mockRejectedValueOnce(new Error('any_error'))
+
+    const promise = sut({ email, password })
+
+    await expect(promise).rejects.toThrow(new Error('any_error'))
   })
 })
