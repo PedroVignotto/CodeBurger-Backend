@@ -1,5 +1,5 @@
 import { SignUpController } from '@/application/controllers'
-import { ForbiddenError, UnauthorizedError } from '@/application/errors'
+import { ForbiddenError, ServerError, UnauthorizedError } from '@/application/errors'
 
 import { mocked } from 'jest-mock'
 import faker from 'faker'
@@ -96,5 +96,14 @@ describe('SignUpController', () => {
 
     expect(statusCode).toBe(201)
     expect(data).toEqual({ name, accessToken })
+  })
+
+  it('Should returns serverError if have any throw', async () => {
+    authentication.mockRejectedValueOnce(new Error(error))
+
+    const { statusCode, data } = await sut.perform({ name, email, password, passwordConfirmation })
+
+    expect(statusCode).toBe(500)
+    expect(data).toEqual(new ServerError(new Error(error)))
   })
 })

@@ -1,4 +1,4 @@
-import { forbidden, HttpResponse, created, unauthorized, badRequest } from '@/application/helpers'
+import { forbidden, HttpResponse, created, unauthorized, badRequest, serverError } from '@/application/helpers'
 import { ValidationBuilder as Builder, ValidationComposite } from '@/application/validation'
 import { AddAccount, Authentication } from '@/domain/use-cases'
 
@@ -9,19 +9,23 @@ export class SignUpController {
   constructor (private readonly addAccount: AddAccount, private readonly authentication: Authentication) {}
 
   async perform ({ name, email, password, passwordConfirmation }: HttpRequest): Promise<HttpResponse<Model>> {
-    const error = this.validate({ name, email, password, passwordConfirmation })
+    try {
+      const error = this.validate({ name, email, password, passwordConfirmation })
 
-    if (error) return badRequest(error)
+      if (error) return badRequest(error)
 
-    const account = await this.addAccount({ name, email, password })
+      const account = await this.addAccount({ name, email, password })
 
-    if (!account) return forbidden()
+      if (!account) return forbidden()
 
-    const data = await this.authentication({ email, password })
+      const data = await this.authentication({ email, password })
 
-    if (!data) return unauthorized()
+      if (!data) return unauthorized()
 
-    return created(data)
+      return created(data)
+    } catch (error) {
+      return serverError(error)
+    }
   }
 
   private validate ({ name, email, password, passwordConfirmation }: HttpRequest): Error | undefined {
