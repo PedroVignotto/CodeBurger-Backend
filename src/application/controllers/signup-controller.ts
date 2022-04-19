@@ -1,4 +1,4 @@
-import { forbidden, HttpResponse, ok } from '@/application/helpers'
+import { forbidden, HttpResponse, ok, unauthorized } from '@/application/helpers'
 import { AddAccount, Authentication } from '@/domain/use-cases'
 
 type HttpRequest = { name: string, email: string, password: string, passwordConfirmation: string }
@@ -12,7 +12,9 @@ export class SignUpController {
 
     if (!created) return forbidden()
 
-    await this.authentication({ email, password })
+    const data = await this.authentication({ email, password })
+
+    if (!data) return unauthorized()
 
     return ok(undefined)
   }
