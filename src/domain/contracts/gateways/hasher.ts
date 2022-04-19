@@ -1,4 +1,3 @@
-
 export interface Hasher {
   hash: (input: Hasher.Input) => Promise<Hasher.Output>
 }
