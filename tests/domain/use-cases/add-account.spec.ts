@@ -32,4 +32,12 @@ describe('AddAccount', () => {
 
     expect(account).toBeUndefined()
   })
+
+  it('Should rethrow if checkAccountByEmailRepository throws', async () => {
+    checkAccountByEmailRepository.checkByEmail.mockRejectedValueOnce(new Error('any_error'))
+
+    const promise = sut({ email })
+
+    await expect(promise).rejects.toThrow(new Error('any_error'))
+  })
 })
