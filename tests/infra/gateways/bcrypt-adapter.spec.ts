@@ -11,7 +11,6 @@ describe('BcryptAdapter', () => {
   let plaintext: string
   let digest: string
   let error: Error
-
   let fakeBcrypt: jest.Mocked<typeof bcrypt>
 
   beforeAll(() => {
@@ -41,5 +40,11 @@ describe('BcryptAdapter', () => {
     const promise = sut.generate({ plaintext })
 
     await expect(promise).rejects.toThrow(error)
+  })
+
+  it('Should return a digest on success', async () => {
+    const hashed = await sut.generate({ plaintext })
+
+    expect(hashed).toBe(digest)
   })
 })
