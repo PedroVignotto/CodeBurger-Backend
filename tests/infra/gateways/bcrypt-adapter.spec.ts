@@ -10,6 +10,7 @@ describe('BcryptAdapter', () => {
   let salt: number
   let plaintext: string
   let digest: string
+  let error: Error
 
   let fakeBcrypt: jest.Mocked<typeof bcrypt>
 
@@ -17,6 +18,7 @@ describe('BcryptAdapter', () => {
     salt = 12
     plaintext = faker.random.word()
     digest = faker.datatype.uuid()
+    error = new Error(faker.random.word())
 
     fakeBcrypt = bcrypt as jest.Mocked<typeof bcrypt>
     fakeBcrypt.hash.mockImplementation(() => digest)
@@ -26,10 +28,18 @@ describe('BcryptAdapter', () => {
     sut = new BCryptAdapter()
   })
 
-  it('Should call hash with correct values', async () => {
+  it('Should call hash with correct params', async () => {
     await sut.generate({ plaintext })
 
     expect(fakeBcrypt.hash).toHaveBeenCalledWith(plaintext, salt)
     expect(fakeBcrypt.hash).toHaveBeenCalledTimes(1)
+  })
+
+  it('Should rethrow if hash throw', async () => {
+    fakeBcrypt.hash.mockImplementationOnce(() => { throw error })
+
+    const promise = sut.generate({ plaintext })
+
+    await expect(promise).rejects.toThrow(error)
   })
 })
