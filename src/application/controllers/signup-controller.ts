@@ -26,7 +26,7 @@ export class SignUpController extends Controller {
       ...Builder.of(name, 'name').required().build(),
       ...Builder.of(email, 'email').required().email().build(),
       ...Builder.of(password, 'password').required().build(),
-      ...Builder.of(passwordConfirmation, 'passwordConfirmation').required().build()
+      ...Builder.of(passwordConfirmation, 'passwordConfirmation').required().sameAs(password).build()
     ]
   }
 }
