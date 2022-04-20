@@ -1,5 +1,5 @@
 import { Controller, SignUpController } from '@/application/controllers'
-import { EmailValidation, RequiredValidation } from '@/application/validation'
+import { CompareValidation, EmailValidation, RequiredValidation } from '@/application/validation'
 import { ForbiddenError, UnauthorizedError } from '@/application/errors'
 
 import faker from 'faker'
@@ -48,7 +48,8 @@ describe('SignUpController', () => {
       new RequiredValidation(email, 'email'),
       new EmailValidation(email, 'email'),
       new RequiredValidation(password, 'password'),
-      new RequiredValidation(passwordConfirmation, 'passwordConfirmation')
+      new RequiredValidation(passwordConfirmation, 'passwordConfirmation'),
+      new CompareValidation(passwordConfirmation, password, 'passwordConfirmation')
     ])
   })
 
