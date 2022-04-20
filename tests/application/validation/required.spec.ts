@@ -1,9 +1,9 @@
 import { RequiredFieldError } from '@/application/errors'
-import { Required } from '@/application/validation'
+import { RequiredValidation } from '@/application/validation'
 
 import faker from 'faker'
 
-describe('Required', () => {
+describe('RequiredValidation', () => {
   let value: string
   let fieldName: string
 
@@ -13,7 +13,7 @@ describe('Required', () => {
   })
 
   it('Should return RequiredFieldError if value is empty', () => {
-    const sut = new Required('', fieldName)
+    const sut = new RequiredValidation('', fieldName)
 
     const error = sut.validate()
 
@@ -21,7 +21,7 @@ describe('Required', () => {
   })
 
   it('Should return RequiredFieldError if value is null', () => {
-    const sut = new Required(null as any, fieldName)
+    const sut = new RequiredValidation(null as any, fieldName)
 
     const error = sut.validate()
 
@@ -29,7 +29,7 @@ describe('Required', () => {
   })
 
   it('Should return RequiredFieldError if value is undefined', () => {
-    const sut = new Required(undefined as any, fieldName)
+    const sut = new RequiredValidation(undefined as any, fieldName)
 
     const error = sut.validate()
 
@@ -37,7 +37,7 @@ describe('Required', () => {
   })
 
   it('Should return undefined if value is not falsy', () => {
-    const sut = new Required(value, fieldName)
+    const sut = new RequiredValidation(value, fieldName)
 
     const error = sut.validate()
 

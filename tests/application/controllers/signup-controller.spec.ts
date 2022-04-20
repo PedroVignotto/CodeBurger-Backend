@@ -1,5 +1,5 @@
 import { Controller, SignUpController } from '@/application/controllers'
-import { Email, Required } from '@/application/validation'
+import { Email, RequiredValidation } from '@/application/validation'
 import { ForbiddenError, UnauthorizedError } from '@/application/errors'
 
 import faker from 'faker'
@@ -44,11 +44,11 @@ describe('SignUpController', () => {
     const validators = sut.buildValidators({ name, email, password, passwordConfirmation })
 
     expect(validators).toEqual([
-      new Required(name, 'name'),
-      new Required(email, 'email'),
+      new RequiredValidation(name, 'name'),
+      new RequiredValidation(email, 'email'),
       new Email(email, 'email'),
-      new Required(password, 'password'),
-      new Required(passwordConfirmation, 'passwordConfirmation')
+      new RequiredValidation(password, 'password'),
+      new RequiredValidation(passwordConfirmation, 'passwordConfirmation')
     ])
   })
 

@@ -1,4 +1,4 @@
-import { Email, Required, Validator } from '@/application/validation'
+import { Email, RequiredValidation, Validator } from '@/application/validation'
 
 export class ValidationBuilder {
   private constructor (
@@ -12,7 +12,7 @@ export class ValidationBuilder {
   }
 
   required (): ValidationBuilder {
-    this.validators.push(new Required(this.value, this.fieldName))
+    this.validators.push(new RequiredValidation(this.value, this.fieldName))
 
     return this
   }
