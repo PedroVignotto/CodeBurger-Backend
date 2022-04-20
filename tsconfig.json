@@ -11,6 +11,8 @@
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
     "esModuleInterop": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
     "paths": { "@/*": ["*"], "@/tests/*": ["../tests/*"] }
   },
   "include": ["src", "tests"]
