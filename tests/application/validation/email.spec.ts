@@ -1,9 +1,9 @@
 import { InvalidFieldError } from '@/application/errors'
-import { Email } from '@/application/validation'
+import { EmailValidation } from '@/application/validation'
 
 import faker from 'faker'
 
-describe('Email', () => {
+describe('EmailValidation', () => {
   let validEmail: string
   let invalidEmail: string
   let fieldName: string
@@ -15,7 +15,7 @@ describe('Email', () => {
   })
 
   test('Should return InvalidFieldError if email is invalid', () => {
-    const sut = new Email(invalidEmail, fieldName)
+    const sut = new EmailValidation(invalidEmail, fieldName)
 
     const error = sut.validate()
 
@@ -23,7 +23,7 @@ describe('Email', () => {
   })
 
   test('Should return undefined if email is empty', () => {
-    const sut = new Email(undefined as any, fieldName)
+    const sut = new EmailValidation(undefined as any, fieldName)
 
     const error = sut.validate()
 
@@ -31,7 +31,7 @@ describe('Email', () => {
   })
 
   test('Should return undefined if email is valid', () => {
-    const sut = new Email(validEmail, fieldName)
+    const sut = new EmailValidation(validEmail, fieldName)
 
     const error = sut.validate()
 

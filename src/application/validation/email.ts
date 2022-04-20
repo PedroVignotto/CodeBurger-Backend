@@ -1,7 +1,7 @@
 import { InvalidFieldError } from '@/application/errors'
 import { Validator } from '@/application/validation'
 
-export class Email implements Validator {
+export class EmailValidation implements Validator {
   constructor (private readonly email: string, private readonly fieldName: string) {}
 
   validate (): Error | undefined {
