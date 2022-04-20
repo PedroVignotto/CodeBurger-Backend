@@ -24,7 +24,7 @@ export class SignUpController extends Controller {
   override buildValidators ({ name, email, password, passwordConfirmation }: HttpRequest): Validator[] {
     return [
       ...Builder.of(name, 'name').required().build(),
-      ...Builder.of(email, 'email').required().build(),
+      ...Builder.of(email, 'email').required().email().build(),
       ...Builder.of(password, 'password').required().build(),
       ...Builder.of(passwordConfirmation, 'passwordConfirmation').required().build()
     ]
