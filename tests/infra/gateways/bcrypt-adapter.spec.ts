@@ -64,5 +64,11 @@ describe('BcryptAdapter', () => {
       expect(fakeBcrypt.compare).toHaveBeenCalledWith(plaintext, digest)
       expect(fakeBcrypt.compare).toHaveBeenCalledTimes(1)
     })
+
+    it('Should return true when compare succeeds', async () => {
+      const isValid = await sut.compare({ plaintext, digest })
+
+      expect(isValid).toBe(true)
+    })
   })
 })
