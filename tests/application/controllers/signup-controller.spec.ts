@@ -1,5 +1,5 @@
 import { Controller, SignUpController } from '@/application/controllers'
-import { Required } from '@/application/validation'
+import { Email, Required } from '@/application/validation'
 import { ForbiddenError, UnauthorizedError } from '@/application/errors'
 
 import faker from 'faker'
@@ -46,6 +46,7 @@ describe('SignUpController', () => {
     expect(validators).toEqual([
       new Required(name, 'name'),
       new Required(email, 'email'),
+      new Email(email, 'email'),
       new Required(password, 'password'),
       new Required(passwordConfirmation, 'passwordConfirmation')
     ])
