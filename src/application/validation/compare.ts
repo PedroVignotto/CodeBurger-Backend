@@ -9,6 +9,8 @@ export class CompareValidation implements Validator {
   ) {}
 
   validate (): Error | undefined {
-    return new InvalidFieldError(this.fieldToCompareName)
+    if (this.field !== this.fieldToCompare) {
+      return new InvalidFieldError(this.fieldToCompareName)
+    }
   }
 }
