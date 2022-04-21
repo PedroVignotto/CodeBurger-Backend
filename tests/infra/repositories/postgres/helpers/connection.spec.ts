@@ -1,8 +1,10 @@
-import { PgConnection } from '@/infra/repositories/postgres/helpers'
-
-import { createConnection, getConnection, getConnectionManager } from 'typeorm'
-import { mocked } from 'jest-mock'
 import { ConnectionNotFoundError } from '@/infra/repositories/postgres/errors'
+import { PgConnection } from '@/infra/repositories/postgres/helpers'
+import { Account } from '@/infra/repositories/postgres/entities'
+
+import { createConnection, getConnection, getConnectionManager, getRepository } from 'typeorm'
+import { mocked } from 'jest-mock'
+import faker from 'faker'
 
 jest.mock('typeorm', () => ({
   Entity: jest.fn(),
@@ -11,7 +13,8 @@ jest.mock('typeorm', () => ({
   CreateDateColumn: jest.fn(),
   createConnection: jest.fn(),
   getConnection: jest.fn(),
-  getConnectionManager: jest.fn()
+  getConnectionManager: jest.fn(),
+  getRepository: jest.fn()
 }))
 
 describe('PgConnection', () => {
@@ -19,8 +22,10 @@ describe('PgConnection', () => {
   let getConnectionManagerSpy: jest.Mock
   let createConnectionSpy: jest.Mock
   let getConnectionSpy: jest.Mock
+  let getRepositorySpy: jest.Mock
   let closeSpy: jest.Mock
   let hasSpy: jest.Mock
+  let repositorySpy: string
 
   beforeAll(() => {
     hasSpy = jest.fn().mockReturnValue(true)
@@ -31,10 +36,17 @@ describe('PgConnection', () => {
     closeSpy = jest.fn()
     getConnectionSpy = jest.fn().mockReturnValue({ close: closeSpy })
     mocked(getConnection).mockImplementation(getConnectionSpy)
+    repositorySpy = faker.database.column()
+    getRepositorySpy = jest.fn().mockReturnValue(repositorySpy)
+    mocked(getRepository).mockImplementation(getRepositorySpy)
   })
 
   beforeEach(() => {
     sut = PgConnection.getInstance()
+  })
+
+  afterAll(async () => {
+    await sut.disconnect()
   })
 
   it('Should have only one instance', () => {
@@ -70,5 +82,15 @@ describe('PgConnection', () => {
 
     expect(closeSpy).not.toHaveBeenCalled()
     await expect(promise).rejects.toThrow(new ConnectionNotFoundError())
+  })
+
+  it('Should get repository', async () => {
+    await sut.connect()
+
+    const repository = sut.getRepository(Account)
+
+    expect(repository).toBe(repositorySpy)
+    expect(getRepositorySpy).toHaveBeenCalledWith(Account)
+    expect(getRepositorySpy).toHaveBeenCalledTimes(1)
   })
 })
