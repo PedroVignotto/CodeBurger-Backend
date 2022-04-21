@@ -1,6 +1,6 @@
 import { ConnectionNotFoundError } from '@/infra/repositories/postgres/errors'
 
-import { Connection, createConnection, getConnection, getConnectionManager } from 'typeorm'
+import { Connection, createConnection, getConnection, getConnectionManager, getRepository, ObjectType, Repository } from 'typeorm'
 
 export class PgConnection {
   private static instance?: PgConnection
@@ -24,5 +24,9 @@ export class PgConnection {
     await getConnection().close()
 
     this.connection = undefined
+  }
+
+  getRepository<Entity> (entity: ObjectType<Entity>): Repository<Entity> {
+    return getRepository(entity)
   }
 }
