@@ -14,7 +14,7 @@ describe('EmailValidation', () => {
     fieldName = faker.database.column()
   })
 
-  test('Should return InvalidFieldError if email is invalid', () => {
+  it('Should return InvalidFieldError if email is invalid', () => {
     const sut = new EmailValidation(invalidEmail, fieldName)
 
     const error = sut.validate()
@@ -22,7 +22,7 @@ describe('EmailValidation', () => {
     expect(error).toEqual(new InvalidFieldError(fieldName))
   })
 
-  test('Should return undefined if email is empty', () => {
+  it('Should return undefined if email is empty', () => {
     const sut = new EmailValidation(undefined as any, fieldName)
 
     const error = sut.validate()
@@ -30,7 +30,7 @@ describe('EmailValidation', () => {
     expect(error).toBeUndefined()
   })
 
-  test('Should return undefined if email is valid', () => {
+  it('Should return undefined if email is valid', () => {
     const sut = new EmailValidation(validEmail, fieldName)
 
     const error = sut.validate()

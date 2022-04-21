@@ -16,7 +16,7 @@ describe('CompareValidation', () => {
     fieldToCompareName = faker.database.column()
   })
 
-  test('Should return InvalidFieldError if fields are not equal', () => {
+  it('Should return InvalidFieldError if fields are not equal', () => {
     const sut = new CompareValidation(field, fieldToCompareInvalid, fieldToCompareName)
 
     const error = sut.validate()
