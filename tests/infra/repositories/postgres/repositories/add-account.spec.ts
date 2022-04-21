@@ -4,19 +4,27 @@ import { AccountRepository } from '@/infra/repositories/postgres/repositories'
 
 import { IBackup, IMemoryDb } from 'pg-mem'
 import faker from 'faker'
+import { getRepository, Repository } from 'typeorm'
 
 describe('AccountRepository', () => {
   let sut: AccountRepository
+  let id: string
+  let name: string
   let email: string
+  let password: string
   let backup: IBackup
   let database: IMemoryDb
+  let repository: Repository<Account>
 
   beforeAll(async () => {
+    id = faker.datatype.uuid()
+    name = faker.name.findName()
     email = faker.internet.email()
+    password = faker.internet.password(8)
 
     database = await makeFakeDatabase([Account])
-
     backup = database.backup()
+    repository = getRepository(Account)
   })
 
   beforeEach(() => {
@@ -29,5 +37,13 @@ describe('AccountRepository', () => {
     const emailExists = await sut.checkByEmail({ email })
 
     expect(emailExists).toBe(false)
+  })
+
+  it('Should return true if email already exists', async () => {
+    await repository.save({ id, name, email, password })
+
+    const emailExists = await sut.checkByEmail({ email })
+
+    expect(emailExists).toBe(true)
   })
 })
