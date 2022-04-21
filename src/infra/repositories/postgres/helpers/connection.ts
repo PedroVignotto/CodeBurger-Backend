@@ -13,4 +13,8 @@ export class PgConnection {
   async connect (): Promise<void> {
     getConnectionManager().has('default') ? getConnection() : await createConnection()
   }
+
+  async disconnect (): Promise<void> {
+    await getConnection().close()
+  }
 }
