@@ -16,12 +16,11 @@ describe('AddAccount', () => {
   let createdAt: Date
   let error: string
 
-  const checkAccountByEmailRepository = mock<CheckAccountByEmailRepository>()
+  const accountRepository = mock<CheckAccountByEmailRepository & AddAccountRepository>()
   const hashGenerator = mock<HashGenerator>()
-  const addAccountRepository = mock<AddAccountRepository>()
 
   beforeEach(() => {
-    sut = setupAddAccount(checkAccountByEmailRepository, hashGenerator, addAccountRepository)
+    sut = setupAddAccount(accountRepository, hashGenerator)
 
     id = faker.datatype.uuid()
     name = faker.name.findName()
@@ -31,20 +30,20 @@ describe('AddAccount', () => {
     createdAt = faker.date.recent()
     error = faker.random.word()
 
-    checkAccountByEmailRepository.checkByEmail.mockResolvedValue(false)
+    accountRepository.checkByEmail.mockResolvedValue(false)
+    accountRepository.create.mockResolvedValue({ id, name, email, password, createdAt })
     hashGenerator.generate.mockResolvedValue(hashedPassword)
-    addAccountRepository.create.mockResolvedValue({ id, name, email, password, createdAt })
   })
 
   it('Should call CheckAccountByEmailRepository with correct email', async () => {
     await sut({ name, email, password })
 
-    expect(checkAccountByEmailRepository.checkByEmail).toHaveBeenCalledWith({ email })
-    expect(checkAccountByEmailRepository.checkByEmail).toHaveBeenCalledTimes(1)
+    expect(accountRepository.checkByEmail).toHaveBeenCalledWith({ email })
+    expect(accountRepository.checkByEmail).toHaveBeenCalledTimes(1)
   })
 
   it('Should return false if CheckAccountByEmailRepository return true', async () => {
-    checkAccountByEmailRepository.checkByEmail.mockResolvedValueOnce(true)
+    accountRepository.checkByEmail.mockResolvedValueOnce(true)
 
     const created = await sut({ name, email, password })
 
@@ -52,7 +51,7 @@ describe('AddAccount', () => {
   })
 
   it('Should rethrow if CheckAccountByEmailRepository throws', async () => {
-    checkAccountByEmailRepository.checkByEmail.mockRejectedValueOnce(new Error(error))
+    accountRepository.checkByEmail.mockRejectedValueOnce(new Error(error))
 
     const promise = sut({ name, email, password })
 
@@ -77,12 +76,12 @@ describe('AddAccount', () => {
   it('Should call AddAccountRepository with correct values', async () => {
     await sut({ name, email, password })
 
-    expect(addAccountRepository.create).toHaveBeenCalledWith({ name, email, password: hashedPassword })
-    expect(addAccountRepository.create).toHaveBeenCalledTimes(1)
+    expect(accountRepository.create).toHaveBeenCalledWith({ name, email, password: hashedPassword })
+    expect(accountRepository.create).toHaveBeenCalledTimes(1)
   })
 
   it('Should rethrow if AddAccountRepository throws', async () => {
-    addAccountRepository.create.mockRejectedValueOnce(new Error(error))
+    accountRepository.create.mockRejectedValueOnce(new Error(error))
 
     const promise = sut({ name, email, password })
 
