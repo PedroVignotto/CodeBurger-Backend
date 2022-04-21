@@ -80,4 +80,12 @@ describe('AccountRepository', () => {
       expect(account).toMatchObject({ id, name, email, password, createdAt })
     })
   })
+
+  describe('loadByEmail()', () => {
+    it('Should return undefined if email does not exists', async () => {
+      const account = await sut.loadByEmail({ email })
+
+      expect(account).toBeUndefined()
+    })
+  })
 })
