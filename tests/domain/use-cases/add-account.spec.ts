@@ -1,6 +1,6 @@
 import { HashGenerator } from '@/domain/contracts/gateways'
 import { AddAccountRepository, CheckAccountByEmailRepository } from '@/domain/contracts/repositories'
-import { AddAccount, setupAddAccount } from '@/domain/use-cases'
+import { AddAccount, AddAccountUseCase } from '@/domain/use-cases'
 
 import { mock } from 'jest-mock-extended'
 import faker from 'faker'
@@ -20,7 +20,7 @@ describe('AddAccount', () => {
   const hashGenerator = mock<HashGenerator>()
 
   beforeEach(() => {
-    sut = setupAddAccount(accountRepository, hashGenerator)
+    sut = AddAccountUseCase(accountRepository, hashGenerator)
 
     id = faker.datatype.uuid()
     name = faker.name.findName()

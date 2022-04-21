@@ -1,6 +1,6 @@
 import { TokenGenerator, HashComparer } from '@/domain/contracts/gateways'
 import { LoadAccountByEmailRepository } from '@/domain/contracts/repositories'
-import { Authentication, setupAuthentication } from '@/domain/use-cases'
+import { Authentication, AuthenticationUseCase } from '@/domain/use-cases'
 
 import { mock } from 'jest-mock-extended'
 import faker from 'faker'
@@ -22,7 +22,7 @@ describe('Authentication', () => {
   const token = mock<TokenGenerator>()
 
   beforeEach(() => {
-    sut = setupAuthentication(loadAccountByEmailRepository, hashComparer, token)
+    sut = AuthenticationUseCase(loadAccountByEmailRepository, hashComparer, token)
 
     id = faker.datatype.uuid()
     name = faker.name.findName()

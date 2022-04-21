@@ -6,7 +6,7 @@ type Input = { name: string, email: string, password: string }
 type Output = boolean
 export type AddAccount = (input: Input) => Promise<Output>
 
-export const setupAddAccount: Setup = (accountRepository, hashGenerator) => async ({ name, email, password }) => {
+export const AddAccountUseCase: Setup = (accountRepository, hashGenerator) => async ({ name, email, password }) => {
   const emailExists = await accountRepository.checkByEmail({ email })
 
   if (emailExists) return false

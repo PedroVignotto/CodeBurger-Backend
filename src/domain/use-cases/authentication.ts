@@ -6,7 +6,7 @@ type Input = { email: string, password: string }
 type Output = { name: string, accessToken: string } | undefined
 export type Authentication = (input: Input) => Promise<Output>
 
-export const setupAuthentication: Setup = (loadAccountByEmailRepository, hashComparer, token) => async ({ email, password }) => {
+export const AuthenticationUseCase: Setup = (loadAccountByEmailRepository, hashComparer, token) => async ({ email, password }) => {
   const account = await loadAccountByEmailRepository.loadByEmail({ email })
 
   if (!account) return undefined
