@@ -7,16 +7,16 @@ import faker from 'faker'
 jest.mock('uuid')
 
 describe('UuidAdapter', () => {
-  let uuid: string
   let sut: UuidAdapter
 
-  beforeAll(() => {
-    uuid = faker.datatype.uuid()
-    mocked(uuidV4).mockReturnValue(uuid)
-  })
+  let uuid: string
 
   beforeEach(() => {
     sut = new UuidAdapter()
+
+    uuid = faker.datatype.uuid()
+
+    mocked(uuidV4).mockReturnValue(uuid)
   })
 
   it('Should call uuidV4', () => {

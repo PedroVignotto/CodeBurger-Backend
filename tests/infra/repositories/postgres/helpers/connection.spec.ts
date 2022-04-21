@@ -27,7 +27,9 @@ describe('PgConnection', () => {
   let hasSpy: jest.Mock
   let repositorySpy: string
 
-  beforeAll(() => {
+  beforeEach(() => {
+    sut = PgConnection.getInstance()
+
     hasSpy = jest.fn().mockReturnValue(true)
     getConnectionManagerSpy = jest.fn().mockReturnValue({ has: hasSpy })
     mocked(getConnectionManager).mockImplementation(getConnectionManagerSpy)
@@ -39,10 +41,6 @@ describe('PgConnection', () => {
     repositorySpy = faker.database.column()
     getRepositorySpy = jest.fn().mockReturnValue(repositorySpy)
     mocked(getRepository).mockImplementation(getRepositorySpy)
-  })
-
-  beforeEach(() => {
-    sut = PgConnection.getInstance()
   })
 
   afterAll(async () => {

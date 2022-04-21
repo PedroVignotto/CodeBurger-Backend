@@ -7,24 +7,26 @@ jest.mock('jsonwebtoken')
 
 describe('JwtAdapter', () => {
   let sut: JwtAdapter
+
   let secret: string
   let key: string
   let token: string
   let error: Error
-  let fakeJwt = jwt as jest.Mocked<typeof jwt>
+
+  const fakeJwt = jwt as jest.Mocked<typeof jwt>
 
   beforeAll(() => {
     secret = faker.datatype.uuid()
-    key = faker.random.word()
-    token = faker.datatype.uuid()
-    error = new Error(faker.random.word())
-
-    fakeJwt = jwt as jest.Mocked<typeof jwt>
-    fakeJwt.sign.mockImplementation(() => token)
   })
 
   beforeEach(() => {
     sut = new JwtAdapter(secret)
+
+    key = faker.random.word()
+    token = faker.datatype.uuid()
+    error = new Error(faker.random.word())
+
+    fakeJwt.sign.mockImplementation(() => token)
   })
 
   it('Should call sign with correct values', async () => {

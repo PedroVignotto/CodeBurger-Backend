@@ -1,29 +1,29 @@
 import { ValidationComposite, Validator } from '@/application/validation'
 
-import { mock, MockProxy } from 'jest-mock-extended'
+import { mock } from 'jest-mock-extended'
 import faker from 'faker'
 
 describe('ValidationComposite', () => {
   let sut: ValidationComposite
+
   let error1: string
   let error2: string
-  let validator1: MockProxy<Validator>
-  let validator2: MockProxy<Validator>
   let validators: Validator[]
 
-  beforeAll(() => {
-    error1 = faker.random.word()
-    error2 = faker.random.word()
+  const validator1 = mock<Validator>()
+  const validator2 = mock<Validator>()
 
-    validator1 = mock<Validator>()
+  beforeAll(() => {
     validator1.validate.mockReturnValue(undefined)
-    validator2 = mock<Validator>()
     validator2.validate.mockReturnValue(undefined)
     validators = [validator1, validator2]
   })
 
   beforeEach(() => {
     sut = new ValidationComposite(validators)
+
+    error1 = faker.random.word()
+    error2 = faker.random.word()
   })
 
   it('Should return undefined if all Validators return undefined', () => {

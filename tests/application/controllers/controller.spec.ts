@@ -18,18 +18,17 @@ class ControllerStub extends Controller {
 
 describe('Controller', () => {
   let sut: ControllerStub
+
   let value: any
   let errorObject: Error
   let error: string
 
-  beforeAll(() => {
+  beforeEach(() => {
+    sut = new ControllerStub()
+
     value = faker.random.word()
     errorObject = new Error(faker.random.word())
     error = faker.random.word()
-  })
-
-  beforeEach(() => {
-    sut = new ControllerStub()
   })
 
   it('Should return badRequest if any validation fails', async () => {

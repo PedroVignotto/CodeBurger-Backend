@@ -2,22 +2,26 @@ import { HashGenerator } from '@/domain/contracts/gateways'
 import { AddAccountRepository, CheckAccountByEmailRepository } from '@/domain/contracts/repositories'
 import { AddAccount, setupAddAccount } from '@/domain/use-cases'
 
-import { mock, MockProxy } from 'jest-mock-extended'
+import { mock } from 'jest-mock-extended'
 import faker from 'faker'
 
 describe('AddAccount', () => {
   let sut: AddAccount
+
   let id: string
   let name: string
   let email: string
   let password: string
   let hashedPassword: string
   let error: string
-  let checkAccountByEmailRepository: MockProxy<CheckAccountByEmailRepository>
-  let hashGenerator: MockProxy<HashGenerator>
-  let addAccountRepository: MockProxy<AddAccountRepository>
 
-  beforeAll(() => {
+  const checkAccountByEmailRepository = mock<CheckAccountByEmailRepository>()
+  const hashGenerator = mock<HashGenerator>()
+  const addAccountRepository = mock<AddAccountRepository>()
+
+  beforeEach(() => {
+    sut = setupAddAccount(checkAccountByEmailRepository, hashGenerator, addAccountRepository)
+
     id = faker.datatype.uuid()
     name = faker.name.findName()
     email = faker.internet.email()
@@ -25,16 +29,9 @@ describe('AddAccount', () => {
     hashedPassword = faker.internet.password(16)
     error = faker.random.word()
 
-    checkAccountByEmailRepository = mock()
     checkAccountByEmailRepository.checkByEmail.mockResolvedValue(false)
-    hashGenerator = mock()
     hashGenerator.generate.mockResolvedValue(hashedPassword)
-    addAccountRepository = mock()
     addAccountRepository.create.mockResolvedValue({ id, name, email, password })
-  })
-
-  beforeEach(() => {
-    sut = setupAddAccount(checkAccountByEmailRepository, hashGenerator, addAccountRepository)
   })
 
   it('Should call CheckAccountByEmailRepository with correct email', async () => {

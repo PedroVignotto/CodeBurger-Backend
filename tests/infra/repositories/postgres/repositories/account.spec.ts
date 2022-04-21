@@ -9,21 +9,18 @@ import { Repository } from 'typeorm'
 
 describe('AccountRepository', () => {
   let sut: AccountRepository
+
   let id: string
   let name: string
   let email: string
   let password: string
-  let backup: IBackup
-  let database: IMemoryDb
+
   let connection: PgConnection
+  let database: IMemoryDb
+  let backup: IBackup
   let repository: Repository<Account>
 
   beforeAll(async () => {
-    id = faker.datatype.uuid()
-    name = faker.name.findName()
-    email = faker.internet.email()
-    password = faker.internet.password(8)
-
     connection = PgConnection.getInstance()
     database = await makeFakeDatabase([Account])
     backup = database.backup()
@@ -34,6 +31,11 @@ describe('AccountRepository', () => {
     backup.restore()
 
     sut = new AccountRepository()
+
+    id = faker.datatype.uuid()
+    name = faker.name.findName()
+    email = faker.internet.email()
+    password = faker.internet.password(8)
   })
 
   it('Should extend PgRepository', async () => {

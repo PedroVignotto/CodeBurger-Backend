@@ -6,6 +6,7 @@ import faker from 'faker'
 
 describe('SignUpController', () => {
   let sut: SignUpController
+
   let id: string
   let name: string
   let email: string
@@ -14,10 +15,12 @@ describe('SignUpController', () => {
   let hashedPassword: string
   let accessToken: string
 
-  let addAccount: jest.Mock
-  let authentication: jest.Mock
+  const addAccount = jest.fn()
+  const authentication = jest.fn()
 
-  beforeAll(() => {
+  beforeEach(() => {
+    sut = new SignUpController(addAccount, authentication)
+
     id = faker.datatype.uuid()
     name = faker.name.findName()
     email = faker.internet.email()
@@ -26,14 +29,8 @@ describe('SignUpController', () => {
     passwordConfirmation = password
     accessToken = faker.datatype.uuid()
 
-    addAccount = jest.fn()
     addAccount.mockResolvedValue({ id, name, email, password: hashedPassword })
-    authentication = jest.fn()
     authentication.mockResolvedValue({ name, accessToken })
-  })
-
-  beforeEach(() => {
-    sut = new SignUpController(addAccount, authentication)
   })
 
   it('Should extend Controller', async () => {

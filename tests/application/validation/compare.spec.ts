@@ -9,7 +9,7 @@ describe('CompareValidation', () => {
   let fieldToCompareInvalid: string
   let fieldToCompareName: string
 
-  beforeAll(() => {
+  beforeEach(() => {
     field = faker.random.words(1)
     fieldToCompareValid = field
     fieldToCompareInvalid = faker.random.words(2)
