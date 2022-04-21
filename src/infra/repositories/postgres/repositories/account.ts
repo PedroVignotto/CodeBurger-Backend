@@ -1,9 +1,9 @@
 import { Account } from '@/infra/repositories/postgres/entities'
 import { PgRepository } from '@/infra/repositories/postgres/repositories'
-import { AddAccountRepository, CheckAccountByEmailRepository } from '@/domain/contracts/repositories'
+import { AddAccountRepository, CheckAccountByEmailRepository, LoadAccountByEmailRepository } from '@/domain/contracts/repositories'
 import { UUIDGenerator } from '@/domain/contracts/gateways'
 
-export class AccountRepository extends PgRepository implements CheckAccountByEmailRepository, AddAccountRepository {
+export class AccountRepository extends PgRepository implements CheckAccountByEmailRepository, AddAccountRepository, LoadAccountByEmailRepository {
   constructor (private readonly uuid: UUIDGenerator) { super() }
 
   async checkByEmail ({ email }: CheckAccountByEmailRepository.Input): Promise<CheckAccountByEmailRepository.Output> {
@@ -18,6 +18,14 @@ export class AccountRepository extends PgRepository implements CheckAccountByEma
     const repository = this.getRepository(Account)
 
     const account = await repository.save({ id: this.uuid.generate(), name, email, password })
+
+    return account
+  }
+
+  async loadByEmail ({ email }: LoadAccountByEmailRepository.Input): Promise<LoadAccountByEmailRepository.Output> {
+    const repository = this.getRepository(Account)
+
+    const account = await repository.findOne({ email })
 
     return account
   }
