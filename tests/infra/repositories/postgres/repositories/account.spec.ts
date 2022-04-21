@@ -77,7 +77,7 @@ describe('AccountRepository', () => {
     it('Should return a account on success', async () => {
       const account = await sut.create({ name, email, password })
 
-      expect(account).toMatchObject({ id, name, email, password, createdAt })
+      expect(account).toEqual({ id, name, email, password, createdAt })
     })
   })
 
@@ -86,6 +86,14 @@ describe('AccountRepository', () => {
       const account = await sut.loadByEmail({ email })
 
       expect(account).toBeUndefined()
+    })
+
+    it('Should return a account if email already exists', async () => {
+      await repository.save({ id, name, email, password })
+
+      const account = await sut.loadByEmail({ email })
+
+      expect(account).toEqual({ id, name, email, password, createdAt })
     })
   })
 })
