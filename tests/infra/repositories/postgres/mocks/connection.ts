@@ -1,3 +1,4 @@
+import { PgConnection } from '@/infra/repositories/postgres/helpers'
 import { IMemoryDb, newDb } from 'pg-mem'
 
 export const makeFakeDatabase = async (entities?: any[]): Promise<IMemoryDb> => {
@@ -9,6 +10,8 @@ export const makeFakeDatabase = async (entities?: any[]): Promise<IMemoryDb> => 
   })
 
   await connection.synchronize()
+
+  await PgConnection.getInstance().connect()
 
   return db
 }
