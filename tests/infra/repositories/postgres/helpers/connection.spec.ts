@@ -1,6 +1,6 @@
 import { PgConnection } from '@/infra/repositories/postgres/helpers'
 
-import { createConnection, getConnectionManager } from 'typeorm'
+import { createConnection, getConnection, getConnectionManager } from 'typeorm'
 import { mocked } from 'jest-mock'
 
 jest.mock('typeorm', () => ({
@@ -9,6 +9,7 @@ jest.mock('typeorm', () => ({
   Column: jest.fn(),
   CreateDateColumn: jest.fn(),
   createConnection: jest.fn(),
+  getConnection: jest.fn(),
   getConnectionManager: jest.fn()
 }))
 
@@ -16,12 +17,17 @@ describe('PgConnection', () => {
   let sut: PgConnection
   let getConnectionManagerSpy: jest.Mock
   let createConnectionSpy: jest.Mock
+  let getConnectionSpy: jest.Mock
+  let hasSpy: jest.Mock
 
   beforeAll(() => {
-    getConnectionManagerSpy = jest.fn().mockReturnValue({ has: jest.fn().mockReturnValue(false) })
+    hasSpy = jest.fn().mockReturnValue(true)
+    getConnectionManagerSpy = jest.fn().mockReturnValue({ has: hasSpy })
     mocked(getConnectionManager).mockImplementation(getConnectionManagerSpy)
     createConnectionSpy = jest.fn()
     mocked(createConnection).mockImplementation(createConnectionSpy)
+    getConnectionSpy = jest.fn()
+    mocked(getConnection).mockImplementation(getConnectionSpy)
   })
 
   beforeEach(() => {
@@ -33,9 +39,18 @@ describe('PgConnection', () => {
   })
 
   it('Should create a new connection', async () => {
+    hasSpy.mockReturnValueOnce(false)
+
     await sut.connect()
 
     expect(createConnectionSpy).toHaveBeenCalledWith()
     expect(createConnectionSpy).toHaveBeenCalledTimes(1)
+  })
+
+  it('Should use an existing connection', async () => {
+    await sut.connect()
+
+    expect(getConnectionSpy).toHaveBeenCalledWith()
+    expect(getConnectionSpy).toHaveBeenCalledTimes(1)
   })
 })
