@@ -1,4 +1,4 @@
-import setupMiddlewares from '@/main/config/middlewares'
+import { setupMiddlewares } from '@/main/config'
 
 import express from 'express'
 
