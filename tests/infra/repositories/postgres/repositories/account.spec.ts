@@ -1,10 +1,11 @@
 import { makeFakeDatabase } from '@/tests/infra/repositories/postgres/mocks'
+import { AccountRepository, PgRepository } from '@/infra/repositories/postgres/repositories'
+import { PgConnection } from '@/infra/repositories/postgres/helpers'
 import { Account } from '@/infra/repositories/postgres/entities'
-import { AccountRepository } from '@/infra/repositories/postgres/repositories'
 
 import { IBackup, IMemoryDb } from 'pg-mem'
 import faker from 'faker'
-import { getRepository, Repository } from 'typeorm'
+import { Repository } from 'typeorm'
 
 describe('AccountRepository', () => {
   let sut: AccountRepository
@@ -14,6 +15,7 @@ describe('AccountRepository', () => {
   let password: string
   let backup: IBackup
   let database: IMemoryDb
+  let connection: PgConnection
   let repository: Repository<Account>
 
   beforeAll(async () => {
@@ -22,15 +24,20 @@ describe('AccountRepository', () => {
     email = faker.internet.email()
     password = faker.internet.password(8)
 
+    connection = PgConnection.getInstance()
     database = await makeFakeDatabase([Account])
     backup = database.backup()
-    repository = getRepository(Account)
+    repository = connection.getRepository(Account)
   })
 
   beforeEach(() => {
     backup.restore()
 
     sut = new AccountRepository()
+  })
+
+  it('Should extend PgRepository', async () => {
+    expect(sut).toBeInstanceOf(PgRepository)
   })
 
   it('Should return false if email does not exists', async () => {
