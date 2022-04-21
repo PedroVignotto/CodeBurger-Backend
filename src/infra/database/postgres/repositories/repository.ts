@@ -1,4 +1,4 @@
-import { PgConnection } from '@/infra/repositories/postgres/helpers'
+import { PgConnection } from '@/infra/database/postgres/helpers'
 
 import { ObjectType, Repository } from 'typeorm'
 

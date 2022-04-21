@@ -1,7 +1,7 @@
-import { makeFakeDatabase } from '@/tests/infra/repositories/postgres/mocks'
-import { AccountRepository, PgRepository } from '@/infra/repositories/postgres/repositories'
-import { PgConnection } from '@/infra/repositories/postgres/helpers'
-import { Account } from '@/infra/repositories/postgres/entities'
+import { makeFakeDatabase } from '@/tests/infra/database/postgres/mocks'
+import { AccountRepository, PgRepository } from '@/infra/database/postgres/repositories'
+import { PgConnection } from '@/infra/database/postgres/helpers'
+import { Account } from '@/infra/database/postgres/entities'
 import { UUIDGenerator } from '@/domain/contracts/gateways'
 
 import { IBackup, IMemoryDb } from 'pg-mem'

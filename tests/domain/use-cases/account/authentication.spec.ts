@@ -1,6 +1,6 @@
 import { TokenGenerator, HashComparer } from '@/domain/contracts/gateways'
-import { LoadAccountByEmailRepository } from '@/domain/contracts/repositories'
-import { Authentication, AuthenticationUseCase } from '@/domain/use-cases'
+import { LoadAccountByEmailRepository } from '@/domain/contracts/database/repositories/account'
+import { Authentication, AuthenticationUseCase } from '@/domain/use-cases/account'
 
 import { mock } from 'jest-mock-extended'
 import faker from 'faker'
@@ -15,7 +15,7 @@ describe('Authentication', () => {
   let hashedPassword: string
   let createdAt: Date
   let accessToken: string
-  let error: string
+  let error: Error
 
   const loadAccountByEmailRepository = mock<LoadAccountByEmailRepository>()
   const hashComparer = mock<HashComparer>()
@@ -31,7 +31,7 @@ describe('Authentication', () => {
     hashedPassword = faker.internet.password(16)
     createdAt = faker.date.recent()
     accessToken = faker.datatype.uuid()
-    error = faker.random.word()
+    error = new Error(faker.random.word())
 
     loadAccountByEmailRepository.loadByEmail.mockResolvedValue({ id, name, email, password: hashedPassword, createdAt })
     hashComparer.compare.mockResolvedValue(true)
@@ -54,11 +54,11 @@ describe('Authentication', () => {
   })
 
   it('Should rethrow if LoadAccountByEmailRepository throws', async () => {
-    loadAccountByEmailRepository.loadByEmail.mockRejectedValueOnce(new Error(error))
+    loadAccountByEmailRepository.loadByEmail.mockRejectedValueOnce(error)
 
     const promise = sut({ email, password })
 
-    await expect(promise).rejects.toThrow(new Error(error))
+    await expect(promise).rejects.toThrow(error)
   })
 
   it('Should call HashComparer with correct values', async () => {
@@ -77,11 +77,11 @@ describe('Authentication', () => {
   })
 
   it('Should rethrow if HashComparer throws', async () => {
-    hashComparer.compare.mockRejectedValueOnce(new Error(error))
+    hashComparer.compare.mockRejectedValueOnce(error)
 
     const promise = sut({ email, password })
 
-    await expect(promise).rejects.toThrow(new Error(error))
+    await expect(promise).rejects.toThrow(error)
   })
 
   it('Should call TokenGenerator with correct key', async () => {
@@ -92,11 +92,11 @@ describe('Authentication', () => {
   })
 
   it('Should rethrow if TokenGenerator throws', async () => {
-    token.generate.mockRejectedValueOnce(new Error(error))
+    token.generate.mockRejectedValueOnce(error)
 
     const promise = sut({ email, password })
 
-    await expect(promise).rejects.toThrow(new Error(error))
+    await expect(promise).rejects.toThrow(error)
   })
 
   it('Should return name and accessToken on success', async () => {

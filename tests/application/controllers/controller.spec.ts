@@ -9,7 +9,7 @@ import faker from 'faker'
 jest.mock('@/application/validation/composite')
 
 class ControllerStub extends Controller {
-  result: HttpResponse = { statusCode: 200, data: 'any_data' }
+  result: HttpResponse = { statusCode: 200, data: faker.random.objectElement() }
 
   async perform (httpRequest: any): Promise<HttpResponse> {
     return this.result

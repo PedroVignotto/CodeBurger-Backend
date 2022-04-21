@@ -15,8 +15,8 @@ describe('SignUpController', () => {
   let hashedPassword: string
   let accessToken: string
 
-  const addAccount = jest.fn()
-  const authentication = jest.fn()
+  const addAccount: jest.Mock = jest.fn()
+  const authentication: jest.Mock = jest.fn()
 
   beforeEach(() => {
     sut = new SignUpController(addAccount, authentication)

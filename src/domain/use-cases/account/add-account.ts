@@ -1,5 +1,5 @@
 import { HashGenerator } from '@/domain/contracts/gateways'
-import { AddAccountRepository, CheckAccountByEmailRepository } from '@/domain/contracts/repositories'
+import { AddAccountRepository, CheckAccountByEmailRepository } from '@/domain/contracts/database/repositories/account'
 
 type Setup = (accountRepository: CheckAccountByEmailRepository & AddAccountRepository, hashGenerator: HashGenerator) => AddAccount
 type Input = { name: string, email: string, password: string }

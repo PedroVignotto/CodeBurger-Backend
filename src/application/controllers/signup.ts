@@ -1,7 +1,7 @@
 import { Controller } from '@/application/controllers/controller'
 import { forbidden, HttpResponse, created, unauthorized } from '@/application/helpers'
 import { ValidationBuilder as Builder, Validator } from '@/application/validation'
-import { AddAccount, Authentication } from '@/domain/use-cases'
+import { AddAccount, Authentication } from '@/domain/use-cases/account'
 
 type HttpRequest = { name: string, email: string, password: string, passwordConfirmation: string }
 type Model = { name: string, accessToken: string } | Error

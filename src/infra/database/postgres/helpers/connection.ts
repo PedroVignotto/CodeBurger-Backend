@@ -1,4 +1,4 @@
-import { ConnectionNotFoundError } from '@/infra/repositories/postgres/errors'
+import { ConnectionNotFoundError } from '@/infra/database/postgres/errors'
 
 import { Connection, createConnection, getConnection, getConnectionManager, getRepository, ObjectType, Repository } from 'typeorm'
 

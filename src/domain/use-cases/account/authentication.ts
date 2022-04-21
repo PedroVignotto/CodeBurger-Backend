@@ -1,5 +1,5 @@
 import { HashComparer, TokenGenerator } from '@/domain/contracts/gateways'
-import { LoadAccountByEmailRepository } from '@/domain/contracts/repositories'
+import { LoadAccountByEmailRepository } from '@/domain/contracts/database/repositories/account'
 
 type Setup = (loadAccountByEmailRepository: LoadAccountByEmailRepository, hashComparer: HashComparer, token: TokenGenerator) => Authentication
 type Input = { email: string, password: string }

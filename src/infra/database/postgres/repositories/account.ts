@@ -1,6 +1,6 @@
-import { Account } from '@/infra/repositories/postgres/entities'
-import { PgRepository } from '@/infra/repositories/postgres/repositories'
-import { AddAccountRepository, CheckAccountByEmailRepository, LoadAccountByEmailRepository } from '@/domain/contracts/repositories'
+import { Account } from '@/infra/database/postgres/entities'
+import { PgRepository } from '@/infra/database/postgres/repositories'
+import { AddAccountRepository, CheckAccountByEmailRepository, LoadAccountByEmailRepository } from '@/domain/contracts/database/repositories/account'
 import { UUIDGenerator } from '@/domain/contracts/gateways'
 
 export class AccountRepository extends PgRepository implements CheckAccountByEmailRepository, AddAccountRepository, LoadAccountByEmailRepository {

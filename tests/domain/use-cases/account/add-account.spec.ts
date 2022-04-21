@@ -1,6 +1,6 @@
 import { HashGenerator } from '@/domain/contracts/gateways'
-import { AddAccountRepository, CheckAccountByEmailRepository } from '@/domain/contracts/repositories'
-import { AddAccount, AddAccountUseCase } from '@/domain/use-cases'
+import { AddAccountRepository, CheckAccountByEmailRepository } from '@/domain/contracts/database/repositories/account'
+import { AddAccount, AddAccountUseCase } from '@/domain/use-cases/account'
 
 import { mock } from 'jest-mock-extended'
 import faker from 'faker'
@@ -14,7 +14,7 @@ describe('AddAccount', () => {
   let password: string
   let hashedPassword: string
   let createdAt: Date
-  let error: string
+  let error: Error
 
   const accountRepository = mock<CheckAccountByEmailRepository & AddAccountRepository>()
   const hashGenerator = mock<HashGenerator>()
@@ -28,7 +28,7 @@ describe('AddAccount', () => {
     password = faker.internet.password(8)
     hashedPassword = faker.internet.password(16)
     createdAt = faker.date.recent()
-    error = faker.random.word()
+    error = new Error(faker.random.word())
 
     accountRepository.checkByEmail.mockResolvedValue(false)
     accountRepository.create.mockResolvedValue({ id, name, email, password, createdAt })
@@ -51,11 +51,11 @@ describe('AddAccount', () => {
   })
 
   it('Should rethrow if CheckAccountByEmailRepository throws', async () => {
-    accountRepository.checkByEmail.mockRejectedValueOnce(new Error(error))
+    accountRepository.checkByEmail.mockRejectedValueOnce(error)
 
     const promise = sut({ name, email, password })
 
-    await expect(promise).rejects.toThrow(new Error(error))
+    await expect(promise).rejects.toThrow(error)
   })
 
   it('Should call HashGenerator with correct plaintext', async () => {
@@ -66,11 +66,11 @@ describe('AddAccount', () => {
   })
 
   it('Should rethrow if HashGenerator throws', async () => {
-    hashGenerator.generate.mockRejectedValueOnce(new Error(error))
+    hashGenerator.generate.mockRejectedValueOnce(error)
 
     const promise = sut({ name, email, password })
 
-    await expect(promise).rejects.toThrow(new Error(error))
+    await expect(promise).rejects.toThrow(error)
   })
 
   it('Should call AddAccountRepository with correct values', async () => {
@@ -81,11 +81,11 @@ describe('AddAccount', () => {
   })
 
   it('Should rethrow if AddAccountRepository throws', async () => {
-    accountRepository.create.mockRejectedValueOnce(new Error(error))
+    accountRepository.create.mockRejectedValueOnce(error)
 
     const promise = sut({ name, email, password })
 
-    await expect(promise).rejects.toThrow(new Error(error))
+    await expect(promise).rejects.toThrow(error)
   })
 
   it('Should return true on success', async () => {
