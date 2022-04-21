@@ -13,6 +13,7 @@ describe('Authentication', () => {
   let email: string
   let password: string
   let hashedPassword: string
+  let createdAt: Date
   let accessToken: string
   let error: string
 
@@ -28,10 +29,11 @@ describe('Authentication', () => {
     email = faker.internet.email()
     password = faker.internet.password(8)
     hashedPassword = faker.internet.password(16)
+    createdAt = faker.date.recent()
     accessToken = faker.datatype.uuid()
     error = faker.random.word()
 
-    loadAccountByEmailRepository.loadByEmail.mockResolvedValue({ id, name, email, password: hashedPassword })
+    loadAccountByEmailRepository.loadByEmail.mockResolvedValue({ id, name, email, password: hashedPassword, createdAt })
     hashComparer.compare.mockResolvedValue(true)
     token.generate.mockResolvedValue(accessToken)
   })

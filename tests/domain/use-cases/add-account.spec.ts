@@ -13,6 +13,7 @@ describe('AddAccount', () => {
   let email: string
   let password: string
   let hashedPassword: string
+  let createdAt: Date
   let error: string
 
   const checkAccountByEmailRepository = mock<CheckAccountByEmailRepository>()
@@ -27,11 +28,12 @@ describe('AddAccount', () => {
     email = faker.internet.email()
     password = faker.internet.password(8)
     hashedPassword = faker.internet.password(16)
+    createdAt = faker.date.recent()
     error = faker.random.word()
 
     checkAccountByEmailRepository.checkByEmail.mockResolvedValue(false)
     hashGenerator.generate.mockResolvedValue(hashedPassword)
-    addAccountRepository.create.mockResolvedValue({ id, name, email, password })
+    addAccountRepository.create.mockResolvedValue({ id, name, email, password, createdAt })
   })
 
   it('Should call CheckAccountByEmailRepository with correct email', async () => {
