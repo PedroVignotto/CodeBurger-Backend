@@ -15,5 +15,5 @@ export class Account {
   password!: string
 
   @CreateDateColumn()
-  created_at!: Date
+  createdAt!: Date
 }
