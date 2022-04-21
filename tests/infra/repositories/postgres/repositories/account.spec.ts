@@ -2,10 +2,13 @@ import { makeFakeDatabase } from '@/tests/infra/repositories/postgres/mocks'
 import { AccountRepository, PgRepository } from '@/infra/repositories/postgres/repositories'
 import { PgConnection } from '@/infra/repositories/postgres/helpers'
 import { Account } from '@/infra/repositories/postgres/entities'
+import { UUIDGenerator } from '@/domain/contracts/gateways'
 
 import { IBackup, IMemoryDb } from 'pg-mem'
-import faker from 'faker'
 import { Repository } from 'typeorm'
+import { mock } from 'jest-mock-extended'
+import MockDate from 'mockdate'
+import faker from 'faker'
 
 describe('AccountRepository', () => {
   let sut: AccountRepository
@@ -14,11 +17,14 @@ describe('AccountRepository', () => {
   let name: string
   let email: string
   let password: string
+  let createdAt: Date
 
   let connection: PgConnection
   let database: IMemoryDb
   let backup: IBackup
   let repository: Repository<Account>
+
+  const uuid = mock<UUIDGenerator>()
 
   beforeAll(async () => {
     connection = PgConnection.getInstance()
@@ -30,29 +36,48 @@ describe('AccountRepository', () => {
   beforeEach(() => {
     backup.restore()
 
-    sut = new AccountRepository()
+    sut = new AccountRepository(uuid)
 
     id = faker.datatype.uuid()
     name = faker.name.findName()
     email = faker.internet.email()
     password = faker.internet.password(8)
+    createdAt = faker.date.recent()
+
+    uuid.generate.mockReturnValue(id)
+
+    MockDate.set(createdAt)
+  })
+
+  afterAll(() => {
+    MockDate.reset()
   })
 
   it('Should extend PgRepository', async () => {
     expect(sut).toBeInstanceOf(PgRepository)
   })
 
-  it('Should return false if email does not exists', async () => {
-    const emailExists = await sut.checkByEmail({ email })
+  describe('checkByEmail()', () => {
+    it('Should return false if email does not exists', async () => {
+      const emailExists = await sut.checkByEmail({ email })
 
-    expect(emailExists).toBe(false)
+      expect(emailExists).toBe(false)
+    })
+
+    it('Should return true if email already exists', async () => {
+      await repository.save({ id, name, email, password })
+
+      const emailExists = await sut.checkByEmail({ email })
+
+      expect(emailExists).toBe(true)
+    })
   })
 
-  it('Should return true if email already exists', async () => {
-    await repository.save({ id, name, email, password })
+  describe('create()', () => {
+    it('Should return a account on success', async () => {
+      const account = await sut.create({ name, email, password })
 
-    const emailExists = await sut.checkByEmail({ email })
-
-    expect(emailExists).toBe(true)
+      expect(account).toMatchObject({ id, name, email, password, createdAt })
+    })
   })
 })
