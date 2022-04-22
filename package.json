@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "ts-node-dev --transpile-only --ignore-watch node_modules --respawn src/main/server.ts",
     "build": "rimraf dist && tsc -p tsconfig-build.json",
+    "typeorm": "ts-node-dev ./node_modules/typeorm/cli",
     "test": "jest --passWithNoTests --no-cache --runInBand",
     "test:unit": "npm t -- --watch -c jest-unit-config.js",
     "test:integration": "npm test -- --watch -c jest-integration-config.js",
