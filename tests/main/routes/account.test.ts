@@ -99,5 +99,15 @@ describe('Account routes', () => {
 
       expect(status).toBe(401)
     })
+
+    it('Should return 401 if password is incorrectly', async () => {
+      await request(app).post('/api/signup').send({ name, email, password, passwordConfirmation })
+
+      const { status } = await request(app)
+        .post('/api/login')
+        .send({ email, password: 'incorrectly_password' })
+
+      expect(status).toBe(401)
+    })
   })
 })
