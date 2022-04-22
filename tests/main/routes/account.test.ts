@@ -1,14 +1,16 @@
 import { makeFakeDatabase } from '@/tests/infra/database/postgres/mocks'
 import { app } from '@/main/config/app'
+import { ForbiddenError, InvalidFieldError, RequiredFieldError } from '@/application/errors'
 import { Account } from '@/infra/database/postgres/entities'
 import { PgConnection } from '@/infra/database/postgres/helpers'
 
 import { IBackup, IMemoryDb } from 'pg-mem'
 import request from 'supertest'
 import faker from 'faker'
-import { InvalidFieldError, RequiredFieldError } from '@/application/errors'
+import { Repository } from 'typeorm'
 
 describe('Account routes', () => {
+  let id: string
   let name: string
   let email: string
   let password: string
@@ -17,16 +19,19 @@ describe('Account routes', () => {
   let connection: PgConnection
   let database: IMemoryDb
   let backup: IBackup
+  let repository: Repository<Account>
 
   beforeAll(async () => {
     connection = PgConnection.getInstance()
     database = await makeFakeDatabase([Account])
     backup = database.backup()
+    repository = connection.getRepository(Account)
   })
 
   beforeEach(() => {
     backup.restore()
 
+    id = faker.datatype.uuid()
     name = faker.name.findName()
     email = faker.internet.email()
     password = faker.internet.password()
@@ -62,6 +67,17 @@ describe('Account routes', () => {
 
       expect(status).toBe(400)
       expect(error).toBe(new InvalidFieldError('passwordConfirmation').message)
+    })
+
+    it('Should return 403 if email already exists', async () => {
+      await repository.save({ id, name, email, password })
+
+      const { status, body: { error } } = await request(app)
+        .post('/api/accounts')
+        .send({ name, email, password, passwordConfirmation })
+
+      expect(status).toBe(403)
+      expect(error).toBe(new ForbiddenError().message)
     })
   })
 })
