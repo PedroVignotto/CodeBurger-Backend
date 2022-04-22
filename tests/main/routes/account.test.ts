@@ -6,6 +6,7 @@ import { PgConnection } from '@/infra/database/postgres/helpers'
 import { IBackup, IMemoryDb } from 'pg-mem'
 import request from 'supertest'
 import faker from 'faker'
+import { RequiredFieldError } from '@/application/errors'
 
 describe('Account routes', () => {
   let name: string
@@ -41,6 +42,15 @@ describe('Account routes', () => {
         .send({ name, email, password, passwordConfirmation: password })
 
       expect(status).toBe(201)
+    })
+
+    it('Should return 400 if has invalid data', async () => {
+      const { status, body: { error } } = await request(app)
+        .post('/api/accounts')
+        .send({ name, password, passwordConfirmation: password })
+
+      expect(status).toBe(400)
+      expect(error).toBe(new RequiredFieldError('email').message)
     })
   })
 })
