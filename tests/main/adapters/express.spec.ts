@@ -11,6 +11,7 @@ describe('ExpressRouterAdapter', () => {
 
   let key: string
   let value: string
+  let error: string
   let req: Request
   let res: Response
 
@@ -21,6 +22,7 @@ describe('ExpressRouterAdapter', () => {
 
     key = faker.database.column()
     value = faker.random.words()
+    error = faker.random.word()
     req = getMockReq({ body: { [key]: value } })
     res = getMockRes().res
 
@@ -49,6 +51,17 @@ describe('ExpressRouterAdapter', () => {
     expect(res.status).toHaveBeenCalledWith(200)
     expect(res.status).toHaveBeenCalledTimes(1)
     expect(res.json).toHaveBeenCalledWith({ data: value })
+    expect(res.json).toHaveBeenCalledTimes(1)
+  })
+
+  it('should respond with 400 and correct error', async () => {
+    controller.handle.mockResolvedValueOnce({ statusCode: 400, data: new Error(error) })
+
+    await sut.adapt(req, res)
+
+    expect(res.status).toHaveBeenCalledWith(400)
+    expect(res.status).toHaveBeenCalledTimes(1)
+    expect(res.json).toHaveBeenCalledWith({ error })
     expect(res.json).toHaveBeenCalledTimes(1)
   })
 })
