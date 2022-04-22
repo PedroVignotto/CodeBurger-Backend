@@ -64,4 +64,15 @@ describe('ExpressRouterAdapter', () => {
     expect(res.json).toHaveBeenCalledWith({ error })
     expect(res.json).toHaveBeenCalledTimes(1)
   })
+
+  it('should respond with 500 and correct error', async () => {
+    controller.handle.mockResolvedValueOnce({ statusCode: 500, data: new Error(error) })
+
+    await sut.adapt(req, res)
+
+    expect(res.status).toHaveBeenCalledWith(500)
+    expect(res.status).toHaveBeenCalledTimes(1)
+    expect(res.json).toHaveBeenCalledWith({ error })
+    expect(res.json).toHaveBeenCalledTimes(1)
+  })
 })
