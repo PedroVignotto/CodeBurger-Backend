@@ -1,5 +1,6 @@
 import { Controller } from '@/application/controllers/controller'
 import { HttpResponse, ok } from '@/application/helpers'
+import { ValidationBuilder as Builder, Validator } from '@/application/validation'
 import { Authentication } from '@/domain/use-cases/account'
 
 type HttpRequest = { email: string, password: string }
@@ -12,5 +13,12 @@ export class LoginController extends Controller {
     const data = await this.authentication({ email, password })
 
     return ok(data!)
+  }
+
+  override buildValidators ({ email, password }: HttpRequest): Validator[] {
+    return [
+      ...Builder.of(email, 'email').required().email().build(),
+      ...Builder.of(password, 'password').required().build()
+    ]
   }
 }
