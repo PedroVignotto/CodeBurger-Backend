@@ -14,6 +14,7 @@ jest.mock('typeorm', () => ({
   createConnection: jest.fn(),
   getConnection: jest.fn(),
   getConnectionManager: jest.fn(),
+  getConnectionOptions: jest.fn(),
   getRepository: jest.fn()
 }))
 
@@ -58,7 +59,7 @@ describe('PgConnection', () => {
 
     await sut.connect()
 
-    expect(createConnectionSpy).toHaveBeenCalledWith()
+    expect(createConnectionSpy).toHaveBeenCalledWith({ host: 'postgres' })
     expect(createConnectionSpy).toHaveBeenCalledTimes(1)
   })
 

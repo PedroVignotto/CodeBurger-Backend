@@ -1,6 +1,6 @@
 import { ConnectionNotFoundError } from '@/infra/database/postgres/errors'
 
-import { Connection, createConnection, getConnection, getConnectionManager, getRepository, ObjectType, Repository } from 'typeorm'
+import { Connection, createConnection, getConnection, getConnectionManager, getConnectionOptions, getRepository, ObjectType, Repository } from 'typeorm'
 
 export class PgConnection {
   private static instance?: PgConnection
@@ -15,7 +15,11 @@ export class PgConnection {
   }
 
   async connect (): Promise<void> {
-    this.connection = getConnectionManager().has('default') ? getConnection() : await createConnection()
+    const defaultOptions = await getConnectionOptions()
+
+    const options = { ...defaultOptions, host: 'postgres' }
+
+    this.connection = getConnectionManager().has('default') ? getConnection() : await createConnection(options)
   }
 
   async disconnect (): Promise<void> {
