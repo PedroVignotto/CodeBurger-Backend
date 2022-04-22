@@ -2,7 +2,7 @@
 
 > ## Caso de sucesso
 
-01. ❌ Recebe uma requisição do tipo **POST** na rota **/api/signup**
+01. ✅ Recebe uma requisição do tipo **POST** na rota **/api/signup**
 00. ✅ Valida dados obrigatórios **name**, **email**, **password** e **passwordConfirmation**
 00. ✅ Valida que **password** e **passwordConfirmation** são iguais
 00. ✅ Valida que o campo **email** é um e-mail válido
