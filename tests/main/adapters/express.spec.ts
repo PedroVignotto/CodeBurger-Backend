@@ -23,6 +23,8 @@ describe('ExpressRouterAdapter', () => {
     value = faker.random.words()
     req = getMockReq({ body: { [key]: value } })
     res = getMockRes().res
+
+    controller.handle.mockResolvedValue({ statusCode: 200, data: { data: value } })
   })
 
   it('Should call handle with correct request', async () => {
@@ -39,5 +41,14 @@ describe('ExpressRouterAdapter', () => {
 
     expect(controller.handle).toHaveBeenCalledWith({})
     expect(controller.handle).toHaveBeenCalledTimes(1)
+  })
+
+  it('Should respond with 200 and correct data', async () => {
+    await sut.adapt(req, res)
+
+    expect(res.status).toHaveBeenCalledWith(200)
+    expect(res.status).toHaveBeenCalledTimes(1)
+    expect(res.json).toHaveBeenCalledWith({ data: value })
+    expect(res.json).toHaveBeenCalledTimes(1)
   })
 })
