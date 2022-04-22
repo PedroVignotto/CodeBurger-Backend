@@ -54,4 +54,11 @@ describe('LoginController', () => {
     expect(statusCode).toBe(401)
     expect(data).toEqual(new UnauthorizedError())
   })
+
+  it('Should return ok if valid data is provided', async () => {
+    const { statusCode, data } = await sut.handle({ email, password })
+
+    expect(statusCode).toBe(200)
+    expect(data).toEqual({ name, accessToken })
+  })
 })
