@@ -4,7 +4,8 @@ module.exports = {
     '!<rootDir>/src/main/**',
     '<rootDir>/src/main/middlewares/**',
     '<rootDir>/src/main/adapters/**',
-    '!<rootDir>/src/**/index.ts'
+    '!<rootDir>/src/**/index.ts',
+    '!<rootDir>/src/infra/**/helpers/migrations/**'
   ],
   coverageDirectory: 'coverage',
   coverageProvider: 'babel',
