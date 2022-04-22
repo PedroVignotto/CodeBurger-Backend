@@ -1,6 +1,6 @@
 import { Controller, SignUpController } from '@/application/controllers'
 import { CompareValidation, EmailValidation, RequiredValidation } from '@/application/validation'
-import { ForbiddenError, UnauthorizedError } from '@/application/errors'
+import { ForbiddenError } from '@/application/errors'
 
 import faker from 'faker'
 
@@ -71,15 +71,6 @@ describe('SignUpController', () => {
 
     expect(authentication).toHaveBeenCalledWith({ email, password })
     expect(authentication).toHaveBeenCalledTimes(1)
-  })
-
-  it('Should return unauthorized if authentication return undefined', async () => {
-    authentication.mockResolvedValueOnce(undefined)
-
-    const { statusCode, data } = await sut.handle({ name, email, password, passwordConfirmation })
-
-    expect(statusCode).toBe(401)
-    expect(data).toEqual(new UnauthorizedError())
   })
 
   it('Should return created if valid data is provided', async () => {

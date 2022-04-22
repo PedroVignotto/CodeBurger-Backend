@@ -1,5 +1,5 @@
 import { Controller } from '@/application/controllers/controller'
-import { forbidden, HttpResponse, created, unauthorized } from '@/application/helpers'
+import { forbidden, HttpResponse, created } from '@/application/helpers'
 import { ValidationBuilder as Builder, Validator } from '@/application/validation'
 import { AddAccount, Authentication } from '@/domain/use-cases/account'
 
@@ -16,9 +16,7 @@ export class SignUpController extends Controller {
 
     const data = await this.authentication({ email, password })
 
-    if (!data) return unauthorized()
-
-    return created(data)
+    return created(data!)
   }
 
   override buildValidators ({ name, email, password, passwordConfirmation }: HttpRequest): Validator[] {
