@@ -17,12 +17,12 @@ describe('Authentication', () => {
   let accessToken: string
   let error: Error
 
-  const loadAccountByEmailRepository = mock<LoadAccountByEmailRepository>()
+  const accountRepository = mock<LoadAccountByEmailRepository>()
   const hashComparer = mock<HashComparer>()
   const token = mock<TokenGenerator>()
 
   beforeEach(() => {
-    sut = AuthenticationUseCase(loadAccountByEmailRepository, hashComparer, token)
+    sut = AuthenticationUseCase(accountRepository, hashComparer, token)
 
     id = faker.datatype.uuid()
     name = faker.name.findName()
@@ -33,7 +33,7 @@ describe('Authentication', () => {
     accessToken = faker.datatype.uuid()
     error = new Error(faker.random.word())
 
-    loadAccountByEmailRepository.loadByEmail.mockResolvedValue({ id, name, email, password: hashedPassword, createdAt })
+    accountRepository.loadByEmail.mockResolvedValue({ id, name, email, password: hashedPassword, createdAt })
     hashComparer.compare.mockResolvedValue(true)
     token.generate.mockResolvedValue(accessToken)
   })
@@ -41,12 +41,12 @@ describe('Authentication', () => {
   it('Should call LoadAccountByEmailRepository with correct email', async () => {
     await sut({ email, password })
 
-    expect(loadAccountByEmailRepository.loadByEmail).toHaveBeenCalledWith({ email })
-    expect(loadAccountByEmailRepository.loadByEmail).toHaveBeenCalledTimes(1)
+    expect(accountRepository.loadByEmail).toHaveBeenCalledWith({ email })
+    expect(accountRepository.loadByEmail).toHaveBeenCalledTimes(1)
   })
 
   it('Should return undefined if LoadAccountByEmailRepository return undefined', async () => {
-    loadAccountByEmailRepository.loadByEmail.mockResolvedValueOnce(undefined)
+    accountRepository.loadByEmail.mockResolvedValueOnce(undefined)
 
     const account = await sut({ email, password })
 
@@ -54,7 +54,7 @@ describe('Authentication', () => {
   })
 
   it('Should rethrow if LoadAccountByEmailRepository throws', async () => {
-    loadAccountByEmailRepository.loadByEmail.mockRejectedValueOnce(error)
+    accountRepository.loadByEmail.mockRejectedValueOnce(error)
 
     const promise = sut({ email, password })
 
