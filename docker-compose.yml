@@ -1,0 +1,25 @@
+version: "3.8"
+services:
+  postgres:
+    container_name: postgres
+    image: postgres
+    restart: always
+    volumes:
+      - pgdata:/data/postgres
+    ports:
+      - 5432:5432
+  app:
+    container_name: api
+    image: node:16
+    working_dir: /usr/app
+    command: bash -c "npm install && npm run dev"
+    ports:
+      - 3333:3333
+    volumes:
+      - .:/usr/app
+    links:
+      - postgres
+
+volumes:
+    pgdata:
+        driver: local
