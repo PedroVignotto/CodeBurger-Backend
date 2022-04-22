@@ -31,4 +31,11 @@ describe('LoginController', () => {
       new RequiredValidation(password, 'password')
     ])
   })
+
+  it('Should call authentication with correct values', async () => {
+    await sut.handle({ email, password })
+
+    expect(authentication).toHaveBeenCalledWith({ email, password })
+    expect(authentication).toHaveBeenCalledTimes(1)
+  })
 })
