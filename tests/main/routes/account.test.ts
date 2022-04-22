@@ -42,10 +42,10 @@ describe('Account routes', () => {
     await connection.disconnect()
   })
 
-  describe('POST /accounts', () => {
+  describe('POST /signup', () => {
     it('Should return 201 on success', async () => {
       const { status } = await request(app)
-        .post('/api/accounts')
+        .post('/api/signup')
         .send({ name, email, password, passwordConfirmation })
 
       expect(status).toBe(201)
@@ -53,7 +53,7 @@ describe('Account routes', () => {
 
     it('Should return 400 if has invalid data', async () => {
       const { status, body: { error } } = await request(app)
-        .post('/api/accounts')
+        .post('/api/signup')
         .send({ name, password, passwordConfirmation })
 
       expect(status).toBe(400)
@@ -62,7 +62,7 @@ describe('Account routes', () => {
 
     it('Should return 400 if password and passwordConfirmation does not match', async () => {
       const { status, body: { error } } = await request(app)
-        .post('/api/accounts')
+        .post('/api/signup')
         .send({ name, email, password, passwordConfirmation: 'other_password' })
 
       expect(status).toBe(400)
@@ -73,7 +73,7 @@ describe('Account routes', () => {
       await repository.save({ id, name, email, password })
 
       const { status, body: { error } } = await request(app)
-        .post('/api/accounts')
+        .post('/api/signup')
         .send({ name, email, password, passwordConfirmation })
 
       expect(status).toBe(403)

@@ -3,5 +3,5 @@ import { makeSignUpController } from '@/main/factories/application/controllers'
 import { Router } from 'express'
 
 export default (router: Router): void => {
-  router.post('/accounts', adapt(makeSignUpController()))
+  router.post('/signup', adapt(makeSignUpController()))
 }
