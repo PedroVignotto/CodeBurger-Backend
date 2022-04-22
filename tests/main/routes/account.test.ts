@@ -91,5 +91,13 @@ describe('Account routes', () => {
 
       expect(status).toBe(200)
     })
+
+    it('Should return 401 if account does not exists', async () => {
+      const { status } = await request(app)
+        .post('/api/login')
+        .send({ email, password })
+
+      expect(status).toBe(401)
+    })
   })
 })
