@@ -80,4 +80,16 @@ describe('Account routes', () => {
       expect(error).toBe(new ForbiddenError().message)
     })
   })
+
+  describe('POST /login', () => {
+    it('Should return 200 on success', async () => {
+      await request(app).post('/api/signup').send({ name, email, password, passwordConfirmation })
+
+      const { status } = await request(app)
+        .post('/api/login')
+        .send({ email, password })
+
+      expect(status).toBe(200)
+    })
+  })
 })
