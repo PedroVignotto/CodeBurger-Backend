@@ -6,12 +6,13 @@ import { PgConnection } from '@/infra/database/postgres/helpers'
 import { IBackup, IMemoryDb } from 'pg-mem'
 import request from 'supertest'
 import faker from 'faker'
-import { RequiredFieldError } from '@/application/errors'
+import { InvalidFieldError, RequiredFieldError } from '@/application/errors'
 
 describe('Account routes', () => {
   let name: string
   let email: string
   let password: string
+  let passwordConfirmation: string
 
   let connection: PgConnection
   let database: IMemoryDb
@@ -29,6 +30,7 @@ describe('Account routes', () => {
     name = faker.name.findName()
     email = faker.internet.email()
     password = faker.internet.password()
+    passwordConfirmation = password
   })
 
   afterAll(async () => {
@@ -39,7 +41,7 @@ describe('Account routes', () => {
     it('Should return 201 on success', async () => {
       const { status } = await request(app)
         .post('/api/accounts')
-        .send({ name, email, password, passwordConfirmation: password })
+        .send({ name, email, password, passwordConfirmation })
 
       expect(status).toBe(201)
     })
@@ -47,10 +49,19 @@ describe('Account routes', () => {
     it('Should return 400 if has invalid data', async () => {
       const { status, body: { error } } = await request(app)
         .post('/api/accounts')
-        .send({ name, password, passwordConfirmation: password })
+        .send({ name, password, passwordConfirmation })
 
       expect(status).toBe(400)
       expect(error).toBe(new RequiredFieldError('email').message)
+    })
+
+    it('Should return 400 if password and passwordConfirmation does not match', async () => {
+      const { status, body: { error } } = await request(app)
+        .post('/api/accounts')
+        .send({ name, email, password, passwordConfirmation: 'other_password' })
+
+      expect(status).toBe(400)
+      expect(error).toBe(new InvalidFieldError('passwordConfirmation').message)
     })
   })
 })
