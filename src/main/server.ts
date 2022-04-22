@@ -1,6 +1,12 @@
 import './config/module-alias'
-import { app, env } from '@/main/config'
+import { env } from '@/main/config'
+import { PgConnection } from '@/infra/database/postgres/helpers'
 
 import 'reflect-metadata'
 
-app.listen(env.port, () => console.log(`Server is running at http://localhost:${env.port}`))
+PgConnection.getInstance().connect()
+  .then(async () => {
+    const { app } = await import('@/main/config/app')
+    app.listen(env.port, () => console.log(`Server running at http://localhost:${env.port}`))
+  })
+  .catch(console.error)
