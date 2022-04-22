@@ -1,6 +1,6 @@
-import { signup } from '@/main/docs/paths'
-import { signUpRequest, signUpResponse, error } from '@/main/docs/schemas'
-import { badRequest, forbidden, serverError } from '@/main/docs/components'
+import { signup, login } from '@/main/docs/paths'
+import { signUpRequest, signUpResponse, error, loginRequest, loginResponse } from '@/main/docs/schemas'
+import { badRequest, forbidden, serverError, unauthorized } from '@/main/docs/components'
 
 export const swagger = {
   openapi: '3.0.0',
@@ -15,7 +15,7 @@ export const swagger = {
   },
   servers: [{ url: '/api' }],
   tags: [{ name: 'Account' }],
-  paths: { '/signup': signup },
-  schemas: { signUpRequest, signUpResponse, error },
-  components: { badRequest, forbidden, serverError }
+  paths: { '/signup': signup, '/login': login },
+  schemas: { signUpRequest, signUpResponse, error, loginRequest, loginResponse },
+  components: { badRequest, forbidden, serverError, unauthorized }
 }

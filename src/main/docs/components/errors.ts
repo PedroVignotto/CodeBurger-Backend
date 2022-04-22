@@ -5,6 +5,11 @@ export const badRequest = {
   content: { 'application/json': { schema: { $ref: error } } }
 }
 
+export const unauthorized = {
+  description: 'Unauthorized',
+  content: { 'application/json': { schema: { $ref: error } } }
+}
+
 export const forbidden = {
   description: 'Access denied',
   content: { 'application/json': { schema: { $ref: error } } }
