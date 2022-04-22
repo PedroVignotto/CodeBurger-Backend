@@ -1,23 +1,21 @@
-# Cadastro ✅ ❌
+# Signup ✅ ❌
 
-> ## Caso de sucesso
+> ## Success case
 
-01. ✅ Recebe uma requisição do tipo **POST** na rota **/api/signup**
-00. ✅ Valida dados obrigatórios **name**, **email**, **password** e **passwordConfirmation**
-00. ✅ Valida que **password** e **passwordConfirmation** são iguais
-00. ✅ Valida que o campo **email** é um e-mail válido
-00. ✅ **Valida** se já existe um usuário com o email fornecido
-00. ✅ Gera uma senha **criptografada** (essa senha não pode ser descriptografada)
-00. ✅ **Cria** uma conta para o usuário com os dados informados, **substituindo** a senha pela senha criptorafada
-00. ✅ Gera um **token** de acesso a partir do ID do usuário
-00. ✅ Retorna **201** com o token de acesso e o nome do usuário
+01. ✅ Receives a request of type **POST** in route **/api/signup**
+00. ✅ Validates required data **name**, **email**, **password** and **passwordConfirmation**
+00. ✅ Validates that **password** and **passwordConfirmation** are the same
+00. ✅ Validates that the **email** field is a valid email
+00. ✅ Validates if an account already exists with the **email** provided
+00. ✅ Generates a encrypted **password** (this password cannot be decrypted)
+00. ✅ Create an account with the data provided, replacing the **password** with the encrypted password
+00. ✅ Generate an **access token** from the **account ID**
+00. ✅ Returns **201** with the **access token** and **username**
 
-> ## Exceções
+> ## Exceptions
 
-01. ✅ Retorna erro **400** se name, email, password ou passwordConfirmation não forem fornecidos pelo client
-00. ✅ Retorna erro **400** se password e passwordConfirmation não forem iguais
-00. ✅ Retorna erro **400** se o campo email for um e-mail inválido
-00. ✅ Retorna erro **403** se o email fornecido já estiver em uso
-00. ✅ Retorna erro **500** se der erro ao tentar gerar uma senha criptografada
-00. ✅ Retorna erro **500** se der erro ao tentar criar a conta do usuário
-00. ✅ Retorna erro **500** se der erro ao tentar gerar o token de acesso
+01. ✅ Returns error **400** if **name**, **email**, **password** or **passwordConfirmation** are not provided by the client
+00. ✅ Returns error **400** if **password** and **passwordConfirmation** are not the same
+00. ✅ Returns error **400** if the **email** field is an invalid email
+00. ✅ Returns error **403** if the provided **email** is already in use
+00. ✅ Returns error **500** if there is an **error** on the server
