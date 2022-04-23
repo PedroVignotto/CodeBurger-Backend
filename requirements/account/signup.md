@@ -8,7 +8,7 @@
 00. ✅ Validates that the **email** field is a valid email
 00. ✅ Validates if an account already exists with the **email** provided
 00. ✅ Generates a encrypted **password** (this password cannot be decrypted)
-00. ✅ Create an account with the data provided, replacing the **password** with the encrypted password
+00. ✅ Create an account with the **data** provided, replacing the **password** with the encrypted password
 00. ✅ Generate an **access token** from the **account ID**
 00. ✅ Returns **201** with the **access token** and **username**
 
