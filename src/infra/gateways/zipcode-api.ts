@@ -5,8 +5,12 @@ export class ZipCodeApi implements SearchAddressByZipCode {
   constructor (private readonly httpClient: HttpGetClient) {}
 
   async search ({ zipcode }: SearchAddressByZipCode.Input): Promise<SearchAddressByZipCode.Output> {
-    await this.httpClient.get({ url: `https://ws.apicep.com/cep/${zipcode}.json` })
+    const url = `https://ws.apicep.com/cep/${zipcode}.json`
 
-    return undefined
+    const { data: { status, district, address } } = await this.httpClient.get({ url })
+
+    if (status !== 200) return undefined
+
+    return { district, address }
   }
 }
