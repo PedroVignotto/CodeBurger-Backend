@@ -9,7 +9,7 @@ describe('JwtAdapter', () => {
   let sut: JwtAdapter
 
   let secret: string
-  let key: string
+
   let token: string
   let error: Error
 
@@ -22,31 +22,59 @@ describe('JwtAdapter', () => {
   beforeEach(() => {
     sut = new JwtAdapter(secret)
 
-    key = faker.random.word()
     token = faker.datatype.uuid()
     error = new Error(faker.random.word())
-
-    fakeJwt.sign.mockImplementation(() => token)
   })
 
-  it('Should call sign with correct values', async () => {
-    await sut.generate({ key })
+  describe('generate()', () => {
+    let key: string
 
-    expect(fakeJwt.sign).toHaveBeenCalledWith({ key }, secret, { expiresIn: '1d' })
-    expect(fakeJwt.sign).toHaveBeenCalledTimes(1)
+    beforeAll(() => {
+      secret = faker.datatype.uuid()
+    })
+
+    beforeEach(() => {
+      key = faker.random.word()
+
+      fakeJwt.sign.mockImplementation(() => token)
+    })
+
+    it('Should call sign with correct values', async () => {
+      await sut.generate({ key })
+
+      expect(fakeJwt.sign).toHaveBeenCalledWith({ key }, secret, { expiresIn: '1d' })
+      expect(fakeJwt.sign).toHaveBeenCalledTimes(1)
+    })
+
+    it('Should rethrow if sign throw', async () => {
+      fakeJwt.sign.mockImplementationOnce(() => { throw error })
+
+      const promise = sut.generate({ key })
+
+      await expect(promise).rejects.toThrow(error)
+    })
+
+    it('Should return a accessToken on success', async () => {
+      const accessToken = await sut.generate({ key })
+
+      expect(accessToken).toBe(token)
+    })
   })
 
-  it('Should rethrow if sign throw', async () => {
-    fakeJwt.sign.mockImplementationOnce(() => { throw error })
+  describe('validate()', () => {
+    let accountId: string
 
-    const promise = sut.generate({ key })
+    beforeEach(() => {
+      accountId = faker.datatype.uuid()
 
-    await expect(promise).rejects.toThrow(error)
-  })
+      fakeJwt.verify.mockImplementation(() => accountId)
+    })
 
-  it('Should return a accessToken on success', async () => {
-    const accessToken = await sut.generate({ key })
+    it('Should call verify with correct values', async () => {
+      await sut.validate({ token })
 
-    expect(accessToken).toBe(token)
+      expect(fakeJwt.verify).toHaveBeenCalledWith(token, secret)
+      expect(fakeJwt.verify).toHaveBeenCalledTimes(1)
+    })
   })
 })
