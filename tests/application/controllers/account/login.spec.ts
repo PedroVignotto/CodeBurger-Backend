@@ -1,4 +1,5 @@
-import { Controller, LoginController } from '@/application/controllers'
+import { Controller } from '@/application/controllers'
+import { LoginController } from '@/application/controllers/account'
 import { UnauthorizedError } from '@/application/errors'
 import { EmailValidation, RequiredValidation } from '@/application/validation'
 

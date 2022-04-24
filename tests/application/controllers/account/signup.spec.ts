@@ -1,4 +1,5 @@
-import { Controller, SignUpController } from '@/application/controllers'
+import { Controller } from '@/application/controllers'
+import { SignUpController } from '@/application/controllers/account'
 import { CompareValidation, EmailValidation, RequiredValidation } from '@/application/validation'
 import { ForbiddenError } from '@/application/errors'
 
