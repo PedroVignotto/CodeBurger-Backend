@@ -1,4 +1,4 @@
-import { UnauthorizedError } from '@/application/errors'
+import { ForbiddenError, UnauthorizedError } from '@/application/errors'
 import { AuthenticationMiddleware } from '@/application/middlewares'
 
 import faker from 'faker'
@@ -21,6 +21,8 @@ describe('AuthenticationMiddleware', () => {
 
     accessToken = faker.datatype.uuid()
     Authorization = `Bearer ${accessToken}`
+
+    authorize.mockResolvedValue({ accessToken })
   })
 
   it('Should return unauthorized if Authorization is empty', async () => {
@@ -49,5 +51,14 @@ describe('AuthenticationMiddleware', () => {
 
     expect(authorize).toHaveBeenCalledWith({ accessToken, role })
     expect(authorize).toHaveBeenCalledTimes(1)
+  })
+
+  it('Should return forbidden if authorize return undefined', async () => {
+    authorize.mockResolvedValueOnce(undefined)
+
+    const { statusCode, data } = await sut.handle({ Authorization })
+
+    expect(statusCode).toBe(403)
+    expect(data).toEqual(new ForbiddenError())
   })
 })
