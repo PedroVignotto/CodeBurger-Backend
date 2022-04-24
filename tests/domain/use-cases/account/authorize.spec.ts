@@ -3,26 +3,30 @@ import { Authorize, AuthorizeUseCase } from '@/domain/use-cases/account'
 
 import { mock } from 'jest-mock-extended'
 import faker from 'faker'
+import { CheckAccountRole } from '@/domain/contracts/database/repositories/account/check-account-role'
 
 describe('Authorize', () => {
   let sut: Authorize
 
   let accountId: string
   let accessToken: string
+  let role: string
   let error: Error
 
   const token = mock<TokenValidator>()
+  const accountRepository = mock<CheckAccountRole>()
 
   beforeAll(() => {
     accountId = faker.datatype.uuid()
     accessToken = faker.datatype.uuid()
+    role = faker.random.word()
     error = new Error(faker.random.word())
 
     token.validate.mockResolvedValue(accountId)
   })
 
   beforeEach(() => {
-    sut = AuthorizeUseCase(token)
+    sut = AuthorizeUseCase(token, accountRepository)
   })
 
   it('Should call TokenValidator with correct token', async () => {
@@ -44,5 +48,12 @@ describe('Authorize', () => {
     const result = await sut({ accessToken })
 
     expect(result).toBe(accountId)
+  })
+
+  it('Should call CheckAccountRole with correct values', async () => {
+    await sut({ accessToken, role })
+
+    expect(accountRepository.checkRole).toHaveBeenCalledWith({ accountId, role })
+    expect(accountRepository.checkRole).toHaveBeenCalledTimes(1)
   })
 })
