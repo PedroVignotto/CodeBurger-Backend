@@ -84,5 +84,11 @@ describe('JwtAdapter', () => {
 
       await expect(promise).rejects.toThrow(error)
     })
+
+    it('Should return a accountId on success', async () => {
+      const result = await sut.validate({ token })
+
+      expect(result).toBe(accountId)
+    })
   })
 })
