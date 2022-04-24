@@ -3,6 +3,14 @@ export interface AddAddressRepository {
 }
 
 export namespace AddAddressRepository {
-  export type Input = { surname: string, zipCode: string, district: string, address: string, number: number }
+  export type Input = {
+    accountId: string
+    surname: string
+    zipCode: string
+    district: string
+    address: string
+    number: number
+    complement?: string
+  }
   export type Output = boolean
 }
