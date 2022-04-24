@@ -23,4 +23,12 @@ describe('AddAddressUseCase', () => {
     expect(searchAddressByZipCode.search).toHaveBeenCalledWith({ zipCode })
     expect(searchAddressByZipCode.search).toHaveBeenCalledTimes(1)
   })
+
+  it('Should return undefined if SearchAddressByZipCode return undefined', async () => {
+    searchAddressByZipCode.search.mockResolvedValueOnce(undefined)
+
+    const result = await sut({ zipCode })
+
+    expect(result).toBeUndefined()
+  })
 })
