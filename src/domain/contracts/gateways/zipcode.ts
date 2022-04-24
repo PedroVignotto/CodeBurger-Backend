@@ -3,6 +3,6 @@ export interface SearchAddressByZipCode {
 }
 
 export namespace SearchAddressByZipCode {
-  export type Input = { zipcode: string }
+  export type Input = { zipCode: string }
   export type Output = { district: string, address: string } | undefined
 }
