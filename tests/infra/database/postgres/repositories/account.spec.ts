@@ -98,6 +98,12 @@ describe('AccountRepository', () => {
   })
 
   describe('checkRole()', () => {
+    let role: string
+
+    beforeEach(() => {
+      role = faker.random.word()
+    })
+
     it('Should return false if account does not exists', async () => {
       const account = await sut.checkRole({ accountId: id })
 
@@ -106,6 +112,22 @@ describe('AccountRepository', () => {
 
     it('Should return true if account exists without role', async () => {
       await repository.save({ id, name, email, password })
+
+      const account = await sut.checkRole({ accountId: id })
+
+      expect(account).toBe(true)
+    })
+
+    it('Should return false if account exists with invalid role', async () => {
+      await repository.save({ id, name, email, password })
+
+      const account = await sut.checkRole({ accountId: id, role })
+
+      expect(account).toBe(false)
+    })
+
+    it('Should return true if route does not require role and account is admin', async () => {
+      await repository.save({ id, name, email, password, role: 'admin' })
 
       const account = await sut.checkRole({ accountId: id })
 
