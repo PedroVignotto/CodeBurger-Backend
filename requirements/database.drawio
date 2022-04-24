@@ -44,10 +44,10 @@
                 <mxCell id="319" value="password: string" style="text;strokeColor=#8BE9FD;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;strokeWidth=3;rounded=1;noLabel=0;connectable=1;allowArrows=1;expand=1;" parent="315" vertex="1">
                     <mxGeometry y="104" width="140" height="26" as="geometry"/>
                 </mxCell>
-                <mxCell id="320" value="admin: boolean" style="text;strokeColor=#8BE9FD;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;strokeWidth=3;rounded=1;noLabel=0;connectable=1;allowArrows=1;expand=1;" parent="315" vertex="1">
+                <mxCell id="320" value="role: string" style="text;strokeColor=#8BE9FD;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;strokeWidth=3;rounded=1;noLabel=0;connectable=1;allowArrows=1;expand=1;" parent="315" vertex="1">
                     <mxGeometry y="130" width="140" height="26" as="geometry"/>
                 </mxCell>
-                <mxCell id="368" value="createdAt: date" style="text;strokeColor=#8BE9FD;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;strokeWidth=3;rounded=1;noLabel=0;connectable=1;allowArrows=1;expand=1;" vertex="1" parent="315">
+                <mxCell id="368" value="createdAt: date" style="text;strokeColor=#8BE9FD;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;strokeWidth=3;rounded=1;noLabel=0;connectable=1;allowArrows=1;expand=1;" parent="315" vertex="1">
                     <mxGeometry y="156" width="140" height="26" as="geometry"/>
                 </mxCell>
                 <mxCell id="321" value="Addresses" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=26;fillColor=none;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;strokeColor=#8BE9FD;strokeWidth=3;rounded=1;fontSize=14;noLabel=0;connectable=1;allowArrows=1;expand=1;" parent="1" vertex="1">
