@@ -24,4 +24,10 @@ describe('ZipCodeApi', () => {
     expect(httpClient.get).toHaveBeenCalledWith({ url: `https://ws.apicep.com/cep/${zipcode}.json` })
     expect(httpClient.get).toHaveBeenCalledTimes(1)
   })
+
+  it('Should return undefined if get not find the zip code', async () => {
+    const result = await sut.search({ zipcode })
+
+    expect(result).toBeUndefined()
+  })
 })
