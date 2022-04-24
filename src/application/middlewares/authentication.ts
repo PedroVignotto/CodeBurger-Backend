@@ -1,17 +1,17 @@
 import { forbidden, HttpResponse, ok, serverError, unauthorized } from '@/application/helpers'
 import { Authorize } from '@/domain/use-cases/account'
 
-type HttpRequest = { Authorization: string }
+type HttpRequest = { authorization: string }
 type Model = { accountId: string } | Error
 
 export class AuthenticationMiddleware {
   constructor (private readonly authorize: Authorize, private readonly role?: string) {}
 
-  async handle ({ Authorization }: HttpRequest): Promise<HttpResponse<Model>> {
+  async handle ({ authorization }: HttpRequest): Promise<HttpResponse<Model>> {
     try {
-      if (!Authorization) return unauthorized()
+      if (!authorization) return unauthorized()
 
-      const [, accessToken] = Authorization.split(' ')
+      const [, accessToken] = authorization.split(' ')
 
       const accountId = await this.authorize({ accessToken, role: this.role })
 
