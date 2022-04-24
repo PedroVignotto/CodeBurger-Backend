@@ -11,7 +11,7 @@ describe('ExpressMidlewareAdapter', () => {
 
   let key: string
   let value: string
-
+  let error: string
   let req: Request
   let res: Response
   let next: NextFunction
@@ -23,9 +23,12 @@ describe('ExpressMidlewareAdapter', () => {
 
     key = faker.database.column()
     value = faker.random.words()
+    error = faker.random.word()
     req = getMockReq({ headers: { [key]: value } })
     res = getMockRes().res
     next = getMockRes().next
+
+    middleware.handle.mockResolvedValue({ statusCode: 500, data: new Error(error) })
   })
 
   it('Should call handle with correct values', async () => {
@@ -42,5 +45,14 @@ describe('ExpressMidlewareAdapter', () => {
 
     expect(middleware.handle).toHaveBeenCalledWith({})
     expect(middleware.handle).toHaveBeenCalledTimes(1)
+  })
+
+  it('Should respond with correct statusCode and error on failure', async () => {
+    await sut(req, res, next)
+
+    expect(res.status).toHaveBeenCalledWith(500)
+    expect(res.status).toHaveBeenCalledTimes(1)
+    expect(res.json).toHaveBeenCalledWith({ error })
+    expect(res.json).toHaveBeenCalledTimes(1)
   })
 })
