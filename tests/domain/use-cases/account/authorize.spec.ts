@@ -1,9 +1,9 @@
 import { TokenValidator } from '@/domain/contracts/gateways'
+import { CheckAccountRole } from '@/domain/contracts/database/repositories/account'
 import { Authorize, AuthorizeUseCase } from '@/domain/use-cases/account'
 
 import { mock } from 'jest-mock-extended'
 import faker from 'faker'
-import { CheckAccountRole } from '@/domain/contracts/database/repositories/account/check-account-role'
 
 describe('Authorize', () => {
   let sut: Authorize
