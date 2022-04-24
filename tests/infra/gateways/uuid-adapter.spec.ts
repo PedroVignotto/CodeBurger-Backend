@@ -1,4 +1,4 @@
-import { UuidAdapter } from '@/infra/gateways'
+import { UUIDAdapter } from '@/infra/gateways'
 
 import { v4 as uuidV4 } from 'uuid'
 import { mocked } from 'jest-mock'
@@ -6,13 +6,13 @@ import faker from 'faker'
 
 jest.mock('uuid')
 
-describe('UuidAdapter', () => {
-  let sut: UuidAdapter
+describe('UUIDAdapter', () => {
+  let sut: UUIDAdapter
 
   let uuid: string
 
   beforeEach(() => {
-    sut = new UuidAdapter()
+    sut = new UUIDAdapter()
 
     uuid = faker.datatype.uuid()
 

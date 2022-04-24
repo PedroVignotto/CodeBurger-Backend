@@ -1,6 +1,6 @@
 import { UUIDGenerator } from '@/domain/contracts/gateways'
-import { UuidAdapter } from '@/infra/gateways'
+import { UUIDAdapter } from '@/infra/gateways'
 
 export const makeUUIDAdapter = (): UUIDGenerator => {
-  return new UuidAdapter()
+  return new UUIDAdapter()
 }
