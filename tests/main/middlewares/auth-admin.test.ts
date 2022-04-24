@@ -1,7 +1,7 @@
 import { makeFakeDatabase } from '@/tests/infra/database/postgres/mocks'
 import { app, env } from '@/main/config'
 import { authAdmin } from '@/main/middlewares'
-import { UnauthorizedError } from '@/application/errors'
+import { ForbiddenError, UnauthorizedError } from '@/application/errors'
 import { Account } from '@/infra/database/postgres/entities'
 import { PgConnection } from '@/infra/database/postgres/helpers'
 
@@ -62,5 +62,18 @@ describe('AuthAdmin Middleware', () => {
 
     expect(status).toBe(200)
     expect(body).toEqual({ accountId: id })
+  })
+
+  it('Should return 403 if authorize fails', async () => {
+    const account = await repository.save({ id, name, email, password })
+    const token = sign({ key: account.id }, env.secret)
+    app.get('/fake_route', authAdmin, (req, res) => { res.json(req.locals) })
+
+    const { status, body } = await request(app)
+      .get('/fake_route')
+      .set({ authorization: `Bearer: ${token}` })
+
+    expect(status).toBe(403)
+    expect(body.error).toBe(new ForbiddenError().message)
   })
 })
