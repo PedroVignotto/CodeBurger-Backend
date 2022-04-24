@@ -1,4 +1,4 @@
-import { HttpGetClient } from '@/infra/gateways'
+import { HttpGetClient } from '@/infra/contracts/gateways'
 import { SearchAddressByZipCode } from '@/domain/contracts/gateways'
 
 export class ZipCodeApi implements SearchAddressByZipCode {

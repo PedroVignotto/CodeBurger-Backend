@@ -1,4 +1,5 @@
-import { HttpGetClient, ZipCodeApi } from '@/infra/gateways'
+import { HttpGetClient } from '@/infra/contracts/gateways'
+import { ZipCodeApi } from '@/infra/gateways'
 
 import { mock } from 'jest-mock-extended'
 import faker from 'faker'
