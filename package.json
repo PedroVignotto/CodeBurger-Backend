@@ -46,6 +46,7 @@
     "typescript": "^4.3.5"
   },
   "dependencies": {
+    "axios": "^0.26.1",
     "bcryptjs": "^2.4.3",
     "express": "^4.17.3",
     "jsonwebtoken": "^8.5.1",
