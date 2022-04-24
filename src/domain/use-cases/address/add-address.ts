@@ -3,15 +3,15 @@ import { SearchAddressByZipCode } from '@/domain/contracts/gateways'
 
 type Setup = (searchAddressByZipCode: SearchAddressByZipCode, addressRepository: AddAddressRepository) => AddAddress
 type Input = { accountId: string, surname: string, zipCode: string, district: string, address: string, number: number, complement?: string }
-type Output = undefined
+type Output = boolean
 export type AddAddress = (input: Input) => Promise<Output>
 
 export const AddAddressUseCase: Setup = (searchAddressByZipCode, addressRepository) => async input => {
   const account = await searchAddressByZipCode.search({ zipCode: input.zipCode })
 
-  if (!account) return undefined
+  if (!account) return false
 
   await addressRepository.create(input)
 
-  return undefined
+  return true
 }
