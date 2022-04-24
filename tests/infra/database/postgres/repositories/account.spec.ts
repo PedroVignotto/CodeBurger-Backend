@@ -103,5 +103,13 @@ describe('AccountRepository', () => {
 
       expect(account).toBe(false)
     })
+
+    it('Should return true if account exists without role', async () => {
+      await repository.save({ id, name, email, password })
+
+      const account = await sut.checkRole({ accountId: id })
+
+      expect(account).toBe(true)
+    })
   })
 })
