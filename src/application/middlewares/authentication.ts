@@ -2,7 +2,7 @@ import { forbidden, HttpResponse, ok, unauthorized } from '@/application/helpers
 import { Authorize } from '@/domain/use-cases/account'
 
 type HttpRequest = { Authorization: string }
-type Model = Error | undefined
+type Model = { accountId: string } | Error
 
 export class AuthenticationMiddleware {
   constructor (private readonly authorize: Authorize, private readonly role?: string) {}
@@ -16,6 +16,6 @@ export class AuthenticationMiddleware {
 
     if (!accountId) return forbidden()
 
-    return ok(undefined)
+    return ok(accountId)
   }
 }
