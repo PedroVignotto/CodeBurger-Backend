@@ -48,7 +48,7 @@ describe('AddAddressUseCase', () => {
 
     const result = await sut({ accountId, surname, zipCode, district, address, number, complement })
 
-    expect(result).toBeUndefined()
+    expect(result).toBe(false)
   })
 
   it('Should rethrow if SearchAddressByZipCode throws', async () => {
@@ -64,5 +64,11 @@ describe('AddAddressUseCase', () => {
 
     expect(addressRepository.create).toHaveBeenCalledWith({ accountId, surname, zipCode, district, address, number, complement })
     expect(addressRepository.create).toHaveBeenCalledTimes(1)
+  })
+
+  it('Should return true on success', async () => {
+    const result = await sut({ accountId, surname, zipCode, district, address, number, complement })
+
+    expect(result).toBe(true)
   })
 })
