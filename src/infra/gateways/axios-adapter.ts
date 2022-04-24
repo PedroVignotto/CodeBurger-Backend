@@ -6,6 +6,8 @@ type Input = HttpGetClient.Input
 
 export class AxiosHttpClient implements HttpGetClient {
   async get ({ url }: Input): Promise<any> {
-    await axios.get(url)
+    const response = await axios.get(url)
+
+    return response
   }
 }
