@@ -67,7 +67,7 @@ describe('JwtAdapter', () => {
     beforeEach(() => {
       accountId = faker.datatype.uuid()
 
-      fakeJwt.verify.mockImplementation(() => accountId)
+      fakeJwt.verify.mockImplementation(() => ({ key: accountId }))
     })
 
     it('Should call verify with correct values', async () => {
