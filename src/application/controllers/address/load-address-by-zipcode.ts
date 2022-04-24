@@ -4,7 +4,7 @@ import { badRequest, HttpResponse, ok } from '@/application/helpers'
 import { LoadAddressByZipCode } from '@/domain/use-cases/address'
 
 type HttpRequest = { zipCode: string }
-type Model = undefined | Error
+type Model = { district: string, address: string } | Error
 
 export class LoadAddressByZipCodeController extends Controller {
   constructor (private readonly loadAddressByZipCode: LoadAddressByZipCode) { super() }
@@ -14,6 +14,6 @@ export class LoadAddressByZipCodeController extends Controller {
 
     if (!address) return badRequest(new InvalidFieldError('zipCode'))
 
-    return ok(undefined)
+    return ok(address)
   }
 }
