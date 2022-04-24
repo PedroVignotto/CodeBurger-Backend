@@ -9,12 +9,14 @@ describe('Authorize', () => {
 
   let accountId: string
   let accessToken: string
+  let error: Error
 
   const token = mock<TokenValidator>()
 
   beforeAll(() => {
     accountId = faker.datatype.uuid()
     accessToken = faker.datatype.uuid()
+    error = new Error(faker.random.word())
 
     token.validate.mockResolvedValue(accountId)
   })
@@ -28,6 +30,14 @@ describe('Authorize', () => {
 
     expect(token.validate).toHaveBeenCalledWith({ token: accessToken })
     expect(token.validate).toHaveBeenCalledTimes(1)
+  })
+
+  it('Should rethrow if TokenValidator throws', async () => {
+    token.validate.mockRejectedValueOnce(error)
+
+    const promise = sut({ accessToken })
+
+    await expect(promise).rejects.toThrow(error)
   })
 
   it('Should return a accountId on success', async () => {
