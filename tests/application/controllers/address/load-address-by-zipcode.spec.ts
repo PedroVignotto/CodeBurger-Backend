@@ -8,6 +8,8 @@ describe('LoadAddressByZipCodeController', () => {
   let sut: LoadAddressByZipCodeController
 
   let zipCode: string
+  let district: string
+  let address: string
 
   const loadAddressByZipCode: jest.Mock = jest.fn()
 
@@ -15,6 +17,10 @@ describe('LoadAddressByZipCodeController', () => {
     sut = new LoadAddressByZipCodeController(loadAddressByZipCode)
 
     zipCode = faker.address.zipCode('########')
+    district = faker.random.words(2)
+    address = faker.address.streetName()
+
+    loadAddressByZipCode.mockResolvedValue({ district, address })
   })
 
   it('Should extend Controller', async () => {
@@ -29,9 +35,18 @@ describe('LoadAddressByZipCodeController', () => {
   })
 
   it('Should return badRequest if loadAddressByZipCode return undefined', async () => {
+    loadAddressByZipCode.mockResolvedValueOnce(undefined)
+
     const { statusCode, data } = await sut.handle({ zipCode })
 
     expect(statusCode).toBe(400)
     expect(data).toEqual(new InvalidFieldError('zipCode'))
+  })
+
+  it('Should return ok if loadAddressByZipCode return address', async () => {
+    const { statusCode, data } = await sut.handle({ zipCode })
+
+    expect(statusCode).toBe(200)
+    expect(data).toEqual({ district, address })
   })
 })
