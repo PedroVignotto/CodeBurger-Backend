@@ -8,6 +8,7 @@ describe('AddAddressUseCase', () => {
   let sut: AddAddress
 
   let zipCode: string
+  let error: Error
 
   const searchAddressByZipCode = mock<SearchAddressByZipCode>()
 
@@ -15,6 +16,7 @@ describe('AddAddressUseCase', () => {
     sut = AddAddressUseCase(searchAddressByZipCode)
 
     zipCode = faker.address.zipCode('########')
+    error = new Error(faker.random.word())
   })
 
   it('Should call SearchAddressByZipCode with correct zipcode', async () => {
@@ -30,5 +32,13 @@ describe('AddAddressUseCase', () => {
     const result = await sut({ zipCode })
 
     expect(result).toBeUndefined()
+  })
+
+  it('Should rethrow if SearchAddressByZipCode throws', async () => {
+    searchAddressByZipCode.search.mockRejectedValueOnce(error)
+
+    const promise = sut({ zipCode })
+
+    await expect(promise).rejects.toThrow(error)
   })
 })
