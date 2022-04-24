@@ -1,4 +1,4 @@
-import { ForbiddenError, UnauthorizedError } from '@/application/errors'
+import { ForbiddenError, ServerError, UnauthorizedError } from '@/application/errors'
 import { AuthenticationMiddleware } from '@/application/middlewares'
 
 import faker from 'faker'
@@ -10,6 +10,7 @@ describe('AuthenticationMiddleware', () => {
   let accountId: string
   let accessToken: string
   let Authorization: string
+  let error: Error
 
   const authorize: jest.Mock = jest.fn()
 
@@ -23,6 +24,7 @@ describe('AuthenticationMiddleware', () => {
     accountId = faker.datatype.uuid()
     accessToken = faker.datatype.uuid()
     Authorization = `Bearer ${accessToken}`
+    error = new Error(faker.random.word())
 
     authorize.mockResolvedValue({ accessToken })
     authorize.mockResolvedValue({ accountId })
@@ -63,6 +65,15 @@ describe('AuthenticationMiddleware', () => {
 
     expect(statusCode).toBe(403)
     expect(data).toEqual(new ForbiddenError())
+  })
+
+  it('Should returns serverError if have any throw', async () => {
+    authorize.mockRejectedValueOnce(error)
+
+    const { statusCode, data } = await sut.handle({ Authorization })
+
+    expect(statusCode).toBe(500)
+    expect(data).toEqual(new ServerError(error))
   })
 
   it('Should return ok if valid data is provided', async () => {
