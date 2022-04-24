@@ -6,6 +6,7 @@ import { PgConnection } from '@/infra/database/postgres/helpers'
 import { IBackup, IMemoryDb } from 'pg-mem'
 import request from 'supertest'
 import faker from 'faker'
+import { InvalidFieldError } from '@/application/errors'
 
 describe('Address routes', () => {
   let name: string
@@ -48,6 +49,18 @@ describe('Address routes', () => {
       expect(status).toBe(200)
       expect(body).toHaveProperty('address')
       expect(body).toHaveProperty('district')
+    })
+
+    it('Should return 400 if zipCode is invalid', async () => {
+      const { body: { accessToken } } = await request(app).post('/api/signup').send({ name, email, password, passwordConfirmation })
+      const token: string = accessToken
+
+      const { status, body: { error } } = await request(app)
+        .get('/api/address/123')
+        .set({ authorization: `Bearer: ${token}` })
+
+      expect(status).toBe(400)
+      expect(error).toBe(new InvalidFieldError('zipCode').message)
     })
   })
 })
