@@ -8,11 +8,14 @@ export class Account {
   @Column()
   name!: string
 
-  @Column()
+  @Column({ unique: true })
   email!: string
 
   @Column()
   password!: string
+
+  @Column({ nullable: true })
+  role?: string
 
   @CreateDateColumn()
   createdAt!: Date

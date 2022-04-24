@@ -77,7 +77,7 @@ describe('AccountRepository', () => {
     it('Should return a account on success', async () => {
       const account = await sut.create({ name, email, password })
 
-      expect(account).toEqual({ id, name, email, password, createdAt })
+      expect(account).toEqual({ id, name, email, password, role: null, createdAt })
     })
   })
 
@@ -93,7 +93,7 @@ describe('AccountRepository', () => {
 
       const account = await sut.loadByEmail({ email })
 
-      expect(account).toEqual({ id, name, email, password, createdAt })
+      expect(account).toEqual({ id, name, email, password, role: null, createdAt })
     })
   })
 
