@@ -71,4 +71,12 @@ describe('AddAddressUseCase', () => {
 
     expect(result).toBe(true)
   })
+
+  it('Should rethrow if AddAddressRepository throws', async () => {
+    addressRepository.create.mockRejectedValueOnce(error)
+
+    const promise = sut({ accountId, surname, zipCode, district, address, number, complement })
+
+    await expect(promise).rejects.toThrow(error)
+  })
 })
