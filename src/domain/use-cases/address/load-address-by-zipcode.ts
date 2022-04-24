@@ -2,11 +2,13 @@ import { SearchAddressByZipCode } from '@/domain/contracts/gateways'
 
 type Setup = (searchAddressByZipCode: SearchAddressByZipCode) => LoadAddressByZipCode
 type Input = { zipCode: string }
-type Output = undefined
+type Output = { district: string, address: string } | undefined
 export type LoadAddressByZipCode = (input: Input) => Promise<Output>
 
 export const LoadAddressByZipCodeUseCase: Setup = searchAddressByZipCode => async ({ zipCode }) => {
-  await searchAddressByZipCode.search({ zipCode })
+  const address = await searchAddressByZipCode.search({ zipCode })
 
-  return undefined
+  if (!address) return undefined
+
+  return address
 }
