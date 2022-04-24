@@ -1,4 +1,4 @@
-import { env } from '@/main/config'
+import { env } from '@/main/config/env'
 import { TokenGenerator, TokenValidator } from '@/domain/contracts/gateways'
 import { JwtAdapter } from '@/infra/gateways'
 
