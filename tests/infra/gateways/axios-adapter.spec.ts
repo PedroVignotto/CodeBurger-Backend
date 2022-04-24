@@ -9,6 +9,7 @@ describe('AxiosHttpClient', () => {
   let sut: AxiosHttpClient
 
   let url: string
+  let data: any
   let error: Error
 
   const fakeAxios = axios as jest.Mocked<typeof axios>
@@ -17,7 +18,10 @@ describe('AxiosHttpClient', () => {
     sut = new AxiosHttpClient()
 
     url = faker.internet.url()
+    data = faker.random.objectElement()
     error = new Error(faker.random.word())
+
+    fakeAxios.get.mockResolvedValue(data)
   })
 
   it('Should call get with correct values', async () => {
@@ -33,5 +37,11 @@ describe('AxiosHttpClient', () => {
     const promise = sut.get({ url })
 
     await expect(promise).rejects.toThrow(error)
+  })
+
+  it('Should return data on success', async () => {
+    const result = await sut.get({ url })
+
+    expect(result).toEqual(data)
   })
 })
