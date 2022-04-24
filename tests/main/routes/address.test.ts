@@ -1,12 +1,12 @@
 import { makeFakeDatabase } from '@/tests/infra/database/postgres/mocks'
 import { app } from '@/main/config/app'
+import { InvalidFieldError, UnauthorizedError } from '@/application/errors'
 import { Account } from '@/infra/database/postgres/entities'
 import { PgConnection } from '@/infra/database/postgres/helpers'
 
 import { IBackup, IMemoryDb } from 'pg-mem'
 import request from 'supertest'
 import faker from 'faker'
-import { InvalidFieldError } from '@/application/errors'
 
 describe('Address routes', () => {
   let name: string
@@ -61,6 +61,14 @@ describe('Address routes', () => {
 
       expect(status).toBe(400)
       expect(error).toBe(new InvalidFieldError('zipCode').message)
+    })
+
+    it('Should return 401 if authorization header was not provided', async () => {
+      const { status, body: { error } } = await request(app)
+        .get('/api/address/76876522')
+
+      expect(status).toBe(401)
+      expect(error).toBe(new UnauthorizedError().message)
     })
   })
 })
