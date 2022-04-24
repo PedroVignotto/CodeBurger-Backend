@@ -25,9 +25,9 @@ export class CreateAccounts1650592833124 implements MigrationInterface {
             type: 'varchar'
           },
           {
-            name: 'admin',
-            type: 'boolean',
-            default: false
+            name: 'role',
+            type: 'varchar',
+            isNullable: true
           },
           {
             name: 'createdAt',
