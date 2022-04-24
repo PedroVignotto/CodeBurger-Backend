@@ -3,7 +3,7 @@ import { TokenValidator } from '@/domain/contracts/gateways'
 
 type Setup = (token: TokenValidator, accountRepository: CheckAccountRole) => Authorize
 type Input = { accessToken: string, role?: string }
-type Output = string | undefined
+type Output = { accountId: string } | undefined
 export type Authorize = (input: Input) => Promise<Output>
 
 export const AuthorizeUseCase: Setup = (token, accountRepository) => async ({ accessToken, role }) => {
@@ -13,5 +13,5 @@ export const AuthorizeUseCase: Setup = (token, accountRepository) => async ({ ac
 
   if (!account) return undefined
 
-  return accountId
+  return { accountId }
 }

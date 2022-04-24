@@ -48,7 +48,7 @@ describe('Authorize', () => {
   it('Should return a accountId on success', async () => {
     const result = await sut({ accessToken })
 
-    expect(result).toBe(accountId)
+    expect(result).toEqual({ accountId })
   })
 
   it('Should call CheckAccountRole with correct values', async () => {
