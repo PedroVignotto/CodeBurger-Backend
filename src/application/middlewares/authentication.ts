@@ -1,4 +1,4 @@
-import { HttpResponse, ok, unauthorized } from '@/application/helpers'
+import { forbidden, HttpResponse, ok, unauthorized } from '@/application/helpers'
 import { Authorize } from '@/domain/use-cases/account'
 
 type HttpRequest = { Authorization: string }
@@ -12,7 +12,9 @@ export class AuthenticationMiddleware {
 
     const [, accessToken] = Authorization.split(' ')
 
-    await this.authorize({ accessToken, role: this.role })
+    const accountId = await this.authorize({ accessToken, role: this.role })
+
+    if (!accountId) return forbidden()
 
     return ok(undefined)
   }
