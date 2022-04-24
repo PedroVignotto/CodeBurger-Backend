@@ -10,6 +10,8 @@ jest.mock('typeorm', () => ({
   Entity: jest.fn(),
   PrimaryColumn: jest.fn(),
   Column: jest.fn(),
+  ManyToOne: jest.fn(),
+  JoinColumn: jest.fn(),
   CreateDateColumn: jest.fn(),
   createConnection: jest.fn(),
   getConnection: jest.fn(),
