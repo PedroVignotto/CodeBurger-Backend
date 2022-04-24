@@ -33,7 +33,9 @@ export class AccountRepository extends PgRepository implements CheckAccountByEma
   async checkRole ({ accountId, role }: CheckAccountRole.Input): Promise<CheckAccountRole.Output> {
     const repository = this.getRepository(Account)
 
-    const account = await repository.findOne({ where: { id: accountId, role: role ?? null } })
+    const account = await repository.findOne(
+      { where: [{ id: accountId, role: role ?? null }, { id: accountId, role: 'admin' }] }
+    )
 
     return !!account
   }
