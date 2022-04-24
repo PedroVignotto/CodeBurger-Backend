@@ -2,8 +2,9 @@ import { Account } from '@/infra/database/postgres/entities'
 import { PgRepository } from '@/infra/database/postgres/repositories'
 import { AddAccountRepository, CheckAccountByEmailRepository, LoadAccountByEmailRepository } from '@/domain/contracts/database/repositories/account'
 import { UUIDGenerator } from '@/domain/contracts/gateways'
+import { CheckAccountRole } from '@/domain/contracts/database/repositories/account/check-account-role'
 
-export class AccountRepository extends PgRepository implements CheckAccountByEmailRepository, AddAccountRepository, LoadAccountByEmailRepository {
+export class AccountRepository extends PgRepository implements CheckAccountByEmailRepository, AddAccountRepository, LoadAccountByEmailRepository, CheckAccountRole {
   constructor (private readonly uuid: UUIDGenerator) { super() }
 
   async checkByEmail ({ email }: CheckAccountByEmailRepository.Input): Promise<CheckAccountByEmailRepository.Output> {
@@ -28,5 +29,13 @@ export class AccountRepository extends PgRepository implements CheckAccountByEma
     const account = await repository.findOne({ email })
 
     return account
+  }
+
+  async checkRole ({ accountId, role }: CheckAccountRole.Input): Promise<CheckAccountRole.Output> {
+    const repository = this.getRepository(Account)
+
+    const account = await repository.findOne(accountId)
+
+    return !!account
   }
 }
