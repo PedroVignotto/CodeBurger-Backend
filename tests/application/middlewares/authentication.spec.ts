@@ -7,6 +7,7 @@ describe('AuthenticationMiddleware', () => {
   let sut: AuthenticationMiddleware
 
   let role: string
+  let accountId: string
   let accessToken: string
   let Authorization: string
 
@@ -19,10 +20,12 @@ describe('AuthenticationMiddleware', () => {
   beforeEach(() => {
     sut = new AuthenticationMiddleware(authorize, role)
 
+    accountId = faker.datatype.uuid()
     accessToken = faker.datatype.uuid()
     Authorization = `Bearer ${accessToken}`
 
     authorize.mockResolvedValue({ accessToken })
+    authorize.mockResolvedValue({ accountId })
   })
 
   it('Should return unauthorized if Authorization is empty', async () => {
@@ -60,5 +63,12 @@ describe('AuthenticationMiddleware', () => {
 
     expect(statusCode).toBe(403)
     expect(data).toEqual(new ForbiddenError())
+  })
+
+  it('Should return ok if valid data is provided', async () => {
+    const { statusCode, data } = await sut.handle({ Authorization })
+
+    expect(statusCode).toBe(200)
+    expect(data).toEqual({ accountId })
   })
 })
