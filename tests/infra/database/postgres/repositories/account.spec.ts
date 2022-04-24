@@ -96,4 +96,12 @@ describe('AccountRepository', () => {
       expect(account).toEqual({ id, name, email, password, createdAt })
     })
   })
+
+  describe('checkRole()', () => {
+    it('Should return false if account does not exists', async () => {
+      const account = await sut.checkRole({ accountId: id })
+
+      expect(account).toBe(false)
+    })
+  })
 })
