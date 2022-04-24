@@ -23,6 +23,7 @@ describe('Authorize', () => {
     error = new Error(faker.random.word())
 
     token.validate.mockResolvedValue(accountId)
+    accountRepository.checkRole.mockResolvedValue(true)
   })
 
   beforeEach(() => {
@@ -55,5 +56,13 @@ describe('Authorize', () => {
 
     expect(accountRepository.checkRole).toHaveBeenCalledWith({ accountId, role })
     expect(accountRepository.checkRole).toHaveBeenCalledTimes(1)
+  })
+
+  it('Should return undefined if CheckAccountRole return false', async () => {
+    accountRepository.checkRole.mockResolvedValueOnce(false)
+
+    const result = await sut({ accessToken })
+
+    expect(result).toBeUndefined()
   })
 })
