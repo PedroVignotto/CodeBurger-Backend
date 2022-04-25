@@ -1,6 +1,6 @@
 import { makeFakeDatabase } from '@/tests/infra/database/postgres/mocks'
 import { app } from '@/main/config/app'
-import { InvalidFieldError, UnauthorizedError } from '@/application/errors'
+import { InvalidFieldError, RequiredFieldError, UnauthorizedError } from '@/application/errors'
 import { Account, Address } from '@/infra/database/postgres/entities'
 import { PgConnection } from '@/infra/database/postgres/helpers'
 import { ZipCodeApi } from '@/infra/gateways'
@@ -115,6 +115,18 @@ describe('Address routes', () => {
 
       expect(status).toBe(400)
       expect(error).toBe(new InvalidFieldError('zipCode').message)
+    })
+
+    it('Should return 400 if has invalid data', async () => {
+      const { body: { accessToken } } = await request(app).post('/api/signup').send({ name, email, password, passwordConfirmation })
+
+      const { status, body: { error } } = await request(app)
+        .post('/api/address')
+        .send({ zipCode, district, address, number, complement })
+        .set({ authorization: `Bearer: ${accessToken as string}` })
+
+      expect(status).toBe(400)
+      expect(error).toBe(new RequiredFieldError('surname').message)
     })
   })
 })
