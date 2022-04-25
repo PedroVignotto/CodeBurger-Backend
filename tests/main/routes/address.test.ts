@@ -128,5 +128,14 @@ describe('Address routes', () => {
       expect(status).toBe(400)
       expect(error).toBe(new RequiredFieldError('surname').message)
     })
+
+    it('Should return 401 if authorization header was not provided', async () => {
+      const { status, body: { error } } = await request(app)
+        .post('/api/address')
+        .send({ surname, zipCode, district, address, number, complement })
+
+      expect(status).toBe(401)
+      expect(error).toBe(new UnauthorizedError().message)
+    })
   })
 })
