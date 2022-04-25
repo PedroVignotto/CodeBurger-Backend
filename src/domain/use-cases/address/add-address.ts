@@ -6,12 +6,12 @@ type Input = { accountId: string, surname: string, zipCode: string, district: st
 type Output = boolean
 export type AddAddress = (input: Input) => Promise<Output>
 
-export const AddAddressUseCase: Setup = (searchAddressByZipCode, addressRepository) => async input => {
-  const account = await searchAddressByZipCode.search({ zipCode: input.zipCode })
+export const AddAddressUseCase: Setup = (searchAddressByZipCode, addressRepository) => async ({ zipCode, ...input }) => {
+  const address = await searchAddressByZipCode.search({ zipCode })
 
-  if (!account) return false
+  if (!address) return false
 
-  await addressRepository.create(input)
+  await addressRepository.create({ zipCode: zipCode.replace('-', ''), ...input })
 
   return true
 }
