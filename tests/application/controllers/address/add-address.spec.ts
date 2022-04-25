@@ -28,6 +28,8 @@ describe('AddAddressController', () => {
     address = faker.address.streetName()
     number = faker.datatype.number()
     complement = faker.random.words(3)
+
+    addAddress.mockResolvedValue({ accountId, surname, zipCode, district, address, number, complement })
   })
 
   it('Should extend Controller', async () => {
@@ -60,5 +62,12 @@ describe('AddAddressController', () => {
 
     expect(statusCode).toBe(400)
     expect(data).toEqual(new InvalidFieldError('zipCode'))
+  })
+
+  it('Should return created if valid data is provided', async () => {
+    const { statusCode, data } = await sut.handle({ accountId, surname, zipCode, district, address, number, complement })
+
+    expect(statusCode).toBe(201)
+    expect(data).toBeUndefined()
   })
 })
