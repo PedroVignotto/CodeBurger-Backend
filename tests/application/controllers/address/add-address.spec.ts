@@ -1,5 +1,6 @@
 import { Controller } from '@/application/controllers'
 import { AddAddressController } from '@/application/controllers/address'
+import { InvalidFieldError } from '@/application/errors'
 import { RequiredValidation } from '@/application/validation'
 
 import faker from 'faker'
@@ -50,5 +51,14 @@ describe('AddAddressController', () => {
 
     expect(addAddress).toHaveBeenCalledWith({ accountId, surname, zipCode, district, address, number, complement })
     expect(addAddress).toHaveBeenCalledTimes(1)
+  })
+
+  it('Should return badRequest if addAddress return false', async () => {
+    addAddress.mockResolvedValueOnce(false)
+
+    const { statusCode, data } = await sut.handle({ accountId, surname, zipCode, district, address, number, complement })
+
+    expect(statusCode).toBe(400)
+    expect(data).toEqual(new InvalidFieldError('zipCode'))
   })
 })
