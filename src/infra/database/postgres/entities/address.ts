@@ -1,5 +1,5 @@
-import { Account } from '@/infra/database/postgres/entities/account'
-import { Entity, Column, PrimaryColumn, JoinColumn, ManyToOne } from 'typeorm'
+import { Account } from './account'
+import { Entity, Column, PrimaryColumn, ManyToOne } from 'typeorm'
 
 @Entity('addresses')
 export class Address {
@@ -10,7 +10,6 @@ export class Address {
   accountId!: string
 
   @ManyToOne(() => Account)
-  @JoinColumn({ name: 'accountId' })
   account!: Account
 
   @Column()
