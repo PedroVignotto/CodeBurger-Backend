@@ -13,9 +13,12 @@ describe('AddAddressController', () => {
   let district: string
   let address: string
   let number: number
+  let complement: string
+
+  const addAddress: jest.Mock = jest.fn()
 
   beforeEach(() => {
-    sut = new AddAddressController()
+    sut = new AddAddressController(addAddress)
 
     accountId = faker.datatype.uuid()
     surname = faker.random.word()
@@ -23,6 +26,7 @@ describe('AddAddressController', () => {
     district = faker.random.words(2)
     address = faker.address.streetName()
     number = faker.datatype.number()
+    complement = faker.random.words(3)
   })
 
   it('Should extend Controller', async () => {
@@ -39,5 +43,12 @@ describe('AddAddressController', () => {
       new RequiredValidation(address, 'address'),
       new RequiredValidation(number, 'number')
     ])
+  })
+
+  it('Should call addAddress with correct values', async () => {
+    await sut.handle({ accountId, surname, zipCode, district, address, number, complement })
+
+    expect(addAddress).toHaveBeenCalledWith({ accountId, surname, zipCode, district, address, number, complement })
+    expect(addAddress).toHaveBeenCalledTimes(1)
   })
 })
