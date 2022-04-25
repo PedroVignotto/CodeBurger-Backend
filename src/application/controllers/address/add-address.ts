@@ -1,5 +1,6 @@
 import { Controller } from '@/application/controllers/controller'
-import { HttpResponse, created } from '@/application/helpers'
+import { InvalidFieldError } from '@/application/errors'
+import { HttpResponse, created, badRequest } from '@/application/helpers'
 import { ValidationBuilder as Builder, Validator } from '@/application/validation'
 import { AddAddress } from '@/domain/use-cases/address'
 
@@ -10,7 +11,9 @@ export class AddAddressController extends Controller {
   constructor (private readonly addAddress: AddAddress) { super() }
 
   async perform (httpRequest: HttpRequest): Promise<HttpResponse<Model>> {
-    await this.addAddress(httpRequest)
+    const address = await this.addAddress(httpRequest)
+
+    if (!address) return badRequest(new InvalidFieldError('zipCode'))
 
     return created(undefined)
   }
