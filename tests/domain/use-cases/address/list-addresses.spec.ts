@@ -17,6 +17,8 @@ describe('ListAddressUseCase', () => {
 
     accountId = faker.datatype.uuid()
     error = new Error(faker.random.word())
+
+    addressRepository.list.mockResolvedValue([])
   })
 
   it('Should call ListAddressRepository with correct accountId', async () => {
@@ -32,5 +34,11 @@ describe('ListAddressUseCase', () => {
     const promise = sut({ accountId })
 
     await expect(promise).rejects.toThrow(error)
+  })
+
+  it('Should return a address list on success', async () => {
+    const result = await sut({ accountId })
+
+    expect(result).toEqual([])
   })
 })
