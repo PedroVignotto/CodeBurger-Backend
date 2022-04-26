@@ -65,10 +65,10 @@ describe('AccountRepository', () => {
   })
 
   describe('create()', () => {
-    it('Should return a account on success', async () => {
-      const account = await sut.create({ name, email, password })
+    it('Should create a account on success', async () => {
+      await sut.create({ name, email, password })
 
-      expect(account).toEqual({ id, name, email, password, role: null, createdAt })
+      expect(await repository.findOne(id)).toBeTruthy()
     })
   })
 

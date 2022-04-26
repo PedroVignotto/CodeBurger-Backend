@@ -44,12 +44,12 @@ describe('AddressRepository', () => {
   })
 
   describe('create()', () => {
-    it('Should return true on success', async () => {
+    it('Should create a address on success', async () => {
       const account = await repositoryAccount.save({ id, name, email, password })
 
-      const result = await sut.create({ accountId: account.id, surname, zipCode, district, street, number, complement })
+      await sut.create({ accountId: account.id, surname, zipCode, district, street, number, complement })
 
-      expect(result).toBe(true)
+      expect(await repositoryAccount.findOne(id)).toBeTruthy()
     })
   })
 
@@ -67,6 +67,12 @@ describe('AddressRepository', () => {
       const addresses = await sut.list({ accountId: id })
 
       expect(addresses).toEqual([])
+    })
+  })
+
+  describe('', () => {
+    it('', () => {
+
     })
   })
 })

@@ -4,5 +4,5 @@ export interface AddAccountRepository {
 
 export namespace AddAccountRepository {
   export type Input = { name: string, email: string, password: string }
-  export type Output = { id: string, name: string, email: string, password: string, createdAt: Date }
+  export type Output = void
 }

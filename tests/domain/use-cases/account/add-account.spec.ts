@@ -8,14 +8,13 @@ import { mock } from 'jest-mock-extended'
 describe('AddAccount', () => {
   let sut: AddAccount
 
-  const { id, name, email, password, hashedPassword, createdAt, error } = accountParams
+  const { name, email, password, hashedPassword, error } = accountParams
 
   const accountRepository = mock<CheckAccountByEmailRepository & AddAccountRepository>()
   const hashGenerator = mock<HashGenerator>()
 
   beforeAll(() => {
     accountRepository.checkByEmail.mockResolvedValue(false)
-    accountRepository.create.mockResolvedValue({ id, name, email, password, createdAt })
     hashGenerator.generate.mockResolvedValue(hashedPassword)
   })
 

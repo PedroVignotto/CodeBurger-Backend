@@ -17,9 +17,7 @@ export class AccountRepository extends PgRepository implements CheckAccountByEma
   async create ({ name, email, password }: AddAccountRepository.Input): Promise<AddAccountRepository.Output> {
     const repository = this.getRepository(Account)
 
-    const account = await repository.save({ id: this.uuid.generate(), name, email, password })
-
-    return account
+    await repository.save({ id: this.uuid.generate(), name, email, password })
   }
 
   async loadByEmail ({ email }: LoadAccountByEmailRepository.Input): Promise<LoadAccountByEmailRepository.Output> {

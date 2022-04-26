@@ -12,5 +12,5 @@ export namespace AddAddressRepository {
     number: number
     complement?: string
   }
-  export type Output = boolean
+  export type Output = void
 }
