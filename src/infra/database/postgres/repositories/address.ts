@@ -1,9 +1,9 @@
 import { Address } from '@/infra/database/postgres/entities'
 import { PgRepository } from '@/infra/database/postgres/repositories'
 import { UUIDGenerator } from '@/domain/contracts/gateways'
-import { AddAddressRepository, ListAddressesRepository } from '@/domain/contracts/database/repositories/address'
+import { AddAddressRepository, ListAddressesRepository, UpdateAddressRepository } from '@/domain/contracts/database/repositories/address'
 
-export class AddressRepository extends PgRepository implements AddAddressRepository, ListAddressesRepository {
+export class AddressRepository extends PgRepository implements AddAddressRepository, ListAddressesRepository, UpdateAddressRepository {
   constructor (private readonly uuid: UUIDGenerator) { super() }
 
   async create (input: AddAddressRepository.Input): Promise<AddAddressRepository.Output> {
@@ -18,5 +18,15 @@ export class AddressRepository extends PgRepository implements AddAddressReposit
     const addresses = await repository.find({ accountId })
 
     return addresses
+  }
+
+  async update ({ id, ...input }: UpdateAddressRepository.Input): Promise<UpdateAddressRepository.Output> {
+    const repository = this.getRepository(Address)
+
+    await repository
+      .createQueryBuilder()
+      .update(JSON.parse(JSON.stringify(input)))
+      .where({ id })
+      .execute()
   }
 }
