@@ -1,3 +1,4 @@
+import { accountParams } from '@/tests/mocks'
 import { makeFakeDatabase } from '@/tests/infra/database/postgres/mocks'
 import { AccountRepository, PgRepository } from '@/infra/database/postgres/repositories'
 import { PgConnection } from '@/infra/database/postgres/helpers'
@@ -13,11 +14,7 @@ import faker from 'faker'
 describe('AccountRepository', () => {
   let sut: AccountRepository
 
-  let id: string
-  let name: string
-  let email: string
-  let password: string
-  let createdAt: Date
+  const { id, name, email, password, createdAt } = accountParams
 
   let connection: PgConnection
   let database: IMemoryDb
@@ -31,22 +28,16 @@ describe('AccountRepository', () => {
     database = await makeFakeDatabase([Account])
     backup = database.backup()
     repository = connection.getRepository(Account)
+
+    uuid.generate.mockReturnValue(id)
+
+    MockDate.set(createdAt)
   })
 
   beforeEach(() => {
     backup.restore()
 
     sut = new AccountRepository(uuid)
-
-    id = faker.datatype.uuid()
-    name = faker.name.findName()
-    email = faker.internet.email()
-    password = faker.internet.password(8)
-    createdAt = faker.date.recent()
-
-    uuid.generate.mockReturnValue(id)
-
-    MockDate.set(createdAt)
   })
 
   afterAll(() => {

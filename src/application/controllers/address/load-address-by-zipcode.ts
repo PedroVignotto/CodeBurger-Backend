@@ -4,7 +4,7 @@ import { badRequest, HttpResponse, ok } from '@/application/helpers'
 import { LoadAddressByZipCode } from '@/domain/use-cases/address'
 
 type HttpRequest = { zipCode: string }
-type Model = { district: string, address: string } | Error
+type Model = { district: string, street: string } | Error
 
 export class LoadAddressByZipCodeController extends Controller {
   constructor (private readonly loadAddressByZipCode: LoadAddressByZipCode) { super() }

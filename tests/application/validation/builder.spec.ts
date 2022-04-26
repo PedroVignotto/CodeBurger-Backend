@@ -6,7 +6,7 @@ describe('ValidationBuilder', () => {
   let value: string
   let fieldName: string
 
-  beforeEach(() => {
+  beforeAll(() => {
     value = faker.database.column()
     fieldName = faker.database.column()
   })

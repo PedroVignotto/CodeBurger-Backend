@@ -1,3 +1,4 @@
+import { accountParams } from '@/tests/mocks'
 import { makeFakeDatabase } from '@/tests/infra/database/postgres/mocks'
 import { app } from '@/main/config/app'
 import { ForbiddenError, InvalidFieldError, RequiredFieldError } from '@/application/errors'
@@ -6,15 +7,10 @@ import { PgConnection } from '@/infra/database/postgres/helpers'
 
 import { IBackup, IMemoryDb } from 'pg-mem'
 import request from 'supertest'
-import faker from 'faker'
 import { Repository } from 'typeorm'
 
 describe('Account routes', () => {
-  let id: string
-  let name: string
-  let email: string
-  let password: string
-  let passwordConfirmation: string
+  const { id, name, email, password, passwordConfirmation } = accountParams
 
   let connection: PgConnection
   let database: IMemoryDb
@@ -30,12 +26,6 @@ describe('Account routes', () => {
 
   beforeEach(() => {
     backup.restore()
-
-    id = faker.datatype.uuid()
-    name = faker.name.findName()
-    email = faker.internet.email()
-    password = faker.internet.password()
-    passwordConfirmation = password
   })
 
   afterAll(async () => {

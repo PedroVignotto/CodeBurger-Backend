@@ -8,7 +8,7 @@ export namespace AddAddressRepository {
     surname: string
     zipCode: string
     district: string
-    address: string
+    street: string
     number: number
     complement?: string
   }

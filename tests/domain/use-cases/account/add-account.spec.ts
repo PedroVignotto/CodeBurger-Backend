@@ -1,38 +1,26 @@
+import { accountParams } from '@/tests/mocks'
 import { HashGenerator } from '@/domain/contracts/gateways'
 import { AddAccountRepository, CheckAccountByEmailRepository } from '@/domain/contracts/database/repositories/account'
-import { AddAccount, AddAccountUseCase } from '@/domain/use-cases/account'
+import { AddAccount, addAccountUseCase } from '@/domain/use-cases/account'
 
 import { mock } from 'jest-mock-extended'
-import faker from 'faker'
 
 describe('AddAccount', () => {
   let sut: AddAccount
 
-  let id: string
-  let name: string
-  let email: string
-  let password: string
-  let hashedPassword: string
-  let createdAt: Date
-  let error: Error
+  const { id, name, email, password, hashedPassword, createdAt, error } = accountParams
 
   const accountRepository = mock<CheckAccountByEmailRepository & AddAccountRepository>()
   const hashGenerator = mock<HashGenerator>()
 
-  beforeEach(() => {
-    sut = AddAccountUseCase(accountRepository, hashGenerator)
-
-    id = faker.datatype.uuid()
-    name = faker.name.findName()
-    email = faker.internet.email()
-    password = faker.internet.password(8)
-    hashedPassword = faker.internet.password(16)
-    createdAt = faker.date.recent()
-    error = new Error(faker.random.word())
-
+  beforeAll(() => {
     accountRepository.checkByEmail.mockResolvedValue(false)
     accountRepository.create.mockResolvedValue({ id, name, email, password, createdAt })
     hashGenerator.generate.mockResolvedValue(hashedPassword)
+  })
+
+  beforeEach(() => {
+    sut = addAccountUseCase(accountRepository, hashGenerator)
   })
 
   it('Should call CheckAccountByEmailRepository with correct email', async () => {

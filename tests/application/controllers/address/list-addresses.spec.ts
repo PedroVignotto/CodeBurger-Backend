@@ -1,35 +1,20 @@
+import { addressParams } from '@/tests/mocks'
 import { Controller } from '@/application/controllers'
 import { ListAddressesController } from '@/application/controllers/address'
-
-import faker from 'faker'
 
 describe('ListAddressesController', () => {
   let sut: ListAddressesController
 
-  let id: string
-  let accountId: string
-  let surname: string
-  let zipCode: string
-  let district: string
-  let address: string
-  let number: number
-  let complement: string
+  const { id, accountId, surname, zipCode, district, street, number, complement } = addressParams
 
   const listAddresses: jest.Mock = jest.fn()
 
+  beforeAll(() => {
+    listAddresses.mockResolvedValue([{ id, surname, zipCode, district, street, number, complement }])
+  })
+
   beforeEach(() => {
     sut = new ListAddressesController(listAddresses)
-
-    id = faker.datatype.uuid()
-    accountId = faker.datatype.uuid()
-    surname = faker.random.word()
-    zipCode = faker.address.zipCode('########')
-    district = faker.random.words(2)
-    address = faker.address.streetName()
-    number = faker.datatype.number()
-    complement = faker.random.words(3)
-
-    listAddresses.mockResolvedValue([{ id, surname, zipCode, district, address, number, complement }])
   })
 
   it('Should extend Controller', async () => {
@@ -47,6 +32,6 @@ describe('ListAddressesController', () => {
     const { statusCode, data } = await sut.handle({ accountId })
 
     expect(statusCode).toBe(200)
-    expect(data).toEqual([{ id, surname, zipCode, district, address, number, complement }])
+    expect(data).toEqual([{ id, surname, zipCode, district, street, number, complement }])
   })
 })

@@ -6,7 +6,7 @@ type Input = { accessToken: string, role?: string }
 type Output = { accountId: string } | undefined
 export type Authorize = (input: Input) => Promise<Output>
 
-export const AuthorizeUseCase: Setup = (token, accountRepository) => async ({ accessToken, role }) => {
+export const authorizeUseCase: Setup = (token, accountRepository) => async ({ accessToken, role }) => {
   const accountId = await token.validate({ token: accessToken })
 
   const account = await accountRepository.checkRole({ accountId, role })

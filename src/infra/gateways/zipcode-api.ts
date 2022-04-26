@@ -11,6 +11,6 @@ export class ZipCodeApi implements SearchAddressByZipCode {
 
     if (status !== 200) return undefined
 
-    return { district, address }
+    return { district, street: address }
   }
 }

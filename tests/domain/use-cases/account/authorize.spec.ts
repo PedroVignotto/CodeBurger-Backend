@@ -1,33 +1,25 @@
+import { accountParams } from '@/tests/mocks'
 import { TokenValidator } from '@/domain/contracts/gateways'
 import { CheckAccountRole } from '@/domain/contracts/database/repositories/account'
-import { Authorize, AuthorizeUseCase } from '@/domain/use-cases/account'
+import { Authorize, authorizeUseCase } from '@/domain/use-cases/account'
 
 import { mock } from 'jest-mock-extended'
-import faker from 'faker'
 
 describe('Authorize', () => {
   let sut: Authorize
 
-  let accountId: string
-  let accessToken: string
-  let role: string
-  let error: Error
+  const { id: accountId, accessToken, role, error } = accountParams
 
   const token = mock<TokenValidator>()
   const accountRepository = mock<CheckAccountRole>()
 
   beforeAll(() => {
-    accountId = faker.datatype.uuid()
-    accessToken = faker.datatype.uuid()
-    role = faker.random.word()
-    error = new Error(faker.random.word())
-
     token.validate.mockResolvedValue(accountId)
     accountRepository.checkRole.mockResolvedValue(true)
   })
 
   beforeEach(() => {
-    sut = AuthorizeUseCase(token, accountRepository)
+    sut = authorizeUseCase(token, accountRepository)
   })
 
   it('Should call TokenValidator with correct token', async () => {

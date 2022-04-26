@@ -2,11 +2,11 @@ import { AddAddressRepository } from '@/domain/contracts/database/repositories/a
 import { SearchAddressByZipCode } from '@/domain/contracts/gateways'
 
 type Setup = (searchAddressByZipCode: SearchAddressByZipCode, addressRepository: AddAddressRepository) => AddAddress
-type Input = { accountId: string, surname: string, zipCode: string, district: string, address: string, number: number, complement?: string }
+type Input = { accountId: string, surname: string, zipCode: string, district: string, street: string, number: number, complement?: string }
 type Output = boolean
 export type AddAddress = (input: Input) => Promise<Output>
 
-export const AddAddressUseCase: Setup = (searchAddressByZipCode, addressRepository) => async ({ zipCode, ...input }) => {
+export const addAddressUseCase: Setup = (searchAddressByZipCode, addressRepository) => async ({ zipCode, ...input }) => {
   const address = await searchAddressByZipCode.search({ zipCode })
 
   if (!address) return false

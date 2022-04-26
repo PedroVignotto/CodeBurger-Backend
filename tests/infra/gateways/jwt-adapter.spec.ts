@@ -17,13 +17,12 @@ describe('JwtAdapter', () => {
 
   beforeAll(() => {
     secret = faker.datatype.uuid()
+    token = faker.datatype.uuid()
+    error = new Error(faker.random.word())
   })
 
   beforeEach(() => {
     sut = new JwtAdapter(secret)
-
-    token = faker.datatype.uuid()
-    error = new Error(faker.random.word())
   })
 
   describe('generate()', () => {
@@ -31,12 +30,12 @@ describe('JwtAdapter', () => {
 
     beforeAll(() => {
       secret = faker.datatype.uuid()
+
+      fakeJwt.sign.mockImplementation(() => token)
     })
 
     beforeEach(() => {
       key = faker.random.word()
-
-      fakeJwt.sign.mockImplementation(() => token)
     })
 
     it('Should call sign with correct values', async () => {
@@ -64,7 +63,7 @@ describe('JwtAdapter', () => {
   describe('validate()', () => {
     let accountId: string
 
-    beforeEach(() => {
+    beforeAll(() => {
       accountId = faker.datatype.uuid()
 
       fakeJwt.verify.mockImplementation(() => ({ key: accountId }))

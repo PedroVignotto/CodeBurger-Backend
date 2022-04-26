@@ -8,7 +8,7 @@ describe('EmailValidation', () => {
   let invalidEmail: string
   let fieldName: string
 
-  beforeEach(() => {
+  beforeAll(() => {
     validEmail = faker.internet.email()
     invalidEmail = faker.random.word()
     fieldName = faker.database.column()

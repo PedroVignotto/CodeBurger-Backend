@@ -14,18 +14,20 @@ describe('BcryptAdapter', () => {
 
   const fakeBcrypt = bcrypt as jest.Mocked<typeof bcrypt>
 
-  beforeEach(() => {
-    sut = new BCryptAdapter()
-
+  beforeAll(() => {
     plaintext = faker.random.word()
     digest = faker.datatype.uuid()
     error = new Error(faker.random.word())
   })
 
+  beforeEach(() => {
+    sut = new BCryptAdapter()
+  })
+
   describe('generate()', () => {
     const salt = 12
 
-    beforeEach(() => {
+    beforeAll(() => {
       fakeBcrypt.hash.mockImplementation(() => digest)
     })
 

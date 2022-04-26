@@ -1,37 +1,24 @@
+import { accountParams } from '@/tests/mocks'
 import { Controller } from '@/application/controllers'
 import { SignUpController } from '@/application/controllers/account'
 import { CompareValidation, EmailValidation, RequiredValidation } from '@/application/validation'
 import { ForbiddenError } from '@/application/errors'
 
-import faker from 'faker'
-
 describe('SignUpController', () => {
   let sut: SignUpController
 
-  let id: string
-  let name: string
-  let email: string
-  let password: string
-  let passwordConfirmation: string
-  let hashedPassword: string
-  let accessToken: string
+  const { name, email, password, passwordConfirmation, accessToken } = accountParams
 
   const addAccount: jest.Mock = jest.fn()
   const authentication: jest.Mock = jest.fn()
 
+  beforeAll(() => {
+    addAccount.mockResolvedValue(true)
+    authentication.mockResolvedValue({ name, accessToken })
+  })
+
   beforeEach(() => {
     sut = new SignUpController(addAccount, authentication)
-
-    id = faker.datatype.uuid()
-    name = faker.name.findName()
-    email = faker.internet.email()
-    password = faker.internet.password(8)
-    hashedPassword = faker.internet.password(16)
-    passwordConfirmation = password
-    accessToken = faker.datatype.uuid()
-
-    addAccount.mockResolvedValue({ id, name, email, password: hashedPassword })
-    authentication.mockResolvedValue({ name, accessToken })
   })
 
   it('Should extend Controller', async () => {

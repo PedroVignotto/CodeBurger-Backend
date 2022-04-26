@@ -1,33 +1,21 @@
+import { accountParams } from '@/tests/mocks'
 import { ForbiddenError, ServerError, UnauthorizedError } from '@/application/errors'
 import { AuthenticationMiddleware } from '@/application/middlewares'
-
-import faker from 'faker'
 
 describe('AuthenticationMiddleware', () => {
   let sut: AuthenticationMiddleware
 
-  let role: string
-  let accountId: string
-  let accessToken: string
-  let authorization: string
-  let error: Error
+  const { id: accountId, accessToken, role, error } = accountParams
+  const authorization = `Bearer ${accessToken}`
 
   const authorize: jest.Mock = jest.fn()
 
   beforeAll(() => {
-    role = faker.random.word()
+    authorize.mockResolvedValue({ accountId })
   })
 
   beforeEach(() => {
     sut = new AuthenticationMiddleware(authorize, role)
-
-    accountId = faker.datatype.uuid()
-    accessToken = faker.datatype.uuid()
-    authorization = `Bearer ${accessToken}`
-    error = new Error(faker.random.word())
-
-    authorize.mockResolvedValue({ accessToken })
-    authorize.mockResolvedValue({ accountId })
   })
 
   it('Should return unauthorized if authorization is empty', async () => {

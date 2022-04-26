@@ -14,14 +14,16 @@ describe('AxiosHttpClient', () => {
 
   const fakeAxios = axios as jest.Mocked<typeof axios>
 
-  beforeEach(() => {
-    sut = new AxiosHttpClient()
-
+  beforeAll(() => {
     url = faker.internet.url()
     data = faker.random.objectElement()
     error = new Error(faker.random.word())
 
     fakeAxios.get.mockResolvedValue(data)
+  })
+
+  beforeEach(() => {
+    sut = new AxiosHttpClient()
   })
 
   it('Should call get with correct values', async () => {

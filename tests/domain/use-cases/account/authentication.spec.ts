@@ -1,41 +1,27 @@
+import { accountParams } from '@/tests/mocks'
 import { TokenGenerator, HashComparer } from '@/domain/contracts/gateways'
 import { LoadAccountByEmailRepository } from '@/domain/contracts/database/repositories/account'
-import { Authentication, AuthenticationUseCase } from '@/domain/use-cases/account'
+import { Authentication, authenticationUseCase } from '@/domain/use-cases/account'
 
 import { mock } from 'jest-mock-extended'
-import faker from 'faker'
 
 describe('Authentication', () => {
   let sut: Authentication
 
-  let id: string
-  let name: string
-  let email: string
-  let password: string
-  let hashedPassword: string
-  let createdAt: Date
-  let accessToken: string
-  let error: Error
+  const { id, name, email, password, hashedPassword, accessToken, createdAt, error } = accountParams
 
   const accountRepository = mock<LoadAccountByEmailRepository>()
   const hashComparer = mock<HashComparer>()
   const token = mock<TokenGenerator>()
 
-  beforeEach(() => {
-    sut = AuthenticationUseCase(accountRepository, hashComparer, token)
-
-    id = faker.datatype.uuid()
-    name = faker.name.findName()
-    email = faker.internet.email()
-    password = faker.internet.password(8)
-    hashedPassword = faker.internet.password(16)
-    createdAt = faker.date.recent()
-    accessToken = faker.datatype.uuid()
-    error = new Error(faker.random.word())
-
+  beforeAll(() => {
     accountRepository.loadByEmail.mockResolvedValue({ id, name, email, password: hashedPassword, createdAt })
     hashComparer.compare.mockResolvedValue(true)
     token.generate.mockResolvedValue(accessToken)
+  })
+
+  beforeEach(() => {
+    sut = authenticationUseCase(accountRepository, hashComparer, token)
   })
 
   it('Should call LoadAccountByEmailRepository with correct email', async () => {

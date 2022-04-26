@@ -31,7 +31,7 @@ describe('PgConnection', () => {
   const closeSpy: jest.Mock = jest.fn()
   const hasSpy: jest.Mock = jest.fn()
 
-  beforeEach(() => {
+  beforeAll(() => {
     sut = PgConnection.getInstance()
 
     repositorySpy = faker.database.column()

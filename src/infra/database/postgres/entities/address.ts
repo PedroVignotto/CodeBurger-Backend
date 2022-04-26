@@ -22,7 +22,7 @@ export class Address {
   district!: string
 
   @Column()
-  address!: string
+  street!: string
 
   @Column()
   number!: number

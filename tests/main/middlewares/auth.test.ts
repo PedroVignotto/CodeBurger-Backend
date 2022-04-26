@@ -1,3 +1,4 @@
+import { accountParams } from '@/tests/mocks'
 import { makeFakeDatabase } from '@/tests/infra/database/postgres/mocks'
 import { app, env } from '@/main/config'
 import { auth } from '@/main/middlewares'
@@ -9,13 +10,9 @@ import { IBackup, IMemoryDb } from 'pg-mem'
 import { sign } from 'jsonwebtoken'
 import { Repository } from 'typeorm'
 import request from 'supertest'
-import faker from 'faker'
 
 describe('Auth Middleware', () => {
-  let id: string
-  let name: string
-  let email: string
-  let password: string
+  const { id, name, email, password } = accountParams
 
   let connection: PgConnection
   let database: IMemoryDb
@@ -31,11 +28,6 @@ describe('Auth Middleware', () => {
 
   beforeEach(() => {
     backup.restore()
-
-    id = faker.datatype.uuid()
-    name = faker.name.findName()
-    email = faker.internet.email()
-    password = faker.internet.password()
   })
 
   afterAll(async () => {

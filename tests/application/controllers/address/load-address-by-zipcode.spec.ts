@@ -1,26 +1,21 @@
+import { addressParams } from '@/tests/mocks'
 import { Controller } from '@/application/controllers'
 import { LoadAddressByZipCodeController } from '@/application/controllers/address'
 import { InvalidFieldError } from '@/application/errors'
 
-import faker from 'faker'
-
 describe('LoadAddressByZipCodeController', () => {
   let sut: LoadAddressByZipCodeController
 
-  let zipCode: string
-  let district: string
-  let address: string
+  const { zipCode, district, street } = addressParams
 
   const loadAddressByZipCode: jest.Mock = jest.fn()
 
+  beforeAll(() => {
+    loadAddressByZipCode.mockResolvedValue({ district, street })
+  })
+
   beforeEach(() => {
     sut = new LoadAddressByZipCodeController(loadAddressByZipCode)
-
-    zipCode = faker.address.zipCode('########')
-    district = faker.random.words(2)
-    address = faker.address.streetName()
-
-    loadAddressByZipCode.mockResolvedValue({ district, address })
   })
 
   it('Should extend Controller', async () => {
@@ -47,6 +42,6 @@ describe('LoadAddressByZipCodeController', () => {
     const { statusCode, data } = await sut.handle({ zipCode })
 
     expect(statusCode).toBe(200)
-    expect(data).toEqual({ district, address })
+    expect(data).toEqual({ district, street })
   })
 })

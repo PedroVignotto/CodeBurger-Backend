@@ -1,6 +1,7 @@
+import { accountParams, addressParams } from '@/tests/mocks'
 import { makeFakeDatabase } from '@/tests/infra/database/postgres/mocks'
 import { app } from '@/main/config/app'
-import { InvalidFieldError, RequiredFieldError, UnauthorizedError } from '@/application/errors'
+import { InvalidFieldError, RequiredFieldError } from '@/application/errors'
 import { Account, Address } from '@/infra/database/postgres/entities'
 import { PgConnection } from '@/infra/database/postgres/helpers'
 import { ZipCodeApi } from '@/infra/gateways'
@@ -8,21 +9,14 @@ import { ZipCodeApi } from '@/infra/gateways'
 import { mocked } from 'jest-mock'
 import { IBackup, IMemoryDb } from 'pg-mem'
 import request from 'supertest'
-import faker from 'faker'
 
 jest.mock('@/infra/gateways/zipcode-api')
 
 describe('Address routes', () => {
-  let name: string
-  let email: string
-  let password: string
-  let passwordConfirmation: string
-  let surname: string
-  let zipCode: string
-  let district: string
-  let address: string
-  let number: number
-  let complement: string
+  const { name, email, password, passwordConfirmation } = accountParams
+  const { surname, zipCode, district, street, number, complement } = addressParams
+
+  let token: string
 
   let connection: PgConnection
   let database: IMemoryDb
@@ -38,19 +32,12 @@ describe('Address routes', () => {
     backup = database.backup()
   })
 
-  beforeEach(() => {
+  beforeEach(async () => {
     backup.restore()
 
-    name = faker.name.findName()
-    email = faker.internet.email()
-    password = faker.internet.password()
-    passwordConfirmation = password
-    surname = faker.random.word()
-    zipCode = faker.address.zipCode('########')
-    district = faker.random.words(2)
-    address = faker.address.streetName()
-    number = faker.datatype.number()
-    complement = faker.random.words(3)
+    const { body } = await request(app).post('/api/signup').send({ name, email, password, passwordConfirmation })
+
+    token = body.accessToken
   })
 
   afterAll(async () => {
@@ -59,22 +46,16 @@ describe('Address routes', () => {
 
   describe('GET /address/:zipCode', () => {
     it('Should return 200 on success', async () => {
-      searchSpy.mockReturnValueOnce({ district: faker.random.words(2), address: faker.address.streetName() })
-      const { body: { accessToken } } = await request(app).post('/api/signup').send({ name, email, password, passwordConfirmation })
+      searchSpy.mockReturnValueOnce({ district, street })
 
-      const { status, body } = await request(app)
+      const { status } = await request(app)
         .get(`/api/address/${zipCode}`)
-        .set({ authorization: `Bearer: ${accessToken as string}` })
+        .set({ authorization: `Bearer: ${token}` })
 
       expect(status).toBe(200)
-      expect(body).toHaveProperty('address')
-      expect(body).toHaveProperty('district')
     })
 
     it('Should return 400 if zipCode is invalid', async () => {
-      const { body: { accessToken } } = await request(app).post('/api/signup').send({ name, email, password, passwordConfirmation })
-      const token: string = accessToken
-
       const { status, body: { error } } = await request(app)
         .get(`/api/address/${zipCode}`)
         .set({ authorization: `Bearer: ${token}` })
@@ -82,77 +63,54 @@ describe('Address routes', () => {
       expect(status).toBe(400)
       expect(error).toBe(new InvalidFieldError('zipCode').message)
     })
-
-    it('Should return 401 if authorization header was not provided', async () => {
-      const { status, body: { error } } = await request(app)
-        .get(`/api/address/${zipCode}`)
-
-      expect(status).toBe(401)
-      expect(error).toBe(new UnauthorizedError().message)
-    })
   })
 
   describe('POST /address', () => {
     it('Should return 201 on success', async () => {
-      searchSpy.mockReturnValueOnce({ district: faker.random.words(2), address: faker.address.streetName() })
-      const { body: { accessToken } } = await request(app).post('/api/signup').send({ name, email, password, passwordConfirmation })
+      searchSpy.mockReturnValueOnce({ district, street })
 
       const { status } = await request(app)
         .post('/api/address')
-        .send({ surname, zipCode, district, address, number, complement })
-        .set({ authorization: `Bearer: ${accessToken as string}` })
+        .send({ surname, zipCode, district, street, number, complement })
+        .set({ authorization: `Bearer: ${token}` })
 
       expect(status).toBe(201)
     })
 
     it('Should return 400 if zipCode is invalid', async () => {
-      const { body: { accessToken } } = await request(app).post('/api/signup').send({ name, email, password, passwordConfirmation })
-
       const { status, body: { error } } = await request(app)
         .post('/api/address')
-        .send({ surname, zipCode, district, address, number, complement })
-        .set({ authorization: `Bearer: ${accessToken as string}` })
+        .send({ surname, zipCode, district, street, number, complement })
+        .set({ authorization: `Bearer: ${token}` })
 
       expect(status).toBe(400)
       expect(error).toBe(new InvalidFieldError('zipCode').message)
     })
 
     it('Should return 400 if has invalid data', async () => {
-      const { body: { accessToken } } = await request(app).post('/api/signup').send({ name, email, password, passwordConfirmation })
-
       const { status, body: { error } } = await request(app)
         .post('/api/address')
-        .send({ zipCode, district, address, number, complement })
-        .set({ authorization: `Bearer: ${accessToken as string}` })
+        .send({ zipCode, district, street, number, complement })
+        .set({ authorization: `Bearer: ${token}` })
 
       expect(status).toBe(400)
       expect(error).toBe(new RequiredFieldError('surname').message)
-    })
-
-    it('Should return 401 if authorization header was not provided', async () => {
-      const { status, body: { error } } = await request(app)
-        .post('/api/address')
-        .send({ surname, zipCode, district, address, number, complement })
-
-      expect(status).toBe(401)
-      expect(error).toBe(new UnauthorizedError().message)
     })
   })
 
   describe('GET /addresses', () => {
     it('Should return 200 on success', async () => {
-      searchSpy.mockReturnValueOnce({ district: faker.random.words(2), address: faker.address.streetName() })
-      const { body: { accessToken } } = await request(app).post('/api/signup').send({ name, email, password, passwordConfirmation })
+      searchSpy.mockReturnValueOnce({ district, street })
       await request(app).post('/api/address')
-        .send({ surname, zipCode, district, address, number, complement })
-        .set({ authorization: `Bearer: ${accessToken as string}` })
+        .send({ surname, zipCode, district, street, number, complement })
+        .set({ authorization: `Bearer: ${token}` })
 
       const { status, body } = await request(app)
         .get('/api/addresses')
-        .set({ authorization: `Bearer: ${accessToken as string}` })
+        .set({ authorization: `Bearer: ${token}` })
 
       expect(status).toBe(200)
-      expect(body).toMatchObject([{ surname, zipCode, district, address, number, complement }])
+      expect(body).toMatchObject([{ surname, zipCode, district, street, number, complement }])
     })
   })
 })

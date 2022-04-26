@@ -1,28 +1,22 @@
+import { addressParams } from '@/tests/mocks'
 import { SearchAddressByZipCode } from '@/domain/contracts/gateways'
-import { LoadAddressByZipCode, LoadAddressByZipCodeUseCase } from '@/domain/use-cases/address'
+import { LoadAddressByZipCode, loadAddressByZipCodeUseCase } from '@/domain/use-cases/address'
 
 import { mock } from 'jest-mock-extended'
-import faker from 'faker'
 
 describe('LoadAddressByZipCodeUseCase', () => {
   let sut: LoadAddressByZipCode
 
-  let zipCode: string
-  let district: string
-  let address: string
-  let error: Error
+  const { zipCode, district, street, error } = addressParams
 
   const searchAddressByZipCode = mock<SearchAddressByZipCode>()
 
+  beforeAll(() => {
+    searchAddressByZipCode.search.mockResolvedValue({ district, street })
+  })
+
   beforeEach(() => {
-    sut = LoadAddressByZipCodeUseCase(searchAddressByZipCode)
-
-    zipCode = faker.address.zipCode('########')
-    district = faker.random.words(2)
-    address = faker.address.streetName()
-    error = new Error(faker.random.word())
-
-    searchAddressByZipCode.search.mockResolvedValue({ district, address })
+    sut = loadAddressByZipCodeUseCase(searchAddressByZipCode)
   })
 
   it('Should call SearchAddressByZipCode with correct zipcode', async () => {
@@ -51,6 +45,6 @@ describe('LoadAddressByZipCodeUseCase', () => {
   it('Should return district and address on success', async () => {
     const result = await sut({ zipCode })
 
-    expect(result).toEqual({ district, address })
+    expect(result).toEqual({ district, street })
   })
 })

@@ -23,12 +23,14 @@ describe('Controller', () => {
   let errorObject: Error
   let error: string
 
-  beforeEach(() => {
-    sut = new ControllerStub()
-
+  beforeAll(() => {
     value = faker.random.word()
     errorObject = new Error(faker.random.word())
     error = faker.random.word()
+  })
+
+  beforeEach(() => {
+    sut = new ControllerStub()
   })
 
   it('Should return badRequest if any validation fails', async () => {

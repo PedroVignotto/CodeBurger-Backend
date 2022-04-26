@@ -9,7 +9,7 @@ export namespace ListAddressesRepository {
     surname: string
     zipCode: string
     district: string
-    address: string
+    street: string
     number: number
     complement?: string
   }>

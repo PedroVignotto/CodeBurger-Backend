@@ -1,24 +1,22 @@
+import { addressParams } from '@/tests/mocks'
 import { ListAddressesRepository } from '@/domain/contracts/database/repositories/address'
-import { ListAddresses, ListAddressesUseCase } from '@/domain/use-cases/address'
+import { ListAddresses, listAddressesUseCase } from '@/domain/use-cases/address'
 
 import { mock } from 'jest-mock-extended'
-import faker from 'faker'
 
 describe('ListAddressUseCase', () => {
   let sut: ListAddresses
 
-  let accountId: string
-  let error: Error
+  const { accountId, error } = addressParams
 
   const addressRepository = mock<ListAddressesRepository>()
 
-  beforeEach(() => {
-    sut = ListAddressesUseCase(addressRepository)
-
-    accountId = faker.datatype.uuid()
-    error = new Error(faker.random.word())
-
+  beforeAll(() => {
     addressRepository.list.mockResolvedValue([])
+  })
+
+  beforeEach(() => {
+    sut = listAddressesUseCase(addressRepository)
   })
 
   it('Should call ListAddressesRepository with correct accountId', async () => {

@@ -11,12 +11,14 @@ describe('UUIDAdapter', () => {
 
   let uuid: string
 
-  beforeEach(() => {
-    sut = new UUIDAdapter()
-
+  beforeAll(() => {
     uuid = faker.datatype.uuid()
 
     mocked(uuidV4).mockReturnValue(uuid)
+  })
+
+  beforeEach(() => {
+    sut = new UUIDAdapter()
   })
 
   it('Should call uuidV4', () => {

@@ -6,24 +6,25 @@ import faker from 'faker'
 describe('ValidationComposite', () => {
   let sut: ValidationComposite
 
-  let error1: string
-  let error2: string
+  let error1: Error
+  let error2: Error
   let validators: Validator[]
 
   const validator1 = mock<Validator>()
   const validator2 = mock<Validator>()
 
   beforeAll(() => {
+    error1 = new Error(faker.random.word())
+    error2 = new Error(faker.random.word())
+
     validator1.validate.mockReturnValue(undefined)
     validator2.validate.mockReturnValue(undefined)
+
     validators = [validator1, validator2]
   })
 
   beforeEach(() => {
     sut = new ValidationComposite(validators)
-
-    error1 = faker.random.word()
-    error2 = faker.random.word()
   })
 
   it('Should return undefined if all Validators return undefined', () => {
@@ -33,11 +34,11 @@ describe('ValidationComposite', () => {
   })
 
   it('Should return the first error if any Validator fails', () => {
-    validator1.validate.mockReturnValueOnce(new Error(error1))
-    validator2.validate.mockReturnValueOnce(new Error(error2))
+    validator1.validate.mockReturnValueOnce(error1)
+    validator2.validate.mockReturnValueOnce(error2)
 
     const error = sut.validate()
 
-    expect(error).toEqual(new Error(error1))
+    expect(error).toEqual(error1)
   })
 })
