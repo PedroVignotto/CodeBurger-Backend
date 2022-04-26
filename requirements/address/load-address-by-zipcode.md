@@ -3,8 +3,8 @@
 > ## Success case
 
 01. ✅ Receives a request of type **GET** in route **/api/address/:zipCode**
-00. ✅ Get data **district** and **address** from CEP API
-00. ✅ Returns **200** with the **district** and **address**
+00. ✅ Get data **district** and **street** from CEP API
+00. ✅ Returns **200** with the **district** and **street**
 
 > ## Exceptions
 
