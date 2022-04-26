@@ -81,7 +81,7 @@ describe('AddressRepository', () => {
 
       const addresses = await sut.list({ accountId })
 
-      expect(addresses).toEqual([{ id: addressId, accountId, surname, zipCode, district, address, number, complement }])
+      expect(addresses).toEqual([{ id: addressId, surname, zipCode, district, address, number, complement }])
     })
 
     it('Should return [] if does not find any address', async () => {

@@ -6,7 +6,7 @@ export class Address {
   @PrimaryColumn()
   id!: string
 
-  @Column()
+  @Column({ select: false })
   accountId!: string
 
   @ManyToOne(() => Account)
