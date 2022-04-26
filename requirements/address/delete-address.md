@@ -10,5 +10,3 @@
 > ## Exceptions
 
 01. ❌ Returns error **500** if there is an **error** on the server
-
-
