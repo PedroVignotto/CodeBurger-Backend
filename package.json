@@ -8,6 +8,7 @@
     "build": "rimraf dist && tsc -p tsconfig-build.json",
     "typeorm": "ts-node-dev ./node_modules/typeorm/cli",
     "test": "jest --passWithNoTests --no-cache --runInBand",
+    "test:watch": "npm t -- --watch",
     "test:unit": "npm t -- --watch -c jest-unit-config.js",
     "test:integration": "npm test -- --watch -c jest-integration-config.js",
     "test:staged": "npm t -- --findRelatedTests",
