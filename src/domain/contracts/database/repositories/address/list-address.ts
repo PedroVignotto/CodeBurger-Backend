@@ -4,7 +4,7 @@ export interface ListAddressRepository {
 
 export namespace ListAddressRepository {
   export type Input = { accountId: string }
-  export type Output = {
+  export type Output = Array<{
     id: string
     surname: string
     zipCode: string
@@ -12,5 +12,5 @@ export namespace ListAddressRepository {
     address: string
     number: number
     complement?: string
-  }
+  }>
 }
