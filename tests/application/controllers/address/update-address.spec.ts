@@ -23,4 +23,10 @@ describe('UpdateAddressController', () => {
     expect(updateAddress).toHaveBeenCalledWith({ id, surname, number, complement })
     expect(updateAddress).toHaveBeenCalledTimes(1)
   })
+
+  it('Should return noContent if valid data is provided', async () => {
+    const { statusCode } = await sut.handle({ id, surname, number, complement })
+
+    expect(statusCode).toBe(204)
+  })
 })
