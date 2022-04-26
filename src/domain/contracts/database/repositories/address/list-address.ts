@@ -1,8 +1,8 @@
-export interface ListAddressRepository {
-  list: (input: ListAddressRepository.Input) => Promise<ListAddressRepository.Output>
+export interface ListAddressesRepository {
+  list: (input: ListAddressesRepository.Input) => Promise<ListAddressesRepository.Output>
 }
 
-export namespace ListAddressRepository {
+export namespace ListAddressesRepository {
   export type Input = { accountId: string }
   export type Output = Array<{
     id: string

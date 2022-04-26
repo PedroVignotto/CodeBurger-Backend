@@ -1,10 +1,10 @@
 import { Controller } from '@/application/controllers'
-import { ListAddressController } from '@/application/controllers/address'
+import { ListAddressesController } from '@/application/controllers/address'
 
 import faker from 'faker'
 
-describe('ListAddressController', () => {
-  let sut: ListAddressController
+describe('ListAddressesController', () => {
+  let sut: ListAddressesController
 
   let id: string
   let accountId: string
@@ -15,10 +15,10 @@ describe('ListAddressController', () => {
   let number: number
   let complement: string
 
-  const listAddress: jest.Mock = jest.fn()
+  const listAddresses: jest.Mock = jest.fn()
 
   beforeEach(() => {
-    sut = new ListAddressController(listAddress)
+    sut = new ListAddressesController(listAddresses)
 
     id = faker.datatype.uuid()
     accountId = faker.datatype.uuid()
@@ -29,18 +29,18 @@ describe('ListAddressController', () => {
     number = faker.datatype.number()
     complement = faker.random.words(3)
 
-    listAddress.mockResolvedValue([{ id, surname, zipCode, district, address, number, complement }])
+    listAddresses.mockResolvedValue([{ id, surname, zipCode, district, address, number, complement }])
   })
 
   it('Should extend Controller', async () => {
     expect(sut).toBeInstanceOf(Controller)
   })
 
-  it('Should call listAddress with correct values', async () => {
+  it('Should call listAddresses with correct values', async () => {
     await sut.handle({ accountId })
 
-    expect(listAddress).toHaveBeenCalledWith({ accountId })
-    expect(listAddress).toHaveBeenCalledTimes(1)
+    expect(listAddresses).toHaveBeenCalledWith({ accountId })
+    expect(listAddresses).toHaveBeenCalledTimes(1)
   })
 
   it('Should return ok if valid data is provided', async () => {

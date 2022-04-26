@@ -1,9 +1,9 @@
 import { Address } from '@/infra/database/postgres/entities'
 import { PgRepository } from '@/infra/database/postgres/repositories'
 import { UUIDGenerator } from '@/domain/contracts/gateways'
-import { AddAddressRepository, ListAddressRepository } from '@/domain/contracts/database/repositories/address'
+import { AddAddressRepository, ListAddressesRepository } from '@/domain/contracts/database/repositories/address'
 
-export class AddressRepository extends PgRepository implements AddAddressRepository, ListAddressRepository {
+export class AddressRepository extends PgRepository implements AddAddressRepository, ListAddressesRepository {
   constructor (private readonly uuid: UUIDGenerator) { super() }
 
   async create (input: AddAddressRepository.Input): Promise<AddAddressRepository.Output> {
@@ -14,7 +14,7 @@ export class AddressRepository extends PgRepository implements AddAddressReposit
     return true
   }
 
-  async list ({ accountId }: ListAddressRepository.Input): Promise<ListAddressRepository.Output> {
+  async list ({ accountId }: ListAddressesRepository.Input): Promise<ListAddressesRepository.Output> {
     const repository = this.getRepository(Address)
 
     const addresses = await repository.find({ accountId })

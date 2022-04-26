@@ -1,11 +1,11 @@
-import { ListAddressRepository } from '@/domain/contracts/database/repositories/address'
+import { ListAddressesRepository } from '@/domain/contracts/database/repositories/address'
 
-type Setup = (addressRepository: ListAddressRepository) => ListAddress
+type Setup = (addressRepository: ListAddressesRepository) => ListAddresses
 type Input = { accountId: string }
 type Output = Array<{ id: string, surname: string, zipCode: string, district: string, address: string, number: number, complement?: string }>
-export type ListAddress = (input: Input) => Promise<Output>
+export type ListAddresses = (input: Input) => Promise<Output>
 
-export const ListAddressUseCase: Setup = addressRepository => async ({ accountId }) => {
+export const ListAddressesUseCase: Setup = addressRepository => async ({ accountId }) => {
   const addresses = await addressRepository.list({ accountId })
 
   return addresses
