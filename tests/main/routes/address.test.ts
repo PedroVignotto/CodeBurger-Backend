@@ -138,4 +138,21 @@ describe('Address routes', () => {
       expect(error).toBe(new UnauthorizedError().message)
     })
   })
+
+  describe('GET /addresses', () => {
+    it('Should return 200 on success', async () => {
+      searchSpy.mockReturnValueOnce({ district: faker.random.words(2), address: faker.address.streetName() })
+      const { body: { accessToken } } = await request(app).post('/api/signup').send({ name, email, password, passwordConfirmation })
+      await request(app).post('/api/address')
+        .send({ surname, zipCode, district, address, number, complement })
+        .set({ authorization: `Bearer: ${accessToken as string}` })
+
+      const { status, body } = await request(app)
+        .get('/api/addresses')
+        .set({ authorization: `Bearer: ${accessToken as string}` })
+
+      expect(status).toBe(200)
+      expect(body).toMatchObject([{ surname, zipCode, district, address, number, complement }])
+    })
+  })
 })
