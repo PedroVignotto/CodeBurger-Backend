@@ -8,6 +8,7 @@ describe('ListAddressUseCase', () => {
   let sut: ListAddress
 
   let accountId: string
+  let error: Error
 
   const addressRepository = mock<ListAddressRepository>()
 
@@ -15,6 +16,7 @@ describe('ListAddressUseCase', () => {
     sut = ListAddressUseCase(addressRepository)
 
     accountId = faker.datatype.uuid()
+    error = new Error(faker.random.word())
   })
 
   it('Should call ListAddressRepository with correct accountId', async () => {
@@ -22,5 +24,13 @@ describe('ListAddressUseCase', () => {
 
     expect(addressRepository.list).toHaveBeenCalledWith({ accountId })
     expect(addressRepository.list).toHaveBeenCalledTimes(1)
+  })
+
+  it('Should rethrow if ListAddressRepository throws', async () => {
+    addressRepository.list.mockRejectedValueOnce(error)
+
+    const promise = sut({ accountId })
+
+    await expect(promise).rejects.toThrow(error)
   })
 })
