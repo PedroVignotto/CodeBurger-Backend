@@ -27,7 +27,8 @@ describe('AddressRepository', () => {
   let connection: PgConnection
   let database: IMemoryDb
   let backup: IBackup
-  let repository: Repository<Account>
+  let repositoryAccount: Repository<Account>
+  let repositoryAddress: Repository<Address>
 
   const uuid = mock<UUIDGenerator>()
 
@@ -35,7 +36,8 @@ describe('AddressRepository', () => {
     connection = PgConnection.getInstance()
     database = await makeFakeDatabase([Account, Address])
     backup = database.backup()
-    repository = connection.getRepository(Account)
+    repositoryAccount = connection.getRepository(Account)
+    repositoryAddress = connection.getRepository(Address)
   })
 
   beforeEach(() => {
@@ -62,11 +64,24 @@ describe('AddressRepository', () => {
     expect(sut).toBeInstanceOf(PgRepository)
   })
 
-  it('Should return true on success', async () => {
-    const account = await repository.save({ id, name, email, password })
+  describe('create()', () => {
+    it('Should return true on success', async () => {
+      const account = await repositoryAccount.save({ id, name, email, password })
 
-    const result = await sut.create({ accountId: account.id, surname, zipCode, district, address, number, complement })
+      const result = await sut.create({ accountId: account.id, surname, zipCode, district, address, number, complement })
 
-    expect(result).toBe(true)
+      expect(result).toBe(true)
+    })
+  })
+
+  describe('list()', () => {
+    it('Should return all addresses', async () => {
+      const { id: accountId } = await repositoryAccount.save({ id, name, email, password })
+      const { id: addressId } = await repositoryAddress.save({ id, accountId, surname, zipCode, district, address, number, complement })
+
+      const addresses = await sut.list({ accountId })
+
+      expect(addresses).toEqual([{ id: addressId, accountId, surname, zipCode, district, address, number, complement }])
+    })
   })
 })
