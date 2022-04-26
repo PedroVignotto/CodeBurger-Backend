@@ -21,4 +21,12 @@ describe('DeleteAddressUseCase', () => {
     expect(addressRepository.checkById).toHaveBeenCalledWith({ id })
     expect(addressRepository.checkById).toHaveBeenCalledTimes(1)
   })
+
+  it('Should return false if CheckAddressByIdRepository return false', async () => {
+    addressRepository.checkById.mockResolvedValueOnce(false)
+
+    const result = await sut({ id })
+
+    expect(result).toBe(false)
+  })
 })
