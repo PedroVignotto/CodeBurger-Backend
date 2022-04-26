@@ -9,18 +9,21 @@ import { ZipCodeApi } from '@/infra/gateways'
 import { mocked } from 'jest-mock'
 import { IBackup, IMemoryDb } from 'pg-mem'
 import request from 'supertest'
+import { Repository } from 'typeorm'
 
 jest.mock('@/infra/gateways/zipcode-api')
 
 describe('Address routes', () => {
   const { name, email, password, passwordConfirmation } = accountParams
-  const { surname, zipCode, district, street, number, complement } = addressParams
+  const { id, surname, zipCode, district, street, number, complement } = addressParams
 
   let token: string
 
   let connection: PgConnection
   let database: IMemoryDb
   let backup: IBackup
+  let repositoryAccount: Repository<Account>
+  let repositoryAddress: Repository<Address>
 
   const searchSpy: jest.Mock = jest.fn()
 
@@ -30,6 +33,8 @@ describe('Address routes', () => {
     connection = PgConnection.getInstance()
     database = await makeFakeDatabase([Account, Address])
     backup = database.backup()
+    repositoryAccount = connection.getRepository(Account)
+    repositoryAddress = connection.getRepository(Address)
   })
 
   beforeEach(async () => {
@@ -111,6 +116,21 @@ describe('Address routes', () => {
 
       expect(status).toBe(200)
       expect(body).toMatchObject([{ surname, zipCode, district, street, number, complement }])
+    })
+  })
+
+  describe('PUT /address/:id', () => {
+    it('Should return 204 on success', async () => {
+      const account = await repositoryAccount.find()
+      const address = await repositoryAddress.save({ id, accountId: account[0].id, surname, zipCode, district, street, number, complement })
+
+      const { status } = await request(app)
+        .put(`/api/address/${address.id}`)
+        .send({ surname: 'updated_surname' })
+        .set({ authorization: `Bearer: ${token}` })
+
+      expect(status).toBe(204)
+      expect(await repositoryAddress.findOne(address.id)).toMatchObject({ surname: 'updated_surname' })
     })
   })
 })
