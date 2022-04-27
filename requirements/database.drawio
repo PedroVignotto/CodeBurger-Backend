@@ -107,16 +107,13 @@
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
                 <mxCell id="346" value="Categories" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=26;fillColor=none;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;strokeColor=#8BE9FD;strokeWidth=3;rounded=1;fontSize=14;noLabel=0;connectable=1;allowArrows=1;expand=1;" parent="1" vertex="1">
-                    <mxGeometry x="14" y="-248" width="140" height="104" as="geometry"/>
+                    <mxGeometry x="14" y="-248" width="140" height="78" as="geometry"/>
                 </mxCell>
                 <mxCell id="347" value="id: uuid (PK)" style="text;strokeColor=#8BE9FD;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;strokeWidth=3;rounded=1;noLabel=0;connectable=1;allowArrows=1;expand=1;" parent="346" vertex="1">
                     <mxGeometry y="26" width="140" height="26" as="geometry"/>
                 </mxCell>
                 <mxCell id="348" value="name: string" style="text;strokeColor=#8BE9FD;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;strokeWidth=3;rounded=1;noLabel=0;connectable=1;allowArrows=1;expand=1;" parent="346" vertex="1">
                     <mxGeometry y="52" width="140" height="26" as="geometry"/>
-                </mxCell>
-                <mxCell id="349" value="description: string" style="text;strokeColor=#8BE9FD;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;strokeWidth=3;rounded=1;noLabel=0;connectable=1;allowArrows=1;expand=1;" parent="346" vertex="1">
-                    <mxGeometry y="78" width="140" height="26" as="geometry"/>
                 </mxCell>
                 <mxCell id="365" style="edgeStyle=none;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;fontSize=14;endArrow=ERmandOne;endFill=0;strokeWidth=2;" parent="1" source="353" target="361" edge="1">
                     <mxGeometry relative="1" as="geometry">
