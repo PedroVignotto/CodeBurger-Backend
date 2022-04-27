@@ -9,4 +9,5 @@
 
 > ## Exceptions
 
-01. ✅ Returns error **500** if there is an **error** on the server
+01. ✅ Returns error **400** if no have address with **id** provided
+00. ✅ Returns error **500** if there is an **error** on the server
