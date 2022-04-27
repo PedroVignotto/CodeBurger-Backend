@@ -80,4 +80,12 @@ describe('AddressRepository', () => {
       expect(await repositoryAddress.findOne(address.id)).toMatchObject({ surname: 'updated_surname' })
     })
   })
+
+  describe('checkById()', () => {
+    it('Should return false if address does not exists', async () => {
+      const addressExists = await sut.checkById({ id })
+
+      expect(addressExists).toBe(false)
+    })
+  })
 })
