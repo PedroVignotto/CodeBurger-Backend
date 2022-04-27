@@ -1,6 +1,7 @@
 import { addressParams } from '@/tests/mocks'
 import { Controller } from '@/application/controllers'
 import { DeleteAddressController } from '@/application/controllers/address'
+import { InvalidFieldError } from '@/application/errors'
 
 describe('DeleteAddressController', () => {
   let sut: DeleteAddressController
@@ -22,5 +23,14 @@ describe('DeleteAddressController', () => {
 
     expect(deleteAddress).toHaveBeenCalledWith({ id })
     expect(deleteAddress).toHaveBeenCalledTimes(1)
+  })
+
+  it('Should return badRequest if deleteAddress return false', async () => {
+    deleteAddress.mockResolvedValueOnce(false)
+
+    const { statusCode, data } = await sut.handle({ id })
+
+    expect(statusCode).toBe(400)
+    expect(data).toEqual(new InvalidFieldError('id'))
   })
 })
