@@ -132,6 +132,15 @@ describe('Address routes', () => {
       expect(status).toBe(204)
       expect(await repositoryAddress.findOne(address.id)).toMatchObject({ surname: 'updated_surname' })
     })
+
+    it('Should return 400 if no have address with id provided', async () => {
+      const { status, body: { error } } = await request(app)
+        .put('/api/address/any_id')
+        .set({ authorization: `Bearer: ${token}` })
+
+      expect(status).toBe(400)
+      expect(error).toEqual(new InvalidFieldError('id').message)
+    })
   })
 
   describe('DELETE /address/:id', () => {
