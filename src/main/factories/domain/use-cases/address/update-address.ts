@@ -1,6 +1,6 @@
-import { UpdateAddress } from '@/domain/use-cases/address'
+import { UpdateAddress, updateAddressUseCase } from '@/domain/use-cases/address'
 import { makeAddressRepository } from '@/main/factories/infra/database/postgres/repositories'
 
 export const makeUpdateAddressUseCase = (): UpdateAddress => {
-  return makeAddressRepository().update.bind(makeAddressRepository())
+  return updateAddressUseCase(makeAddressRepository())
 }
