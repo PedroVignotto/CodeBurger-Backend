@@ -40,4 +40,10 @@ describe('UpdateAddressUseCase', () => {
     expect(addressRepository.update).toHaveBeenCalledWith({ id, surname, number, complement })
     expect(addressRepository.update).toHaveBeenCalledTimes(1)
   })
+
+  it('Should return true on success', async () => {
+    const result = await sut({ id, surname, number, complement })
+
+    expect(result).toBe(true)
+  })
 })
