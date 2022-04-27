@@ -1,5 +1,6 @@
 import { Controller } from '@/application/controllers/controller'
-import { HttpResponse, ok } from '@/application/helpers'
+import { InvalidFieldError } from '@/application/errors'
+import { badRequest, HttpResponse, ok } from '@/application/helpers'
 import { DeleteAddress } from '@/domain/use-cases/address'
 
 type HttpRequest = { id: string }
@@ -9,7 +10,9 @@ export class DeleteAddressController extends Controller {
   constructor (private readonly deleteAddress: DeleteAddress) { super() }
 
   async perform ({ id }: HttpRequest): Promise<HttpResponse<Model>> {
-    await this.deleteAddress({ id })
+    const address = await this.deleteAddress({ id })
+
+    if (!address) return badRequest(new InvalidFieldError('id'))
 
     return ok(undefined)
   }
