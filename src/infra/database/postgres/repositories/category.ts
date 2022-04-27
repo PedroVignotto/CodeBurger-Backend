@@ -1,9 +1,9 @@
 import { Category } from '@/infra/database/postgres/entities'
 import { PgRepository } from '@/infra/database/postgres/repositories'
 import { UUIDGenerator } from '@/domain/contracts/gateways'
-import { AddCategoryRepository, CheckCategoryByNameRepository } from '@/domain/contracts/database/repositories/category'
+import { AddCategoryRepository, CheckCategoryByNameRepository, ListCategoriesRepository } from '@/domain/contracts/database/repositories/category'
 
-export class CategoryRepository extends PgRepository implements CheckCategoryByNameRepository, AddCategoryRepository {
+export class CategoryRepository extends PgRepository implements CheckCategoryByNameRepository, AddCategoryRepository, ListCategoriesRepository {
   constructor (private readonly uuid: UUIDGenerator) { super() }
 
   async checkByName ({ name }: CheckCategoryByNameRepository.Input): Promise<CheckCategoryByNameRepository.Output> {
@@ -18,5 +18,13 @@ export class CategoryRepository extends PgRepository implements CheckCategoryByN
     const repository = this.getRepository(Category)
 
     await repository.save({ id: this.uuid.generate(), name })
+  }
+
+  async list (): Promise<ListCategoriesRepository.Output> {
+    const repository = this.getRepository(Category)
+
+    const categories = await repository.find()
+
+    return categories
   }
 }
