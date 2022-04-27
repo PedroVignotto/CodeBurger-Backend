@@ -11,6 +11,10 @@ describe('AddCategoryUseCase', () => {
 
   const categoryRepository = mock<CheckCategoryByNameRepository & AddCategoryRepository>()
 
+  beforeAll(() => {
+    categoryRepository.checkByName.mockResolvedValue(false)
+  })
+
   beforeEach(() => {
     sut = addCategoryUseCase(categoryRepository)
   })
@@ -43,5 +47,13 @@ describe('AddCategoryUseCase', () => {
 
     expect(categoryRepository.create).toHaveBeenCalledWith({ name })
     expect(categoryRepository.create).toHaveBeenCalledTimes(1)
+  })
+
+  it('Should rethrow if AddCategoryRepository throws', async () => {
+    categoryRepository.create.mockRejectedValueOnce(error)
+
+    const promise = sut({ name })
+
+    await expect(promise).rejects.toThrow(error)
   })
 })
