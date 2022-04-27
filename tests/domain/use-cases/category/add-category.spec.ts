@@ -1,5 +1,5 @@
 import { categoryParams } from '@/tests/mocks'
-import { CheckCategoryByNameRepository } from '@/domain/contracts/database/repositories/category'
+import { AddCategoryRepository, CheckCategoryByNameRepository } from '@/domain/contracts/database/repositories/category'
 import { AddCategory, addCategoryUseCase } from '@/domain/use-cases/category'
 
 import { mock } from 'jest-mock-extended'
@@ -9,7 +9,7 @@ describe('AddCategoryUseCase', () => {
 
   const { name, error } = categoryParams
 
-  const categoryRepository = mock<CheckCategoryByNameRepository>()
+  const categoryRepository = mock<CheckCategoryByNameRepository & AddCategoryRepository>()
 
   beforeEach(() => {
     sut = addCategoryUseCase(categoryRepository)
@@ -36,5 +36,12 @@ describe('AddCategoryUseCase', () => {
     const promise = sut({ name })
 
     await expect(promise).rejects.toThrow(error)
+  })
+
+  it('Should call AddCategoryRepository with correct name', async () => {
+    await sut({ name })
+
+    expect(categoryRepository.create).toHaveBeenCalledWith({ name })
+    expect(categoryRepository.create).toHaveBeenCalledTimes(1)
   })
 })
