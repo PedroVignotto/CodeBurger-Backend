@@ -2,6 +2,7 @@ import { categoryParams } from '@/tests/mocks'
 import { Controller } from '@/application/controllers'
 import { RequiredValidation } from '@/application/validation'
 import { AddCategoryController } from '@/application/controllers/category'
+import { FieldInUseError } from '@/application/errors'
 
 describe('AddCategoryController', () => {
   let sut: AddCategoryController
@@ -29,5 +30,14 @@ describe('AddCategoryController', () => {
 
     expect(addCategory).toHaveBeenCalledWith({ name })
     expect(addCategory).toHaveBeenCalledTimes(1)
+  })
+
+  it('Should return badRequest if addCategory return false', async () => {
+    addCategory.mockResolvedValueOnce(false)
+
+    const { statusCode, data } = await sut.handle({ name })
+
+    expect(statusCode).toBe(400)
+    expect(data).toEqual(new FieldInUseError('name'))
   })
 })
