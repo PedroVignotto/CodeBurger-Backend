@@ -40,4 +40,10 @@ describe('DeleteAddressUseCase', () => {
     expect(addressRepository.delete).toHaveBeenCalledWith({ id })
     expect(addressRepository.delete).toHaveBeenCalledTimes(1)
   })
+
+  it('Should return true on success', async () => {
+    const result = await sut({ id })
+
+    expect(result).toBe(true)
+  })
 })
