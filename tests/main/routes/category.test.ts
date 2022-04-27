@@ -1,6 +1,7 @@
 import { accountParams, categoryParams } from '@/tests/mocks'
 import { makeFakeDatabase } from '@/tests/infra/database/postgres/mocks'
 import { app } from '@/main/config/app'
+import { RequiredFieldError } from '@/application/errors'
 import { Account, Category } from '@/infra/database/postgres/entities'
 import { PgConnection } from '@/infra/database/postgres/helpers'
 
@@ -42,5 +43,15 @@ describe('Category routes', () => {
       .set({ authorization: `Bearer: ${token}` })
 
     expect(status).toBe(201)
+  })
+
+  it('Should return 400 if has invalid data', async () => {
+    const { status, body: { error } } = await request(app)
+      .post('/api/category')
+      .send({ name: undefined })
+      .set({ authorization: `Bearer: ${token}` })
+
+    expect(status).toBe(400)
+    expect(error).toBe(new RequiredFieldError('name').message)
   })
 })
