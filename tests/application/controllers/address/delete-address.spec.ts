@@ -10,6 +10,10 @@ describe('DeleteAddressController', () => {
 
   const deleteAddress: jest.Mock = jest.fn()
 
+  beforeAll(() => {
+    deleteAddress.mockResolvedValue(true)
+  })
+
   beforeEach(() => {
     sut = new DeleteAddressController(deleteAddress)
   })
@@ -32,5 +36,11 @@ describe('DeleteAddressController', () => {
 
     expect(statusCode).toBe(400)
     expect(data).toEqual(new InvalidFieldError('id'))
+  })
+
+  it('Should return ok if deleteAddress return true', async () => {
+    const { statusCode } = await sut.handle({ id })
+
+    expect(statusCode).toBe(200)
   })
 })
