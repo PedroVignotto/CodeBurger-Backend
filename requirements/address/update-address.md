@@ -2,7 +2,8 @@
 
 > ## Success case
 
-01. ✅ Receives a request of type **PUT** in route **/api/address**
+01. ✅ Receives a request of type **PUT** in route **/api/address/:id**
+00. ✅ Validates if an address already exists with the **id** provided
 00. ✅ Change the **fields** provided in the database
 00. ✅ Returns **204** on success
 
