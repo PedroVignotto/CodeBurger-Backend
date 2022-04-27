@@ -40,17 +40,27 @@ describe('CategoryRepository', () => {
     expect(sut).toBeInstanceOf(PgRepository)
   })
 
-  it('Should return false if category does not exists', async () => {
-    const categoryExists = await sut.checkByName({ name })
+  describe('checkByName()', () => {
+    it('Should return false if category does not exists', async () => {
+      const categoryExists = await sut.checkByName({ name })
 
-    expect(categoryExists).toBe(false)
+      expect(categoryExists).toBe(false)
+    })
+
+    it('Should return true if category already exists', async () => {
+      await repository.save({ id, name })
+
+      const categoryExists = await sut.checkByName({ name })
+
+      expect(categoryExists).toBe(true)
+    })
   })
 
-  it('Should return true if category already exists', async () => {
-    await repository.save({ id, name })
+  describe('create()', () => {
+    it('Should create a category on success', async () => {
+      await sut.create({ name })
 
-    const categoryExists = await sut.checkByName({ name })
-
-    expect(categoryExists).toBe(true)
+      expect(await repository.findOne(id)).toBeTruthy()
+    })
   })
 })
