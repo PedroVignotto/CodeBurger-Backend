@@ -133,4 +133,18 @@ describe('Address routes', () => {
       expect(await repositoryAddress.findOne(address.id)).toMatchObject({ surname: 'updated_surname' })
     })
   })
+
+  describe('DELETE /address/:id', () => {
+    it('Should return 200 on success', async () => {
+      const account = await repositoryAccount.find()
+      const address = await repositoryAddress.save({ id, accountId: account[0].id, surname, zipCode, district, street, number, complement })
+
+      const { status } = await request(app)
+        .delete(`/api/address/${address.id}`)
+        .set({ authorization: `Bearer: ${token}` })
+
+      expect(status).toBe(200)
+      expect(await repositoryAddress.findOne(address.id)).toBeUndefined()
+    })
+  })
 })
