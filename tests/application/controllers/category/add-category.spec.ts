@@ -11,6 +11,10 @@ describe('AddCategoryController', () => {
 
   const addCategory: jest.Mock = jest.fn()
 
+  beforeAll(() => {
+    addCategory.mockResolvedValue(true)
+  })
+
   beforeEach(() => {
     sut = new AddCategoryController(addCategory)
   })
@@ -39,5 +43,12 @@ describe('AddCategoryController', () => {
 
     expect(statusCode).toBe(400)
     expect(data).toEqual(new FieldInUseError('name'))
+  })
+
+  it('Should return created if valid data is provided', async () => {
+    const { statusCode, data } = await sut.handle({ name })
+
+    expect(statusCode).toBe(201)
+    expect(data).toBeUndefined()
   })
 })
