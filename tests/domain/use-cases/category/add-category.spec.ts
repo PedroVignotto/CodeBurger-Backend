@@ -7,7 +7,7 @@ import { mock } from 'jest-mock-extended'
 describe('AddCategoryUseCase', () => {
   let sut: AddCategory
 
-  const { name } = categoryParams
+  const { name, error } = categoryParams
 
   const categoryRepository = mock<CheckCategoryByNameRepository>()
 
@@ -28,5 +28,13 @@ describe('AddCategoryUseCase', () => {
     const result = await sut({ name })
 
     expect(result).toBe(false)
+  })
+
+  it('Should rethrow if CheckCategoryByNameRepository throws', async () => {
+    categoryRepository.checkByName.mockRejectedValueOnce(error)
+
+    const promise = sut({ name })
+
+    await expect(promise).rejects.toThrow(error)
   })
 })
