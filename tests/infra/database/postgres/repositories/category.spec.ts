@@ -63,4 +63,12 @@ describe('CategoryRepository', () => {
       expect(await repository.findOne(id)).toBeTruthy()
     })
   })
+
+  describe('list()', () => {
+    it('Should return all categories', async () => {
+      const categories = await sut.list()
+
+      expect(categories).toEqual([])
+    })
+  })
 })
