@@ -66,6 +66,14 @@ describe('CategoryRepository', () => {
 
   describe('list()', () => {
     it('Should return all categories', async () => {
+      await repository.save({ id, name })
+
+      const categories = await sut.list()
+
+      expect(categories).toEqual([{ id, name }])
+    })
+
+    it('Should return [] if does not find any category', async () => {
       const categories = await sut.list()
 
       expect(categories).toEqual([])
