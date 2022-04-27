@@ -5,7 +5,6 @@ export const login = {
     requestBody: { content: { 'application/json': { schema: { $ref: '#/schemas/loginRequest' } } } },
     responses: {
       200: {
-        description: 'Login successfully',
         content: { 'application/json': { schema: { $ref: '#/schemas/loginResponse' } } }
       },
       400: { $ref: '#/components/badRequest' },

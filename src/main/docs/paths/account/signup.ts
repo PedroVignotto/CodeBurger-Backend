@@ -5,7 +5,6 @@ export const signup = {
     requestBody: { content: { 'application/json': { schema: { $ref: '#/schemas/signUpRequest' } } } },
     responses: {
       201: {
-        description: 'Account created on success',
         content: { 'application/json': { schema: { $ref: '#/schemas/signUpResponse' } } }
       },
       400: { $ref: '#/components/badRequest' },
