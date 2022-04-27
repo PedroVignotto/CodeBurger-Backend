@@ -21,4 +21,12 @@ describe('AddCategoryUseCase', () => {
     expect(categoryRepository.checkByName).toHaveBeenCalledWith({ name })
     expect(categoryRepository.checkByName).toHaveBeenCalledTimes(1)
   })
+
+  it('Should return false if CheckCategoryByNameRepository return true', async () => {
+    categoryRepository.checkByName.mockResolvedValueOnce(true)
+
+    const result = await sut({ name })
+
+    expect(result).toBe(false)
+  })
 })
