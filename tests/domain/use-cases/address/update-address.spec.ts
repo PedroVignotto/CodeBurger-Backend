@@ -1,5 +1,5 @@
 import { addressParams } from '@/tests/mocks'
-import { CheckAddressByIdRepository } from '@/domain/contracts/database/repositories/address'
+import { CheckAddressByIdRepository, UpdateAddressRepository } from '@/domain/contracts/database/repositories/address'
 import { UpdateAddress, updateAddressUseCase } from '@/domain/use-cases/address'
 
 import { mock } from 'jest-mock-extended'
@@ -7,9 +7,9 @@ import { mock } from 'jest-mock-extended'
 describe('UpdateAddressUseCase', () => {
   let sut: UpdateAddress
 
-  const { id } = addressParams
+  const { id, surname, number, complement } = addressParams
 
-  const addressRepository = mock<CheckAddressByIdRepository>()
+  const addressRepository = mock<CheckAddressByIdRepository & UpdateAddressRepository>()
 
   beforeAll(() => {
     addressRepository.checkById.mockResolvedValue(true)
@@ -32,5 +32,12 @@ describe('UpdateAddressUseCase', () => {
     const result = await sut({ id })
 
     expect(result).toBe(false)
+  })
+
+  it('Should call UpdateAddressRepository with correct values', async () => {
+    await sut({ id, surname, number, complement })
+
+    expect(addressRepository.update).toHaveBeenCalledWith({ id, surname, number, complement })
+    expect(addressRepository.update).toHaveBeenCalledTimes(1)
   })
 })
