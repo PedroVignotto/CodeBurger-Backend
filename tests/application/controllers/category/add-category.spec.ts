@@ -23,4 +23,11 @@ describe('AddCategoryController', () => {
 
     expect(validators).toEqual([new RequiredValidation(name, 'name')])
   })
+
+  it('Should call addCategory with correct values', async () => {
+    await sut.handle({ name })
+
+    expect(addCategory).toHaveBeenCalledWith({ name })
+    expect(addCategory).toHaveBeenCalledTimes(1)
+  })
 })
