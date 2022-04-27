@@ -10,6 +10,8 @@ export class AddCategoryController extends Controller {
   constructor (private readonly addCategory: AddCategory) { super() }
 
   async perform ({ name }: HttpRequest): Promise<HttpResponse<Model>> {
+    await this.addCategory({ name })
+
     return created(undefined)
   }
 
