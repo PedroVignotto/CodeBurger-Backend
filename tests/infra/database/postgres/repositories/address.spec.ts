@@ -87,5 +87,14 @@ describe('AddressRepository', () => {
 
       expect(addressExists).toBe(false)
     })
+
+    it('Should return true if address already exists', async () => {
+      const account = await repositoryAccount.save({ id, name, email, password })
+      const address = await repositoryAddress.save({ id, accountId: account.id, surname, zipCode, district, street, number, complement })
+
+      const addressExists = await sut.checkById({ id: address.id })
+
+      expect(addressExists).toBe(true)
+    })
   })
 })
