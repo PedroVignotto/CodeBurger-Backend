@@ -97,4 +97,15 @@ describe('AddressRepository', () => {
       expect(addressExists).toBe(true)
     })
   })
+
+  describe('delete()', () => {
+    it('Should delete a address on success', async () => {
+      const account = await repositoryAccount.save({ id, name, email, password })
+      const address = await repositoryAddress.save({ id, accountId: account.id, surname, zipCode, district, street, number, complement })
+
+      await sut.delete({ id: address.id })
+
+      expect(await repositoryAddress.findOne(address.id)).toBeUndefined()
+    })
+  })
 })
