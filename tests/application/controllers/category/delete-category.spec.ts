@@ -1,6 +1,7 @@
 import { categoryParams } from '@/tests/mocks'
 import { Controller } from '@/application/controllers'
 import { DeleteCategoryController } from '@/application/controllers/category'
+import { InvalidFieldError } from '@/application/errors'
 
 describe('DeleteCategoryController', () => {
   let sut: DeleteCategoryController
@@ -22,5 +23,14 @@ describe('DeleteCategoryController', () => {
 
     expect(deleteCategory).toHaveBeenCalledWith({ id })
     expect(deleteCategory).toHaveBeenCalledTimes(1)
+  })
+
+  it('Should return badRequest if deleteCategory return false', async () => {
+    deleteCategory.mockResolvedValueOnce(false)
+
+    const { statusCode, data } = await sut.handle({ id })
+
+    expect(statusCode).toBe(400)
+    expect(data).toEqual(new InvalidFieldError('id'))
   })
 })
