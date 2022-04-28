@@ -1,7 +1,7 @@
 import { accountParams } from '@/tests/mocks'
 import { makeFakeDatabase } from '@/tests/infra/database/postgres/mocks'
 import { app } from '@/main/config/app'
-import { ForbiddenError, InvalidFieldError, RequiredFieldError } from '@/application/errors'
+import { FieldInUseError, InvalidFieldError, RequiredFieldError } from '@/application/errors'
 import { Account } from '@/infra/database/postgres/entities'
 import { PgConnection } from '@/infra/database/postgres/helpers'
 
@@ -59,15 +59,15 @@ describe('Account routes', () => {
       expect(error).toBe(new InvalidFieldError('passwordConfirmation').message)
     })
 
-    it('Should return 403 if email already exists', async () => {
+    it('Should return 400 if email already exists', async () => {
       await repository.save({ id, name, email, password })
 
       const { status, body: { error } } = await request(app)
         .post('/api/signup')
         .send({ name, email, password, passwordConfirmation })
 
-      expect(status).toBe(403)
-      expect(error).toBe(new ForbiddenError().message)
+      expect(status).toBe(400)
+      expect(error).toBe(new FieldInUseError('email').message)
     })
   })
 

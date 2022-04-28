@@ -2,7 +2,7 @@ import { accountParams } from '@/tests/mocks'
 import { Controller } from '@/application/controllers'
 import { SignUpController } from '@/application/controllers/account'
 import { CompareValidation, EmailValidation, RequiredValidation } from '@/application/validation'
-import { ForbiddenError } from '@/application/errors'
+import { FieldInUseError } from '@/application/errors'
 
 describe('SignUpController', () => {
   let sut: SignUpController
@@ -45,13 +45,13 @@ describe('SignUpController', () => {
     expect(addAccount).toHaveBeenCalledTimes(1)
   })
 
-  it('Should return forbidden if addAccount return false', async () => {
+  it('Should return badRequest if addAccount return false', async () => {
     addAccount.mockResolvedValueOnce(false)
 
     const { statusCode, data } = await sut.handle({ name, email, password, passwordConfirmation })
 
-    expect(statusCode).toBe(403)
-    expect(data).toEqual(new ForbiddenError())
+    expect(statusCode).toBe(400)
+    expect(data).toEqual(new FieldInUseError('email'))
   })
 
   it('Should call authentication with correct values', async () => {

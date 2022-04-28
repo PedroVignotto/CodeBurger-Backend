@@ -1,5 +1,6 @@
 import { Controller } from '@/application/controllers/controller'
-import { forbidden, HttpResponse, created } from '@/application/helpers'
+import { FieldInUseError } from '@/application/errors'
+import { HttpResponse, created, badRequest } from '@/application/helpers'
 import { ValidationBuilder as Builder, Validator } from '@/application/validation'
 import { AddAccount, Authentication } from '@/domain/use-cases/account'
 
@@ -12,7 +13,7 @@ export class SignUpController extends Controller {
   async perform ({ name, email, password }: HttpRequest): Promise<HttpResponse<Model>> {
     const account = await this.addAccount({ name, email, password })
 
-    if (!account) return forbidden()
+    if (!account) return badRequest(new FieldInUseError('email'))
 
     const data = await this.authentication({ email, password })
 
