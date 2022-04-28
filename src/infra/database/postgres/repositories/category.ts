@@ -1,9 +1,9 @@
 import { Category } from '@/infra/database/postgres/entities'
 import { PgRepository } from '@/infra/database/postgres/repositories'
 import { UUIDGenerator } from '@/domain/contracts/gateways'
-import { AddCategoryRepository, CheckCategoryByIdRepository, CheckCategoryByNameRepository, ListCategoriesRepository } from '@/domain/contracts/database/repositories/category'
+import { AddCategoryRepository, CheckCategoryByIdRepository, CheckCategoryByNameRepository, DeleteCategoryRepository, ListCategoriesRepository } from '@/domain/contracts/database/repositories/category'
 
-export class CategoryRepository extends PgRepository implements CheckCategoryByNameRepository, AddCategoryRepository, ListCategoriesRepository, CheckCategoryByIdRepository {
+export class CategoryRepository extends PgRepository implements CheckCategoryByNameRepository, AddCategoryRepository, ListCategoriesRepository, CheckCategoryByIdRepository, DeleteCategoryRepository {
   constructor (private readonly uuid: UUIDGenerator) { super() }
 
   async checkByName ({ name }: CheckCategoryByNameRepository.Input): Promise<CheckCategoryByNameRepository.Output> {
@@ -34,5 +34,11 @@ export class CategoryRepository extends PgRepository implements CheckCategoryByN
     const categoryExists = await repository.findOne({ id })
 
     return !!categoryExists
+  }
+
+  async delete ({ id }: DeleteCategoryRepository.Input): Promise<DeleteCategoryRepository.Output> {
+    const repository = this.getRepository(Category)
+
+    await repository.delete({ id })
   }
 }
