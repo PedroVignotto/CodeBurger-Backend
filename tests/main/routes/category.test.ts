@@ -1,7 +1,7 @@
 import { accountParams, categoryParams } from '@/tests/mocks'
 import { makeFakeDatabase } from '@/tests/infra/database/postgres/mocks'
 import { app } from '@/main/config/app'
-import { FieldInUseError, RequiredFieldError } from '@/application/errors'
+import { FieldInUseError, InvalidFieldError, RequiredFieldError } from '@/application/errors'
 import { Account, Category } from '@/infra/database/postgres/entities'
 import { PgConnection } from '@/infra/database/postgres/helpers'
 
@@ -94,6 +94,15 @@ describe('Category routes', () => {
 
       expect(status).toBe(200)
       expect(await repository.findOne(id)).toBeUndefined()
+    })
+
+    it('Should return 400 if no have category with id provided', async () => {
+      const { status, body: { error } } = await request(app)
+        .delete('/api/category/any_id')
+        .set({ authorization: `Bearer: ${token}` })
+
+      expect(status).toBe(400)
+      expect(error).toEqual(new InvalidFieldError('id').message)
     })
   })
 })
