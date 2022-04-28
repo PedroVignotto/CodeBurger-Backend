@@ -6,7 +6,7 @@ export abstract class Controller {
 
   buildValidators (httpRequest: any): Validator[] { return [] }
 
-  async handle (httpRequest: any): Promise<HttpResponse> {
+  async handle (httpRequest?: any): Promise<HttpResponse> {
     const error = this.validate(httpRequest)
 
     if (error) return badRequest(error)
