@@ -2,7 +2,7 @@ export const deleteAddress = {
   delete: {
     security: [{ bearerAuth: [] }],
     tags: ['Address'],
-    summary: 'Route to update address info',
+    summary: 'Route to delete address',
     parameters: [{
       in: 'path',
       name: 'id',
