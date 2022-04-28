@@ -1,5 +1,5 @@
 import { categoryParams } from '@/tests/mocks'
-import { CheckCategoryByIdRepository } from '@/domain/contracts/database/repositories/category'
+import { CheckCategoryByIdRepository, DeleteCategoryRepository } from '@/domain/contracts/database/repositories/category'
 import { DeleteCategory, deleteCategoryUseCase } from '@/domain/use-cases/category'
 
 import { mock } from 'jest-mock-extended'
@@ -9,7 +9,7 @@ describe('DeleteCategoryUseCase', () => {
 
   const { id } = categoryParams
 
-  const categoryRepository = mock<CheckCategoryByIdRepository>()
+  const categoryRepository = mock<CheckCategoryByIdRepository & DeleteCategoryRepository>()
 
   beforeAll(() => {
     categoryRepository.checkById.mockResolvedValue(true)
@@ -32,5 +32,12 @@ describe('DeleteCategoryUseCase', () => {
     const result = await sut({ id })
 
     expect(result).toBe(false)
+  })
+
+  it('Should call DeleteCategoryRepository with correct id', async () => {
+    await sut({ id })
+
+    expect(categoryRepository.delete).toHaveBeenCalledWith({ id })
+    expect(categoryRepository.delete).toHaveBeenCalledTimes(1)
   })
 })
