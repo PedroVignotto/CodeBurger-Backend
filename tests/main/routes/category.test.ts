@@ -39,33 +39,48 @@ describe('Category routes', () => {
     await connection.disconnect()
   })
 
-  it('Should return 201 on success', async () => {
-    const { status } = await request(app)
-      .post('/api/category')
-      .send({ name })
-      .set({ authorization: `Bearer: ${token}` })
+  describe('POST /address', () => {
+    it('Should return 201 on success', async () => {
+      const { status } = await request(app)
+        .post('/api/category')
+        .send({ name })
+        .set({ authorization: `Bearer: ${token}` })
 
-    expect(status).toBe(201)
+      expect(status).toBe(201)
+    })
+
+    it('Should return 400 if has invalid data', async () => {
+      const { status, body: { error } } = await request(app)
+        .post('/api/category')
+        .send({ name: undefined })
+        .set({ authorization: `Bearer: ${token}` })
+
+      expect(status).toBe(400)
+      expect(error).toBe(new RequiredFieldError('name').message)
+    })
+
+    it('Should return 400 if name already exists', async () => {
+      await repository.save({ id, name })
+      const { status, body: { error } } = await request(app)
+        .post('/api/category')
+        .send({ name })
+        .set({ authorization: `Bearer: ${token}` })
+
+      expect(status).toBe(400)
+      expect(error).toBe(new FieldInUseError('name').message)
+    })
   })
 
-  it('Should return 400 if has invalid data', async () => {
-    const { status, body: { error } } = await request(app)
-      .post('/api/category')
-      .send({ name: undefined })
-      .set({ authorization: `Bearer: ${token}` })
+  describe('GET /categories', () => {
+    it('Should return 200 on success', async () => {
+      await repository.save({ id, name })
 
-    expect(status).toBe(400)
-    expect(error).toBe(new RequiredFieldError('name').message)
-  })
+      const { status, body } = await request(app)
+        .get('/api/categories')
+        .set({ authorization: `Bearer: ${token}` })
 
-  it('Should return 400 if name already exists', async () => {
-    await repository.save({ id, name })
-    const { status, body: { error } } = await request(app)
-      .post('/api/category')
-      .send({ name })
-      .set({ authorization: `Bearer: ${token}` })
-
-    expect(status).toBe(400)
-    expect(error).toBe(new FieldInUseError('name').message)
+      expect(status).toBe(200)
+      expect(body).toMatchObject([{ id, name }])
+    })
   })
 })
