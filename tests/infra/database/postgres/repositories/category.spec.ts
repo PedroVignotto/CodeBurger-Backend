@@ -79,4 +79,12 @@ describe('CategoryRepository', () => {
       expect(categories).toEqual([])
     })
   })
+
+  describe('checkById()', () => {
+    it('Should return false if category does not exists', async () => {
+      const categoryExists = await sut.checkById({ id })
+
+      expect(categoryExists).toBe(false)
+    })
+  })
 })
