@@ -39,7 +39,7 @@ describe('Category routes', () => {
     await connection.disconnect()
   })
 
-  describe('POST /address', () => {
+  describe('POST /category', () => {
     it('Should return 201 on success', async () => {
       const { status } = await request(app)
         .post('/api/category')
@@ -81,6 +81,19 @@ describe('Category routes', () => {
 
       expect(status).toBe(200)
       expect(body).toMatchObject([{ id, name }])
+    })
+  })
+
+  describe('DELETE /category/:id', () => {
+    it('Should return 200 on success', async () => {
+      await repository.save({ id, name })
+
+      const { status } = await request(app)
+        .delete(`/api/category/${id}`)
+        .set({ authorization: `Bearer: ${token}` })
+
+      expect(status).toBe(200)
+      expect(await repository.findOne(id)).toBeUndefined()
     })
   })
 })
