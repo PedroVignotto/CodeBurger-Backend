@@ -95,4 +95,14 @@ describe('CategoryRepository', () => {
       expect(categoryExists).toBe(true)
     })
   })
+
+  describe('delete()', () => {
+    it('Should delete a category on success', async () => {
+      await repository.save({ id, name })
+
+      await sut.delete({ id })
+
+      expect(await repository.findOne(id)).toBeUndefined()
+    })
+  })
 })
