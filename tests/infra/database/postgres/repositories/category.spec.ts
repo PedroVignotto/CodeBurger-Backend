@@ -86,5 +86,13 @@ describe('CategoryRepository', () => {
 
       expect(categoryExists).toBe(false)
     })
+
+    it('Should return true if category already exists', async () => {
+      await repository.save({ id, name })
+
+      const categoryExists = await sut.checkById({ id })
+
+      expect(categoryExists).toBe(true)
+    })
   })
 })
