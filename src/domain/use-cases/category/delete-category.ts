@@ -2,9 +2,11 @@ import { CheckCategoryByIdRepository } from '@/domain/contracts/database/reposit
 
 type Setup = (categoryRepository: CheckCategoryByIdRepository) => DeleteCategory
 type Input = { id: string }
-type Output = void
+type Output = boolean
 export type DeleteCategory = (input: Input) => Promise<Output>
 
 export const deleteCategoryUseCase: Setup = categoryRepository => async ({ id }) => {
   await categoryRepository.checkById({ id })
+
+  return false
 }
