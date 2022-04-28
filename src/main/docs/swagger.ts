@@ -1,7 +1,9 @@
 import { signup, login } from '@/main/docs/paths/account'
 import { addAddress, deleteAddress, listAddresses, loadAddressByZipCode, updateAddress } from '@/main/docs/paths/address'
+import { addCategory, deleteCategory, listCategories } from '@/main/docs/paths/category'
 import { signUpRequest, signUpResponse, loginRequest, loginResponse } from '@/main/docs/schemas/account'
 import { loadAddressByZipCodeResponse, addAddressRequest, listAddressesResponse, updateAddressRequest } from '@/main/docs/schemas/address'
+import { addCategoryRequest, listCategoriesResponse } from '@/main/docs/schemas/category'
 import { error } from '@/main/docs/schemas/errors'
 import { badRequest, forbidden, securitySchemes, serverError, unauthorized } from '@/main/docs/components'
 
@@ -17,7 +19,7 @@ export const swagger = {
     }
   },
   servers: [{ url: '/api' }],
-  tags: [{ name: 'Account' }, { name: 'Address' }],
+  tags: [{ name: 'Account' }, { name: 'Address' }, { name: 'Category' }],
   paths: {
     '/signup': signup,
     '/login': login,
@@ -25,7 +27,10 @@ export const swagger = {
     '/address': addAddress,
     '/addresses': listAddresses,
     '/address/{id}': updateAddress,
-    '/address/{id} ': deleteAddress
+    '/address/{id} ': deleteAddress,
+    '/category': addCategory,
+    '/categories': listCategories,
+    '/category/{id}': deleteCategory
   },
   schemas: {
     error,
@@ -36,7 +41,9 @@ export const swagger = {
     loadAddressByZipCodeResponse,
     addAddressRequest,
     listAddressesResponse,
-    updateAddressRequest
+    updateAddressRequest,
+    addCategoryRequest,
+    listCategoriesResponse
   },
   components: { securitySchemes, badRequest, forbidden, serverError, unauthorized }
 }
