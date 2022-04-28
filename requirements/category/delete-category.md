@@ -3,7 +3,7 @@
 > ## Success case
 
 01. ✅ Receives a request of type **DELETE** in route **/api/category/:id**
-00. ✅ Validates if an category already exists with the **id** provided
+00. ✅ Validates if an category exists with the **id** provided
 00. ✅ Remove **category**
 00. ✅ Returns **200** on success
 

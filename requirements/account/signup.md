@@ -17,5 +17,5 @@
 01. ✅ Returns error **400** if **name**, **email**, **password** or **passwordConfirmation** are not provided by the client
 00. ✅ Returns error **400** if **password** and **passwordConfirmation** are not the same
 00. ✅ Returns error **400** if the **email** field is an invalid email
-00. ✅ Returns error **403** if the provided **email** is already in use
+00. ✅ Returns error **400** if the provided **email** is already in use
 00. ✅ Returns error **500** if there is an **error** on the server
