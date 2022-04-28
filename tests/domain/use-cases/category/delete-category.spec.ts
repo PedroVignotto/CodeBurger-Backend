@@ -40,4 +40,10 @@ describe('DeleteCategoryUseCase', () => {
     expect(categoryRepository.delete).toHaveBeenCalledWith({ id })
     expect(categoryRepository.delete).toHaveBeenCalledTimes(1)
   })
+
+  it('Should return true on success', async () => {
+    const result = await sut({ id })
+
+    expect(result).toBe(true)
+  })
 })
