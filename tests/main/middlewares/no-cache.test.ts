@@ -1,5 +1,6 @@
 import { app } from '@/main/config'
 import { noCache } from '@/main/middlewares'
+
 import request from 'supertest'
 
 describe('NoCache Middleware', () => {

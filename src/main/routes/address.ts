@@ -5,9 +5,10 @@ import { auth } from '@/main/middlewares'
 import { Router } from 'express'
 
 export default (router: Router): void => {
-  router.get('/address/:zipCode', auth, adapt(makeLoadAddressByZipCodeController()))
-  router.post('/address', auth, adapt(makeAddAddressController()))
-  router.get('/addresses', auth, adapt(makeListAddressesController()))
-  router.put('/address/:id', auth, adapt(makeUpdateAddressController()))
-  router.delete('/address/:id', auth, adapt(makeDeleteAddressController()))
+  router.use(auth)
+  router.get('/address/:zipCode', adapt(makeLoadAddressByZipCodeController()))
+  router.post('/address', adapt(makeAddAddressController()))
+  router.get('/addresses', adapt(makeListAddressesController()))
+  router.put('/address/:id', adapt(makeUpdateAddressController()))
+  router.delete('/address/:id', adapt(makeDeleteAddressController()))
 }

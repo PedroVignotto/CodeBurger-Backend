@@ -54,7 +54,7 @@ describe('AddressRepository', () => {
   })
 
   describe('list()', () => {
-    it('Should return all addresses', async () => {
+    it('Should return all user addresses', async () => {
       const { id: accountId } = await repositoryAccount.save({ id, name, email, password })
       const { id: addressId } = await repositoryAddress.save({ id, accountId, surname, zipCode, district, street, number, complement })
 

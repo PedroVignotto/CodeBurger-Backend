@@ -37,12 +37,6 @@ describe('Authorize', () => {
     await expect(promise).rejects.toThrow(error)
   })
 
-  it('Should return a accountId on success', async () => {
-    const result = await sut({ accessToken })
-
-    expect(result).toEqual({ accountId })
-  })
-
   it('Should call CheckAccountRole with correct values', async () => {
     await sut({ accessToken, role })
 
@@ -56,5 +50,11 @@ describe('Authorize', () => {
     const result = await sut({ accessToken })
 
     expect(result).toBeUndefined()
+  })
+
+  it('Should return a accountId on success', async () => {
+    const result = await sut({ accessToken })
+
+    expect(result).toEqual({ accountId })
   })
 })

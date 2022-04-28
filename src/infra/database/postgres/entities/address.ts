@@ -1,4 +1,5 @@
 import { Account } from './account'
+
 import { Entity, Column, PrimaryColumn, ManyToOne } from 'typeorm'
 
 @Entity('addresses')

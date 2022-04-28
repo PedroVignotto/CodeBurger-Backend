@@ -9,12 +9,11 @@ import { IBackup, IMemoryDb } from 'pg-mem'
 import { Repository } from 'typeorm'
 import { mock } from 'jest-mock-extended'
 import MockDate from 'mockdate'
-import faker from 'faker'
 
 describe('AccountRepository', () => {
   let sut: AccountRepository
 
-  const { id, name, email, password, createdAt } = accountParams
+  const { id, name, email, password, role, createdAt } = accountParams
 
   let connection: PgConnection
   let database: IMemoryDb
@@ -89,12 +88,6 @@ describe('AccountRepository', () => {
   })
 
   describe('checkRole()', () => {
-    let role: string
-
-    beforeEach(() => {
-      role = faker.random.word()
-    })
-
     it('Should return false if account does not exists', async () => {
       const account = await sut.checkRole({ accountId: id })
 
