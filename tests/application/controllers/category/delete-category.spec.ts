@@ -38,9 +38,9 @@ describe('DeleteCategoryController', () => {
     expect(data).toEqual(new NonExistentFieldError('id'))
   })
 
-  it('Should return ok if deleteCategory return undefined', async () => {
+  it('Should return noContent if deleteCategory return undefined', async () => {
     const { statusCode } = await sut.handle({ id })
 
-    expect(statusCode).toBe(200)
+    expect(statusCode).toBe(204)
   })
 })

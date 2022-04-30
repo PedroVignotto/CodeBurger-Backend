@@ -86,14 +86,14 @@ describe('Category routes', () => {
   })
 
   describe('DELETE /category/:id', () => {
-    it('Should return 200 on success', async () => {
+    it('Should return 204 on success', async () => {
       await repository.save({ id, name })
 
       const { status } = await request(app)
         .delete(`/api/category/${id}`)
         .set({ authorization: `Bearer: ${token}` })
 
-      expect(status).toBe(200)
+      expect(status).toBe(204)
       expect(await repository.findOne(id)).toBeUndefined()
     })
 

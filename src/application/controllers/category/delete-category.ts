@@ -1,5 +1,5 @@
 import { Controller } from '@/application/controllers/controller'
-import { badRequest, HttpResponse, ok } from '@/application/helpers'
+import { badRequest, HttpResponse, noContent } from '@/application/helpers'
 import { DeleteCategory } from '@/domain/use-cases/category'
 
 type HttpRequest = { id: string }
@@ -13,6 +13,6 @@ export class DeleteCategoryController extends Controller {
 
     if (category instanceof Error) return badRequest(category)
 
-    return ok(undefined)
+    return noContent()
   }
 }

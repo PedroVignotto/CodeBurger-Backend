@@ -1,5 +1,5 @@
 import { Controller } from '@/application/controllers/controller'
-import { badRequest, HttpResponse, ok } from '@/application/helpers'
+import { badRequest, HttpResponse, noContent } from '@/application/helpers'
 import { DeleteAddress } from '@/domain/use-cases/address'
 
 type HttpRequest = { id: string }
@@ -13,6 +13,6 @@ export class DeleteAddressController extends Controller {
 
     if (address instanceof Error) return badRequest(address)
 
-    return ok(undefined)
+    return noContent()
   }
 }

@@ -38,9 +38,9 @@ describe('DeleteAddressController', () => {
     expect(data).toEqual(new NonExistentFieldError('id'))
   })
 
-  it('Should return ok if deleteAddress return undefined', async () => {
+  it('Should return noContent if deleteAddress return undefined', async () => {
     const { statusCode } = await sut.handle({ id })
 
-    expect(statusCode).toBe(200)
+    expect(statusCode).toBe(204)
   })
 })

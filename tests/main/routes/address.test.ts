@@ -145,7 +145,7 @@ describe('Address routes', () => {
   })
 
   describe('DELETE /address/:id', () => {
-    it('Should return 200 on success', async () => {
+    it('Should return 204 on success', async () => {
       const account = await repositoryAccount.find()
       const address = await repositoryAddress.save({ id, accountId: account[0].id, surname, zipCode, district, street, number, complement })
 
@@ -153,7 +153,7 @@ describe('Address routes', () => {
         .delete(`/api/address/${address.id}`)
         .set({ authorization: `Bearer: ${token}` })
 
-      expect(status).toBe(200)
+      expect(status).toBe(204)
       expect(await repositoryAddress.findOne(address.id)).toBeUndefined()
     })
 
