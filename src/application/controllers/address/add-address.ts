@@ -1,5 +1,4 @@
 import { Controller } from '@/application/controllers/controller'
-import { InvalidFieldError } from '@/application/errors'
 import { HttpResponse, created, badRequest } from '@/application/helpers'
 import { ValidationBuilder as Builder, Validator } from '@/application/validation'
 import { AddAddress } from '@/domain/use-cases/address'
@@ -13,7 +12,7 @@ export class AddAddressController extends Controller {
   async perform (httpRequest: HttpRequest): Promise<HttpResponse<Model>> {
     const address = await this.addAddress(httpRequest)
 
-    if (!address) return badRequest(new InvalidFieldError('zipCode'))
+    if (address instanceof Error) return badRequest(address)
 
     return created(undefined)
   }

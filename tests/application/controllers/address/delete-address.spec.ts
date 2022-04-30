@@ -1,7 +1,7 @@
 import { addressParams } from '@/tests/mocks'
 import { Controller } from '@/application/controllers'
 import { DeleteAddressController } from '@/application/controllers/address'
-import { InvalidFieldError } from '@/application/errors'
+import { NonExistentFieldError } from '@/domain/errors'
 
 describe('DeleteAddressController', () => {
   let sut: DeleteAddressController
@@ -11,7 +11,7 @@ describe('DeleteAddressController', () => {
   const deleteAddress: jest.Mock = jest.fn()
 
   beforeAll(() => {
-    deleteAddress.mockResolvedValue(true)
+    deleteAddress.mockResolvedValue(undefined)
   })
 
   beforeEach(() => {
@@ -29,16 +29,16 @@ describe('DeleteAddressController', () => {
     expect(deleteAddress).toHaveBeenCalledTimes(1)
   })
 
-  it('Should return badRequest if deleteAddress return false', async () => {
-    deleteAddress.mockResolvedValueOnce(false)
+  it('Should return badRequest if deleteAddress return NonExistentFieldError', async () => {
+    deleteAddress.mockResolvedValueOnce(new NonExistentFieldError('id'))
 
     const { statusCode, data } = await sut.handle({ id })
 
     expect(statusCode).toBe(400)
-    expect(data).toEqual(new InvalidFieldError('id'))
+    expect(data).toEqual(new NonExistentFieldError('id'))
   })
 
-  it('Should return ok if deleteAddress return true', async () => {
+  it('Should return ok if deleteAddress return undefined', async () => {
     const { statusCode } = await sut.handle({ id })
 
     expect(statusCode).toBe(200)

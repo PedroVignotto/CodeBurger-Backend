@@ -2,6 +2,7 @@ import { accountParams } from '@/tests/mocks'
 import { TokenGenerator, HashComparer } from '@/domain/contracts/gateways'
 import { LoadAccountByEmailRepository } from '@/domain/contracts/database/repositories/account'
 import { Authentication, authenticationUseCase } from '@/domain/use-cases/account'
+import { AuthenticationError } from '@/domain/errors'
 
 import { mock } from 'jest-mock-extended'
 
@@ -31,12 +32,12 @@ describe('Authentication', () => {
     expect(accountRepository.loadByEmail).toHaveBeenCalledTimes(1)
   })
 
-  it('Should return undefined if LoadAccountByEmailRepository return undefined', async () => {
+  it('Should return AuthenticationError if LoadAccountByEmailRepository return undefined', async () => {
     accountRepository.loadByEmail.mockResolvedValueOnce(undefined)
 
     const account = await sut({ email, password })
 
-    expect(account).toBeUndefined()
+    expect(account).toEqual(new AuthenticationError())
   })
 
   it('Should rethrow if LoadAccountByEmailRepository throws', async () => {
@@ -54,12 +55,12 @@ describe('Authentication', () => {
     expect(hashComparer.compare).toHaveBeenCalledTimes(1)
   })
 
-  it('Should return undefined if HashComparer return false', async () => {
+  it('Should return AuthenticationError if HashComparer return false', async () => {
     hashComparer.compare.mockResolvedValueOnce(false)
 
     const created = await sut({ email, password })
 
-    expect(created).toBeUndefined()
+    expect(created).toEqual(new AuthenticationError())
   })
 
   it('Should rethrow if HashComparer throws', async () => {

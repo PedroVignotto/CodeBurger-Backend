@@ -2,7 +2,7 @@ import { categoryParams } from '@/tests/mocks'
 import { Controller } from '@/application/controllers'
 import { RequiredValidation } from '@/application/validation'
 import { AddCategoryController } from '@/application/controllers/category'
-import { FieldInUseError } from '@/application/errors'
+import { FieldInUseError } from '@/domain/errors'
 
 describe('AddCategoryController', () => {
   let sut: AddCategoryController
@@ -12,7 +12,7 @@ describe('AddCategoryController', () => {
   const addCategory: jest.Mock = jest.fn()
 
   beforeAll(() => {
-    addCategory.mockResolvedValue(true)
+    addCategory.mockResolvedValue(undefined)
   })
 
   beforeEach(() => {
@@ -36,8 +36,8 @@ describe('AddCategoryController', () => {
     expect(addCategory).toHaveBeenCalledTimes(1)
   })
 
-  it('Should return badRequest if addCategory return false', async () => {
-    addCategory.mockResolvedValueOnce(false)
+  it('Should return badRequest if addCategory return FieldInUseError', async () => {
+    addCategory.mockResolvedValueOnce(new FieldInUseError('name'))
 
     const { statusCode, data } = await sut.handle({ name })
 

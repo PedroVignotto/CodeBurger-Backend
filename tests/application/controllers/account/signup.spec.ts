@@ -2,7 +2,7 @@ import { accountParams } from '@/tests/mocks'
 import { Controller } from '@/application/controllers'
 import { SignUpController } from '@/application/controllers/account'
 import { CompareValidation, EmailValidation, RequiredValidation } from '@/application/validation'
-import { FieldInUseError } from '@/application/errors'
+import { FieldInUseError } from '@/domain/errors'
 
 describe('SignUpController', () => {
   let sut: SignUpController
@@ -13,7 +13,7 @@ describe('SignUpController', () => {
   const authentication: jest.Mock = jest.fn()
 
   beforeAll(() => {
-    addAccount.mockResolvedValue(true)
+    addAccount.mockResolvedValue(undefined)
     authentication.mockResolvedValue({ name, accessToken })
   })
 
@@ -45,8 +45,8 @@ describe('SignUpController', () => {
     expect(addAccount).toHaveBeenCalledTimes(1)
   })
 
-  it('Should return badRequest if addAccount return false', async () => {
-    addAccount.mockResolvedValueOnce(false)
+  it('Should return badRequest if addAccount return FieldInUseError', async () => {
+    addAccount.mockResolvedValueOnce(new FieldInUseError('email'))
 
     const { statusCode, data } = await sut.handle({ name, email, password, passwordConfirmation })
 

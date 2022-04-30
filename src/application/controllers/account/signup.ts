@@ -1,5 +1,4 @@
 import { Controller } from '@/application/controllers/controller'
-import { FieldInUseError } from '@/application/errors'
 import { HttpResponse, created, badRequest } from '@/application/helpers'
 import { ValidationBuilder as Builder, Validator } from '@/application/validation'
 import { AddAccount, Authentication } from '@/domain/use-cases/account'
@@ -13,11 +12,11 @@ export class SignUpController extends Controller {
   async perform ({ name, email, password }: HttpRequest): Promise<HttpResponse<Model>> {
     const account = await this.addAccount({ name, email, password })
 
-    if (!account) return badRequest(new FieldInUseError('email'))
+    if (account instanceof Error) return badRequest(account)
 
     const data = await this.authentication({ email, password })
 
-    return created(data!)
+    return created(data)
   }
 
   override buildValidators ({ name, email, password, passwordConfirmation }: HttpRequest): Validator[] {

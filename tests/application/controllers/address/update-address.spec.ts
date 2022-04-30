@@ -1,7 +1,7 @@
 import { addressParams } from '@/tests/mocks'
 import { Controller } from '@/application/controllers'
 import { UpdateAddressController } from '@/application/controllers/address'
-import { InvalidFieldError } from '@/application/errors'
+import { NonExistentFieldError } from '@/domain/errors'
 
 describe('UpdateAddressController', () => {
   let sut: UpdateAddressController
@@ -11,7 +11,7 @@ describe('UpdateAddressController', () => {
   const updateAddress: jest.Mock = jest.fn()
 
   beforeAll(() => {
-    updateAddress.mockResolvedValue(true)
+    updateAddress.mockResolvedValue(undefined)
   })
 
   beforeEach(() => {
@@ -29,13 +29,13 @@ describe('UpdateAddressController', () => {
     expect(updateAddress).toHaveBeenCalledTimes(1)
   })
 
-  it('Should return badRequest if updateAddress return false', async () => {
-    updateAddress.mockResolvedValueOnce(false)
+  it('Should return badRequest if updateAddress return NonExistentFieldError', async () => {
+    updateAddress.mockResolvedValueOnce(new NonExistentFieldError('id'))
 
     const { statusCode, data } = await sut.handle({ id, surname, number, complement })
 
     expect(statusCode).toBe(400)
-    expect(data).toEqual(new InvalidFieldError('id'))
+    expect(data).toEqual(new NonExistentFieldError('id'))
   })
 
   it('Should return noContent if valid data is provided', async () => {

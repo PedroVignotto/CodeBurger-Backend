@@ -1,5 +1,4 @@
 import { Controller } from '@/application/controllers/controller'
-import { InvalidFieldError } from '@/application/errors'
 import { badRequest, HttpResponse, ok } from '@/application/helpers'
 import { DeleteCategory } from '@/domain/use-cases/category'
 
@@ -12,7 +11,7 @@ export class DeleteCategoryController extends Controller {
   async perform ({ id }: HttpRequest): Promise<HttpResponse<Model>> {
     const category = await this.deleteCategory({ id })
 
-    if (!category) return badRequest(new InvalidFieldError('id'))
+    if (category instanceof Error) return badRequest(category)
 
     return ok(undefined)
   }

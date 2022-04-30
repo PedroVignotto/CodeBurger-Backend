@@ -16,7 +16,7 @@ export class AuthenticationMiddleware implements Middleware {
 
       const accountId = await this.authorize({ accessToken, role: this.role })
 
-      if (!accountId) return forbidden()
+      if (accountId instanceof Error) return forbidden()
 
       return ok(accountId)
     } catch (error) {

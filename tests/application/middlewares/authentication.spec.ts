@@ -1,6 +1,7 @@
 import { accountParams } from '@/tests/mocks'
 import { ForbiddenError, ServerError, UnauthorizedError } from '@/application/errors'
 import { AuthenticationMiddleware } from '@/application/middlewares'
+import { InsuficientPermissionError } from '@/domain/errors'
 
 describe('AuthenticationMiddleware', () => {
   let sut: AuthenticationMiddleware
@@ -46,8 +47,8 @@ describe('AuthenticationMiddleware', () => {
     expect(authorize).toHaveBeenCalledTimes(1)
   })
 
-  it('Should return forbidden if authorize return undefined', async () => {
-    authorize.mockResolvedValueOnce(undefined)
+  it('Should return forbidden if authorize return InsuficientPermissionError', async () => {
+    authorize.mockResolvedValueOnce(new InsuficientPermissionError())
 
     const { statusCode, data } = await sut.handle({ authorization })
 

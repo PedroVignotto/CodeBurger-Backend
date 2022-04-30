@@ -1,7 +1,8 @@
 import { accountParams, categoryParams } from '@/tests/mocks'
 import { makeFakeDatabase } from '@/tests/infra/database/postgres/mocks'
 import { app } from '@/main/config/app'
-import { FieldInUseError, InvalidFieldError, RequiredFieldError } from '@/application/errors'
+import { RequiredFieldError } from '@/application/errors'
+import { FieldInUseError, NonExistentFieldError } from '@/domain/errors'
 import { Account, Category } from '@/infra/database/postgres/entities'
 import { PgConnection } from '@/infra/database/postgres/helpers'
 
@@ -102,7 +103,7 @@ describe('Category routes', () => {
         .set({ authorization: `Bearer: ${token}` })
 
       expect(status).toBe(400)
-      expect(error).toEqual(new InvalidFieldError('id').message)
+      expect(error).toEqual(new NonExistentFieldError('id').message)
     })
   })
 })

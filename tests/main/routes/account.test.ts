@@ -1,7 +1,8 @@
 import { accountParams } from '@/tests/mocks'
 import { makeFakeDatabase } from '@/tests/infra/database/postgres/mocks'
 import { app } from '@/main/config/app'
-import { FieldInUseError, InvalidFieldError, RequiredFieldError } from '@/application/errors'
+import { InvalidFieldError, RequiredFieldError } from '@/application/errors'
+import { FieldInUseError } from '@/domain/errors'
 import { Account } from '@/infra/database/postgres/entities'
 import { PgConnection } from '@/infra/database/postgres/helpers'
 

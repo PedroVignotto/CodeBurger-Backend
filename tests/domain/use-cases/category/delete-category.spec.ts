@@ -1,6 +1,7 @@
 import { categoryParams } from '@/tests/mocks'
 import { CheckCategoryByIdRepository, DeleteCategoryRepository } from '@/domain/contracts/database/repositories/category'
 import { DeleteCategory, deleteCategoryUseCase } from '@/domain/use-cases/category'
+import { NonExistentFieldError } from '@/domain/errors'
 
 import { mock } from 'jest-mock-extended'
 
@@ -26,12 +27,12 @@ describe('DeleteCategoryUseCase', () => {
     expect(categoryRepository.checkById).toHaveBeenCalledTimes(1)
   })
 
-  it('Should return false if CheckAddressByIdRepository return false', async () => {
+  it('Should return NonExistentFieldError if CheckAddressByIdRepository return false', async () => {
     categoryRepository.checkById.mockResolvedValueOnce(false)
 
     const result = await sut({ id })
 
-    expect(result).toBe(false)
+    expect(result).toEqual(new NonExistentFieldError('id'))
   })
 
   it('Should call DeleteCategoryRepository with correct id', async () => {
@@ -41,9 +42,9 @@ describe('DeleteCategoryUseCase', () => {
     expect(categoryRepository.delete).toHaveBeenCalledTimes(1)
   })
 
-  it('Should return true on success', async () => {
+  it('Should return undefined on success', async () => {
     const result = await sut({ id })
 
-    expect(result).toBe(true)
+    expect(result).toBeUndefined()
   })
 })

@@ -1,5 +1,4 @@
 import { Controller } from '@/application/controllers/controller'
-import { FieldInUseError } from '@/application/errors'
 import { HttpResponse, created, badRequest } from '@/application/helpers'
 import { ValidationBuilder as Builder, Validator } from '@/application/validation'
 import { AddCategory } from '@/domain/use-cases/category'
@@ -13,7 +12,7 @@ export class AddCategoryController extends Controller {
   async perform ({ name }: HttpRequest): Promise<HttpResponse<Model>> {
     const category = await this.addCategory({ name })
 
-    if (!category) return badRequest(new FieldInUseError('name'))
+    if (category instanceof Error) return badRequest(category)
 
     return created(undefined)
   }

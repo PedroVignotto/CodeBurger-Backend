@@ -1,7 +1,7 @@
 import { categoryParams } from '@/tests/mocks'
 import { Controller } from '@/application/controllers'
 import { DeleteCategoryController } from '@/application/controllers/category'
-import { InvalidFieldError } from '@/application/errors'
+import { NonExistentFieldError } from '@/domain/errors'
 
 describe('DeleteCategoryController', () => {
   let sut: DeleteCategoryController
@@ -11,7 +11,7 @@ describe('DeleteCategoryController', () => {
   const deleteCategory: jest.Mock = jest.fn()
 
   beforeAll(() => {
-    deleteCategory.mockResolvedValue(true)
+    deleteCategory.mockResolvedValue(undefined)
   })
 
   beforeEach(() => {
@@ -29,16 +29,16 @@ describe('DeleteCategoryController', () => {
     expect(deleteCategory).toHaveBeenCalledTimes(1)
   })
 
-  it('Should return badRequest if deleteCategory return false', async () => {
-    deleteCategory.mockResolvedValueOnce(false)
+  it('Should return badRequest if deleteCategory return NonExistentFieldError', async () => {
+    deleteCategory.mockResolvedValueOnce(new NonExistentFieldError('id'))
 
     const { statusCode, data } = await sut.handle({ id })
 
     expect(statusCode).toBe(400)
-    expect(data).toEqual(new InvalidFieldError('id'))
+    expect(data).toEqual(new NonExistentFieldError('id'))
   })
 
-  it('Should return ok if deleteCategory return true', async () => {
+  it('Should return ok if deleteCategory return undefined', async () => {
     const { statusCode } = await sut.handle({ id })
 
     expect(statusCode).toBe(200)

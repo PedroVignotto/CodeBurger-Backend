@@ -2,6 +2,7 @@ import { accountParams } from '@/tests/mocks'
 import { TokenValidator } from '@/domain/contracts/gateways'
 import { CheckAccountRole } from '@/domain/contracts/database/repositories/account'
 import { Authorize, authorizeUseCase } from '@/domain/use-cases/account'
+import { InsuficientPermissionError } from '@/domain/errors'
 
 import { mock } from 'jest-mock-extended'
 
@@ -44,12 +45,12 @@ describe('Authorize', () => {
     expect(accountRepository.checkRole).toHaveBeenCalledTimes(1)
   })
 
-  it('Should return undefined if CheckAccountRole return false', async () => {
+  it('Should return InsuficientPermissionError if CheckAccountRole return false', async () => {
     accountRepository.checkRole.mockResolvedValueOnce(false)
 
     const result = await sut({ accessToken })
 
-    expect(result).toBeUndefined()
+    expect(result).toEqual(new InsuficientPermissionError())
   })
 
   it('Should return a accountId on success', async () => {

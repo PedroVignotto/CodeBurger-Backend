@@ -3,6 +3,7 @@ import { Controller } from '@/application/controllers'
 import { LoginController } from '@/application/controllers/account'
 import { UnauthorizedError } from '@/application/errors'
 import { EmailValidation, RequiredValidation } from '@/application/validation'
+import { AuthenticationError } from '@/domain/errors'
 
 describe('LoginController', () => {
   let sut: LoginController
@@ -40,8 +41,8 @@ describe('LoginController', () => {
     expect(authentication).toHaveBeenCalledTimes(1)
   })
 
-  it('Should return unauthorized if authentication return undefined', async () => {
-    authentication.mockResolvedValueOnce(undefined)
+  it('Should return unauthorized if authentication return AuthenticationError', async () => {
+    authentication.mockResolvedValueOnce(new AuthenticationError())
 
     const { statusCode, data } = await sut.handle({ email, password })
 

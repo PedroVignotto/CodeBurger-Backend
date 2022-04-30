@@ -2,6 +2,7 @@ import { accountParams } from '@/tests/mocks'
 import { HashGenerator } from '@/domain/contracts/gateways'
 import { AddAccountRepository, CheckAccountByEmailRepository } from '@/domain/contracts/database/repositories/account'
 import { AddAccount, addAccountUseCase } from '@/domain/use-cases/account'
+import { FieldInUseError } from '@/domain/errors'
 
 import { mock } from 'jest-mock-extended'
 
@@ -29,12 +30,12 @@ describe('AddAccount', () => {
     expect(accountRepository.checkByEmail).toHaveBeenCalledTimes(1)
   })
 
-  it('Should return false if CheckAccountByEmailRepository return true', async () => {
+  it('Should return FieldInUseError if CheckAccountByEmailRepository return true', async () => {
     accountRepository.checkByEmail.mockResolvedValueOnce(true)
 
     const created = await sut({ name, email, password })
 
-    expect(created).toBe(false)
+    expect(created).toEqual(new FieldInUseError('email'))
   })
 
   it('Should rethrow if CheckAccountByEmailRepository throws', async () => {
@@ -75,9 +76,9 @@ describe('AddAccount', () => {
     await expect(promise).rejects.toThrow(error)
   })
 
-  it('Should return true on success', async () => {
-    const created = await sut({ name, email, password })
+  it('Should return undefined on success', async () => {
+    const result = await sut({ name, email, password })
 
-    expect(created).toBe(true)
+    expect(result).toBeUndefined()
   })
 })

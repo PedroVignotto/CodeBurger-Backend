@@ -11,10 +11,3 @@ export class InvalidFieldError extends Error {
     this.name = 'InvalidFieldError'
   }
 }
-
-export class FieldInUseError extends Error {
-  constructor (fieldName: string) {
-    super(`The received ${fieldName} is already in use`)
-    this.name = 'FieldInUseError'
-  }
-}

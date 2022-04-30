@@ -1,6 +1,7 @@
 import { categoryParams } from '@/tests/mocks'
 import { AddCategoryRepository, CheckCategoryByNameRepository } from '@/domain/contracts/database/repositories/category'
 import { AddCategory, addCategoryUseCase } from '@/domain/use-cases/category'
+import { FieldInUseError } from '@/domain/errors'
 
 import { mock } from 'jest-mock-extended'
 
@@ -26,12 +27,12 @@ describe('AddCategoryUseCase', () => {
     expect(categoryRepository.checkByName).toHaveBeenCalledTimes(1)
   })
 
-  it('Should return false if CheckCategoryByNameRepository return true', async () => {
+  it('Should return FieldInUseError if CheckCategoryByNameRepository return true', async () => {
     categoryRepository.checkByName.mockResolvedValueOnce(true)
 
     const result = await sut({ name })
 
-    expect(result).toBe(false)
+    expect(result).toEqual(new FieldInUseError('name'))
   })
 
   it('Should rethrow if CheckCategoryByNameRepository throws', async () => {
@@ -57,9 +58,9 @@ describe('AddCategoryUseCase', () => {
     await expect(promise).rejects.toThrow(error)
   })
 
-  it('Should return true on success', async () => {
+  it('Should return undefined on success', async () => {
     const result = await sut({ name })
 
-    expect(result).toBe(true)
+    expect(result).toBeUndefined()
   })
 })

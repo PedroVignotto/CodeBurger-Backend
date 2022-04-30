@@ -2,6 +2,7 @@ import { addressParams } from '@/tests/mocks'
 import { AddAddressRepository } from '@/domain/contracts/database/repositories/address'
 import { SearchAddressByZipCode } from '@/domain/contracts/gateways'
 import { AddAddress, addAddressUseCase } from '@/domain/use-cases/address'
+import { FieldNotFoundError } from '@/domain/errors'
 
 import { mock } from 'jest-mock-extended'
 
@@ -28,12 +29,12 @@ describe('AddAddressUseCase', () => {
     expect(searchAddressByZipCode.search).toHaveBeenCalledTimes(1)
   })
 
-  it('Should return false if SearchAddressByZipCode return undefined', async () => {
+  it('Should return FieldNotFoundError if SearchAddressByZipCode return undefined', async () => {
     searchAddressByZipCode.search.mockResolvedValueOnce(undefined)
 
     const result = await sut({ accountId, surname, zipCode, district, street, number, complement })
 
-    expect(result).toBe(false)
+    expect(result).toEqual(new FieldNotFoundError('zipCode'))
   })
 
   it('Should rethrow if SearchAddressByZipCode throws', async () => {
@@ -59,9 +60,9 @@ describe('AddAddressUseCase', () => {
     await expect(promise).rejects.toThrow(error)
   })
 
-  it('Should return true on success', async () => {
+  it('Should return undefined on success', async () => {
     const result = await sut({ accountId, surname, zipCode, district, street, number, complement })
 
-    expect(result).toBe(true)
+    expect(result).toBeUndefined()
   })
 })

@@ -12,7 +12,9 @@ export class LoginController extends Controller {
   async perform ({ email, password }: HttpRequest): Promise<HttpResponse<Model>> {
     const data = await this.authentication({ email, password })
 
-    return data ? ok(data) : unauthorized()
+    if (data instanceof Error) return unauthorized()
+
+    return ok(data)
   }
 
   override buildValidators ({ email, password }: HttpRequest): Validator[] {
