@@ -2,28 +2,30 @@ import { categoryParams, productParams } from '@/tests/mocks'
 import { CheckProductByNameRepository } from '@/domain/contracts/database/repositories/product'
 import { AddProduct, addProductUseCase } from '@/domain/use-cases/product'
 import { CheckCategoryByIdRepository } from '@/domain/contracts/database/repositories/category'
+import { UploadFile, UUIDGenerator } from '@/domain/contracts/gateways'
 import { FieldInUseError, NonExistentFieldError } from '@/domain/errors'
 
 import { mock } from 'jest-mock-extended'
-import { UUIDGenerator } from '@/domain/contracts/gateways'
 
 describe('AddProductUseCase', () => {
   let sut: AddProduct
 
   const { id: categoryId } = categoryParams
-  const { name, file } = productParams
+  const { name, key, file } = productParams
 
   const productRepository = mock<CheckProductByNameRepository>()
   const categoryRepository = mock<CheckCategoryByIdRepository>()
   const uuid = mock<UUIDGenerator>()
+  const fileStorage = mock<UploadFile>()
 
   beforeAll(() => {
     productRepository.checkByName.mockResolvedValue(false)
     categoryRepository.checkById.mockResolvedValue(true)
+    uuid.generate.mockReturnValue(key)
   })
 
   beforeEach(() => {
-    sut = addProductUseCase(productRepository, categoryRepository, uuid)
+    sut = addProductUseCase(productRepository, categoryRepository, uuid, fileStorage)
   })
 
   it('Should call CheckProductByNameRepository with correct name', async () => {
@@ -63,9 +65,10 @@ describe('AddProductUseCase', () => {
     expect(uuid.generate).toHaveBeenCalledTimes(1)
   })
 
-  it('Should not call UUIDGenerator if file is not provided', async () => {
-    await sut({ categoryId, name })
+  it('Should call UploadFile with correct values', async () => {
+    await sut({ categoryId, name, file })
 
-    expect(uuid.generate).not.toHaveBeenCalled()
+    expect(fileStorage.upload).toHaveBeenCalledWith({ file: file.buffer, fileName: `${key}.${file.mimeType.split('/')[1]}` })
+    expect(fileStorage.upload).toHaveBeenCalledTimes(1)
   })
 })
