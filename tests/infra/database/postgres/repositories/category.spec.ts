@@ -42,17 +42,17 @@ describe('CategoryRepository', () => {
 
   describe('checkByName()', () => {
     it('Should return false if category does not exists', async () => {
-      const categoryExists = await sut.checkByName({ name })
+      const result = await sut.checkByName({ name })
 
-      expect(categoryExists).toBe(false)
+      expect(result).toBe(false)
     })
 
     it('Should return true if category already exists', async () => {
       await repository.save({ id, name })
 
-      const categoryExists = await sut.checkByName({ name })
+      const result = await sut.checkByName({ name })
 
-      expect(categoryExists).toBe(true)
+      expect(result).toBe(true)
     })
   })
 
@@ -68,31 +68,31 @@ describe('CategoryRepository', () => {
     it('Should return all categories', async () => {
       await repository.save({ id, name })
 
-      const categories = await sut.list()
+      const result = await sut.list()
 
-      expect(categories).toEqual([{ id, name }])
+      expect(result).toEqual([{ id, name }])
     })
 
     it('Should return [] if does not find any category', async () => {
-      const categories = await sut.list()
+      const result = await sut.list()
 
-      expect(categories).toEqual([])
+      expect(result).toEqual([])
     })
   })
 
   describe('checkById()', () => {
     it('Should return false if category does not exists', async () => {
-      const categoryExists = await sut.checkById({ id })
+      const result = await sut.checkById({ id })
 
-      expect(categoryExists).toBe(false)
+      expect(result).toBe(false)
     })
 
     it('Should return true if category already exists', async () => {
       await repository.save({ id, name })
 
-      const categoryExists = await sut.checkById({ id })
+      const result = await sut.checkById({ id })
 
-      expect(categoryExists).toBe(true)
+      expect(result).toBe(true)
     })
   })
 

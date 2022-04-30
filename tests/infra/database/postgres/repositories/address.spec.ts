@@ -58,15 +58,15 @@ describe('AddressRepository', () => {
       const { id: accountId } = await repositoryAccount.save({ id, name, email, password })
       const { id: addressId } = await repositoryAddress.save({ id, accountId, surname, zipCode, district, street, number, complement })
 
-      const addresses = await sut.list({ accountId })
+      const result = await sut.list({ accountId })
 
-      expect(addresses).toEqual([{ id: addressId, surname, zipCode, district, street, number, complement }])
+      expect(result).toEqual([{ id: addressId, surname, zipCode, district, street, number, complement }])
     })
 
     it('Should return [] if does not find any address', async () => {
-      const addresses = await sut.list({ accountId: id })
+      const result = await sut.list({ accountId: id })
 
-      expect(addresses).toEqual([])
+      expect(result).toEqual([])
     })
   })
 
@@ -83,18 +83,18 @@ describe('AddressRepository', () => {
 
   describe('checkById()', () => {
     it('Should return false if address does not exists', async () => {
-      const addressExists = await sut.checkById({ id })
+      const result = await sut.checkById({ id })
 
-      expect(addressExists).toBe(false)
+      expect(result).toBe(false)
     })
 
     it('Should return true if address already exists', async () => {
       const account = await repositoryAccount.save({ id, name, email, password })
       const address = await repositoryAddress.save({ id, accountId: account.id, surname, zipCode, district, street, number, complement })
 
-      const addressExists = await sut.checkById({ id: address.id })
+      const result = await sut.checkById({ id: address.id })
 
-      expect(addressExists).toBe(true)
+      expect(result).toBe(true)
     })
   })
 

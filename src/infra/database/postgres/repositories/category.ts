@@ -9,33 +9,25 @@ export class CategoryRepository extends PgRepository implements CheckCategoryByN
   async checkByName ({ name }: CheckCategoryByNameRepository.Input): Promise<CheckCategoryByNameRepository.Output> {
     const repository = this.getRepository(Category)
 
-    const categoryExists = await repository.findOne({ name })
-
-    return !!categoryExists
+    return !!await repository.findOne({ name })
   }
 
   async create ({ name }: AddCategoryRepository.Input): Promise<AddCategoryRepository.Output> {
     const repository = this.getRepository(Category)
 
-    const category = await repository.save({ id: this.uuid.generate(), name })
-
-    return category
+    return await repository.save({ id: this.uuid.generate(), name })
   }
 
   async list (): Promise<ListCategoriesRepository.Output> {
     const repository = this.getRepository(Category)
 
-    const categories = await repository.find()
-
-    return categories
+    return await repository.find()
   }
 
   async checkById ({ id }: CheckCategoryByIdRepository.Input): Promise<CheckCategoryByIdRepository.Output> {
     const repository = this.getRepository(Category)
 
-    const categoryExists = await repository.findOne({ id })
-
-    return !!categoryExists
+    return !!await repository.findOne({ id })
   }
 
   async delete ({ id }: DeleteCategoryRepository.Input): Promise<DeleteCategoryRepository.Output> {

@@ -33,9 +33,9 @@ describe('AddAccount', () => {
   it('Should return FieldInUseError if CheckAccountByEmailRepository return true', async () => {
     accountRepository.checkByEmail.mockResolvedValueOnce(true)
 
-    const created = await sut({ name, email, password })
+    const result = await sut({ name, email, password })
 
-    expect(created).toEqual(new FieldInUseError('email'))
+    expect(result).toEqual(new FieldInUseError('email'))
   })
 
   it('Should rethrow if CheckAccountByEmailRepository throws', async () => {

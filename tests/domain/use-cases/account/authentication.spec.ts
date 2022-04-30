@@ -35,9 +35,9 @@ describe('Authentication', () => {
   it('Should return AuthenticationError if LoadAccountByEmailRepository return undefined', async () => {
     accountRepository.loadByEmail.mockResolvedValueOnce(undefined)
 
-    const account = await sut({ email, password })
+    const result = await sut({ email, password })
 
-    expect(account).toEqual(new AuthenticationError())
+    expect(result).toEqual(new AuthenticationError())
   })
 
   it('Should rethrow if LoadAccountByEmailRepository throws', async () => {
@@ -58,9 +58,9 @@ describe('Authentication', () => {
   it('Should return AuthenticationError if HashComparer return false', async () => {
     hashComparer.compare.mockResolvedValueOnce(false)
 
-    const created = await sut({ email, password })
+    const result = await sut({ email, password })
 
-    expect(created).toEqual(new AuthenticationError())
+    expect(result).toEqual(new AuthenticationError())
   })
 
   it('Should rethrow if HashComparer throws', async () => {

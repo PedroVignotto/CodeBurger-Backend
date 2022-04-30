@@ -9,17 +9,13 @@ export class AddressRepository extends PgRepository implements AddAddressReposit
   async create (input: AddAddressRepository.Input): Promise<AddAddressRepository.Output> {
     const repository = this.getRepository(Address)
 
-    const address = await repository.save({ id: this.uuid.generate(), ...input })
-
-    return address
+    return await repository.save({ id: this.uuid.generate(), ...input })
   }
 
   async list ({ accountId }: ListAddressesRepository.Input): Promise<ListAddressesRepository.Output> {
     const repository = this.getRepository(Address)
 
-    const addresses = await repository.find({ accountId })
-
-    return addresses
+    return await repository.find({ accountId })
   }
 
   async update ({ id, ...input }: UpdateAddressRepository.Input): Promise<UpdateAddressRepository.Output> {
@@ -35,9 +31,7 @@ export class AddressRepository extends PgRepository implements AddAddressReposit
   async checkById ({ id }: CheckAddressByIdRepository.Input): Promise<CheckAddressByIdRepository.Output> {
     const repository = this.getRepository(Address)
 
-    const addressExists = await repository.findOne(id)
-
-    return !!addressExists
+    return !!await repository.findOne(id)
   }
 
   async delete ({ id }: DeleteAddressRepository.Input): Promise<DeleteAddressRepository.Output> {

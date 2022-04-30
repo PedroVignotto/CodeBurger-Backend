@@ -89,9 +89,9 @@ describe('PgConnection', () => {
   it('Should get repository', async () => {
     await sut.connect()
 
-    const repository = sut.getRepository(Account)
+    const result = sut.getRepository(Account)
 
-    expect(repository).toBe(repositorySpy)
+    expect(result).toBe(repositorySpy)
     expect(getRepositorySpy).toHaveBeenCalledWith(Account)
     expect(getRepositorySpy).toHaveBeenCalledTimes(1)
   })

@@ -9,9 +9,7 @@ export class AccountRepository extends PgRepository implements CheckAccountByEma
   async checkByEmail ({ email }: CheckAccountByEmailRepository.Input): Promise<CheckAccountByEmailRepository.Output> {
     const repository = this.getRepository(Account)
 
-    const emailExists = await repository.findOne({ email })
-
-    return !!emailExists
+    return !!await repository.findOne({ email })
   }
 
   async create ({ name, email, password }: AddAccountRepository.Input): Promise<AddAccountRepository.Output> {
@@ -23,18 +21,12 @@ export class AccountRepository extends PgRepository implements CheckAccountByEma
   async loadByEmail ({ email }: LoadAccountByEmailRepository.Input): Promise<LoadAccountByEmailRepository.Output> {
     const repository = this.getRepository(Account)
 
-    const account = await repository.findOne({ email })
-
-    return account
+    return await repository.findOne({ email })
   }
 
   async checkRole ({ accountId, role }: CheckAccountRole.Input): Promise<CheckAccountRole.Output> {
     const repository = this.getRepository(Account)
 
-    const account = await repository.findOne(
-      { where: [{ id: accountId, role: role ?? null }, { id: accountId, role: 'admin' }] }
-    )
-
-    return !!account
+    return !!await repository.findOne({ where: [{ id: accountId, role: role ?? null }, { id: accountId, role: 'admin' }] })
   }
 }

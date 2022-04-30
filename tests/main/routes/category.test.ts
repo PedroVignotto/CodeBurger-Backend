@@ -35,11 +35,11 @@ describe('Category routes', () => {
 
     const { body } = await request(app).post('/api/signup').send({ name: accountName, email, password, passwordConfirmation })
 
+    token = body.accessToken
+
     const account = await repositoryAccount.find()
 
     await repositoryAccount.update({ id: account[0].id }, { role: 'admin' })
-
-    token = body.accessToken
   })
 
   afterAll(async () => {
@@ -48,9 +48,6 @@ describe('Category routes', () => {
 
   describe('POST /category', () => {
     it('Should return 201 on success', async () => {
-      const account = await repositoryAccount.find()
-      await repositoryAccount.update({ id: account[0].id }, { role: 'admin' })
-
       const { status } = await request(app)
         .post('/api/category')
         .send({ name })

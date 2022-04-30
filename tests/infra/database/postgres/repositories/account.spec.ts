@@ -49,17 +49,17 @@ describe('AccountRepository', () => {
 
   describe('checkByEmail()', () => {
     it('Should return false if email does not exists', async () => {
-      const emailExists = await sut.checkByEmail({ email })
+      const result = await sut.checkByEmail({ email })
 
-      expect(emailExists).toBe(false)
+      expect(result).toBe(false)
     })
 
     it('Should return true if email already exists', async () => {
       await repository.save({ id, name, email, password })
 
-      const emailExists = await sut.checkByEmail({ email })
+      const result = await sut.checkByEmail({ email })
 
-      expect(emailExists).toBe(true)
+      expect(result).toBe(true)
     })
   })
 
@@ -73,49 +73,49 @@ describe('AccountRepository', () => {
 
   describe('loadByEmail()', () => {
     it('Should return undefined if email does not exists', async () => {
-      const account = await sut.loadByEmail({ email })
+      const result = await sut.loadByEmail({ email })
 
-      expect(account).toBeUndefined()
+      expect(result).toBeUndefined()
     })
 
     it('Should return a account if email already exists', async () => {
       await repository.save({ id, name, email, password })
 
-      const account = await sut.loadByEmail({ email })
+      const result = await sut.loadByEmail({ email })
 
-      expect(account).toEqual({ id, name, email, password, role: null, createdAt })
+      expect(result).toEqual({ id, name, email, password, role: null, createdAt })
     })
   })
 
   describe('checkRole()', () => {
     it('Should return false if account does not exists', async () => {
-      const account = await sut.checkRole({ accountId: id })
+      const result = await sut.checkRole({ accountId: id })
 
-      expect(account).toBe(false)
+      expect(result).toBe(false)
     })
 
     it('Should return true if account exists without role', async () => {
       await repository.save({ id, name, email, password })
 
-      const account = await sut.checkRole({ accountId: id })
+      const result = await sut.checkRole({ accountId: id })
 
-      expect(account).toBe(true)
+      expect(result).toBe(true)
     })
 
     it('Should return false if account exists with invalid role', async () => {
       await repository.save({ id, name, email, password })
 
-      const account = await sut.checkRole({ accountId: id, role })
+      const result = await sut.checkRole({ accountId: id, role })
 
-      expect(account).toBe(false)
+      expect(result).toBe(false)
     })
 
     it('Should return true if route does not require role and account is admin', async () => {
       await repository.save({ id, name, email, password, role: 'admin' })
 
-      const account = await sut.checkRole({ accountId: id })
+      const result = await sut.checkRole({ accountId: id })
 
-      expect(account).toBe(true)
+      expect(result).toBe(true)
     })
   })
 })

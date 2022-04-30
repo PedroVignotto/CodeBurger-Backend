@@ -8,11 +8,9 @@ type Output = { id: string, surname: string, zipCode: string, district: string, 
 export type AddAddress = (input: Input) => Promise<Output>
 
 export const addAddressUseCase: Setup = (searchAddressByZipCode, addressRepository) => async ({ zipCode, ...input }) => {
-  const addressExists = await searchAddressByZipCode.search({ zipCode })
+  const address = await searchAddressByZipCode.search({ zipCode })
 
-  if (!addressExists) return new FieldNotFoundError('zipCode')
+  if (!address) return new FieldNotFoundError('zipCode')
 
-  const address = await addressRepository.create({ zipCode: zipCode.replace('-', ''), ...input })
-
-  return address
+  return await addressRepository.create({ zipCode: zipCode.replace('-', ''), ...input })
 }
