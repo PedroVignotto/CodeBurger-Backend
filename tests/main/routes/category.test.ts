@@ -19,19 +19,25 @@ describe('Category routes', () => {
   let connection: PgConnection
   let database: IMemoryDb
   let backup: IBackup
-  let repository: Repository<Category>
+  let repositoryAccount: Repository<Account>
+  let repositoryCategory: Repository<Category>
 
   beforeAll(async () => {
     connection = PgConnection.getInstance()
     database = await makeFakeDatabase([Account, Category])
     backup = database.backup()
-    repository = connection.getRepository(Category)
+    repositoryAccount = connection.getRepository(Account)
+    repositoryCategory = connection.getRepository(Category)
   })
 
   beforeEach(async () => {
     backup.restore()
 
     const { body } = await request(app).post('/api/signup').send({ name: accountName, email, password, passwordConfirmation })
+
+    const account = await repositoryAccount.find()
+
+    await repositoryAccount.update({ id: account[0].id }, { role: 'admin' })
 
     token = body.accessToken
   })
@@ -42,6 +48,9 @@ describe('Category routes', () => {
 
   describe('POST /category', () => {
     it('Should return 201 on success', async () => {
+      const account = await repositoryAccount.find()
+      await repositoryAccount.update({ id: account[0].id }, { role: 'admin' })
+
       const { status } = await request(app)
         .post('/api/category')
         .send({ name })
@@ -61,7 +70,7 @@ describe('Category routes', () => {
     })
 
     it('Should return 400 if name already exists', async () => {
-      await repository.save({ id, name })
+      await repositoryCategory.save({ id, name })
       const { status, body: { error } } = await request(app)
         .post('/api/category')
         .send({ name })
@@ -74,7 +83,7 @@ describe('Category routes', () => {
 
   describe('GET /categories', () => {
     it('Should return 200 on success', async () => {
-      await repository.save({ id, name })
+      await repositoryCategory.save({ id, name })
 
       const { status, body } = await request(app)
         .get('/api/categories')
@@ -87,14 +96,14 @@ describe('Category routes', () => {
 
   describe('DELETE /category/:id', () => {
     it('Should return 204 on success', async () => {
-      await repository.save({ id, name })
+      await repositoryCategory.save({ id, name })
 
       const { status } = await request(app)
         .delete(`/api/category/${id}`)
         .set({ authorization: `Bearer: ${token}` })
 
       expect(status).toBe(204)
-      expect(await repository.findOne(id)).toBeUndefined()
+      expect(await repositoryCategory.findOne(id)).toBeUndefined()
     })
 
     it('Should return 400 if no have category with id provided', async () => {
