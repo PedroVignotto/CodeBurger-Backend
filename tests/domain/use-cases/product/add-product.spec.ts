@@ -62,4 +62,10 @@ describe('AddProductUseCase', () => {
     expect(uuid.generate).toHaveBeenCalledWith()
     expect(uuid.generate).toHaveBeenCalledTimes(1)
   })
+
+  it('Should not call UUIDGenerator if file is not provided', async () => {
+    await sut({ categoryId, name })
+
+    expect(uuid.generate).not.toHaveBeenCalled()
+  })
 })
