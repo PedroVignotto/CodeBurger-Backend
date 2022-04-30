@@ -5,22 +5,29 @@ import { CheckCategoryByIdRepository } from '@/domain/contracts/database/reposit
 import { FieldInUseError, NonExistentFieldError } from '@/domain/errors'
 
 import { mock } from 'jest-mock-extended'
+import { UUIDGenerator } from '@/domain/contracts/gateways'
 
 describe('AddProductUseCase', () => {
   let sut: AddProduct
 
   const { id: categoryId } = categoryParams
-  const { name } = productParams
+  const { name, file } = productParams
 
   const productRepository = mock<CheckProductByNameRepository>()
   const categoryRepository = mock<CheckCategoryByIdRepository>()
+  const uuid = mock<UUIDGenerator>()
+
+  beforeAll(() => {
+    productRepository.checkByName.mockResolvedValue(false)
+    categoryRepository.checkById.mockResolvedValue(true)
+  })
 
   beforeEach(() => {
-    sut = addProductUseCase(productRepository, categoryRepository)
+    sut = addProductUseCase(productRepository, categoryRepository, uuid)
   })
 
   it('Should call CheckProductByNameRepository with correct name', async () => {
-    await sut({ categoryId, name })
+    await sut({ categoryId, name, file })
 
     expect(productRepository.checkByName).toHaveBeenCalledWith({ name })
     expect(productRepository.checkByName).toHaveBeenCalledTimes(1)
@@ -29,13 +36,13 @@ describe('AddProductUseCase', () => {
   it('Should return FieldInUseError if CheckProductByNameRepository return true', async () => {
     productRepository.checkByName.mockResolvedValueOnce(true)
 
-    const result = await sut({ categoryId, name })
+    const result = await sut({ categoryId, name, file })
 
     expect(result).toEqual(new FieldInUseError('name'))
   })
 
   it('Should call CheckCategoryByIdRepository with correct id', async () => {
-    await sut({ categoryId, name })
+    await sut({ categoryId, name, file })
 
     expect(categoryRepository.checkById).toHaveBeenCalledWith({ id: categoryId })
     expect(categoryRepository.checkById).toHaveBeenCalledTimes(1)
@@ -44,8 +51,15 @@ describe('AddProductUseCase', () => {
   it('Should return NonExistentFieldError if CheckCategoryByIdRepository return false', async () => {
     categoryRepository.checkById.mockResolvedValueOnce(false)
 
-    const result = await sut({ categoryId, name })
+    const result = await sut({ categoryId, name, file })
 
     expect(result).toEqual(new NonExistentFieldError('categoryId'))
+  })
+
+  it('Should call UUIDGenerator if file is provided', async () => {
+    await sut({ categoryId, name, file })
+
+    expect(uuid.generate).toHaveBeenCalledWith()
+    expect(uuid.generate).toHaveBeenCalledTimes(1)
   })
 })
