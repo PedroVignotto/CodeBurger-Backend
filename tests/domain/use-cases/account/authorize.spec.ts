@@ -2,7 +2,7 @@ import { accountParams } from '@/tests/mocks'
 import { TokenValidator } from '@/domain/contracts/gateways'
 import { CheckAccountRole } from '@/domain/contracts/database/repositories/account'
 import { Authorize, authorizeUseCase } from '@/domain/use-cases/account'
-import { InsuficientPermissionError } from '@/domain/errors'
+import { AuthenticationError, InsuficientPermissionError } from '@/domain/errors'
 
 import { mock } from 'jest-mock-extended'
 
@@ -30,12 +30,12 @@ describe('Authorize', () => {
     expect(token.validate).toHaveBeenCalledTimes(1)
   })
 
-  it('Should rethrow if TokenValidator throws', async () => {
+  it('Should return AuthenticationError if TokenValidator throws', async () => {
     token.validate.mockRejectedValueOnce(error)
 
-    const promise = sut({ accessToken })
+    const result = await sut({ accessToken })
 
-    await expect(promise).rejects.toThrow(error)
+    expect(result).toEqual(new AuthenticationError())
   })
 
   it('Should call CheckAccountRole with correct values', async () => {

@@ -1,5 +1,6 @@
 import { forbidden, HttpResponse, ok, serverError, unauthorized } from '@/application/helpers'
 import { Middleware } from '@/application/middlewares/middleware'
+import { AuthenticationError, InsuficientPermissionError } from '@/domain/errors'
 import { Authorize } from '@/domain/use-cases/account'
 
 type HttpRequest = { authorization: string }
@@ -16,7 +17,9 @@ export class AuthenticationMiddleware implements Middleware {
 
       const accountId = await this.authorize({ accessToken, role: this.role })
 
-      if (accountId instanceof Error) return forbidden()
+      if (accountId instanceof AuthenticationError) return unauthorized()
+
+      if (accountId instanceof InsuficientPermissionError) return forbidden()
 
       return ok(accountId)
     } catch (error) {
