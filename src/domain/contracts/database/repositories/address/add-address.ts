@@ -12,5 +12,13 @@ export namespace AddAddressRepository {
     number: number
     complement?: string
   }
-  export type Output = void
+  export type Output ={
+    id: string
+    surname: string
+    zipCode: string
+    district: string
+    street: string
+    number: number
+    complement?: string
+  }
 }

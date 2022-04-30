@@ -7,12 +7,12 @@ import { FieldInUseError } from '@/domain/errors'
 describe('AddCategoryController', () => {
   let sut: AddCategoryController
 
-  const { name } = categoryParams
+  const { id, name } = categoryParams
 
   const addCategory: jest.Mock = jest.fn()
 
   beforeAll(() => {
-    addCategory.mockResolvedValue(undefined)
+    addCategory.mockResolvedValue({ id, name })
   })
 
   beforeEach(() => {
@@ -49,6 +49,6 @@ describe('AddCategoryController', () => {
     const { statusCode, data } = await sut.handle({ name })
 
     expect(statusCode).toBe(201)
-    expect(data).toBeUndefined()
+    expect(data).toEqual({ id, name })
   })
 })

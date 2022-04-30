@@ -4,5 +4,5 @@ export interface AddCategoryRepository {
 
 export namespace AddCategoryRepository {
   export type Input = { name: string }
-  export type Output = void
+  export type Output = { id: string, name: string }
 }

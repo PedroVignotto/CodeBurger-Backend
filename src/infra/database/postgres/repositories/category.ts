@@ -17,7 +17,9 @@ export class CategoryRepository extends PgRepository implements CheckCategoryByN
   async create ({ name }: AddCategoryRepository.Input): Promise<AddCategoryRepository.Output> {
     const repository = this.getRepository(Category)
 
-    await repository.save({ id: this.uuid.generate(), name })
+    const category = await repository.save({ id: this.uuid.generate(), name })
+
+    return category
   }
 
   async list (): Promise<ListCategoriesRepository.Output> {

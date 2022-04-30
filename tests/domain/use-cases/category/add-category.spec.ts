@@ -8,12 +8,13 @@ import { mock } from 'jest-mock-extended'
 describe('AddCategoryUseCase', () => {
   let sut: AddCategory
 
-  const { name, error } = categoryParams
+  const { id, name, error } = categoryParams
 
   const categoryRepository = mock<CheckCategoryByNameRepository & AddCategoryRepository>()
 
   beforeAll(() => {
     categoryRepository.checkByName.mockResolvedValue(false)
+    categoryRepository.create.mockResolvedValue({ id, name })
   })
 
   beforeEach(() => {
@@ -58,9 +59,9 @@ describe('AddCategoryUseCase', () => {
     await expect(promise).rejects.toThrow(error)
   })
 
-  it('Should return undefined on success', async () => {
+  it('Should return category on success', async () => {
     const result = await sut({ name })
 
-    expect(result).toBeUndefined()
+    expect(result).toEqual({ id, name })
   })
 })

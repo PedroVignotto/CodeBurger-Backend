@@ -1,11 +1,11 @@
+import { badRequest, forbidden, securitySchemes, serverError, unauthorized } from '@/main/docs/components'
 import { signup, login } from '@/main/docs/paths/account'
 import { addAddress, deleteAddress, listAddresses, loadAddressByZipCode, updateAddress } from '@/main/docs/paths/address'
 import { addCategory, deleteCategory, listCategories } from '@/main/docs/paths/category'
-import { signUpRequest, signUpResponse, loginRequest, loginResponse } from '@/main/docs/schemas/account'
-import { loadAddressByZipCodeResponse, addAddressRequest, listAddressesResponse, updateAddressRequest } from '@/main/docs/schemas/address'
-import { addCategoryRequest, listCategoriesResponse } from '@/main/docs/schemas/category'
 import { error } from '@/main/docs/schemas/errors'
-import { badRequest, forbidden, securitySchemes, serverError, unauthorized } from '@/main/docs/components'
+import { signUpRequest, signUpResponse, loginRequest, loginResponse } from '@/main/docs/schemas/account'
+import { loadAddressByZipCodeResponse, addAddressRequest, addAddressResponse, listAddressesResponse, updateAddressRequest } from '@/main/docs/schemas/address'
+import { addCategoryRequest, addCategoryResponse, listCategoriesResponse } from '@/main/docs/schemas/category'
 
 export const swagger = {
   openapi: '3.0.0',
@@ -40,9 +40,11 @@ export const swagger = {
     loginResponse,
     loadAddressByZipCodeResponse,
     addAddressRequest,
+    addAddressResponse,
     listAddressesResponse,
     updateAddressRequest,
     addCategoryRequest,
+    addCategoryResponse,
     listCategoriesResponse
   },
   components: { securitySchemes, badRequest, forbidden, serverError, unauthorized }

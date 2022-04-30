@@ -9,7 +9,9 @@ export class AddressRepository extends PgRepository implements AddAddressReposit
   async create (input: AddAddressRepository.Input): Promise<AddAddressRepository.Output> {
     const repository = this.getRepository(Address)
 
-    await repository.save({ id: this.uuid.generate(), ...input })
+    const address = await repository.save({ id: this.uuid.generate(), ...input })
+
+    return address
   }
 
   async list ({ accountId }: ListAddressesRepository.Input): Promise<ListAddressesRepository.Output> {

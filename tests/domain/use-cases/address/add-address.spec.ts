@@ -9,13 +9,14 @@ import { mock } from 'jest-mock-extended'
 describe('AddAddressUseCase', () => {
   let sut: AddAddress
 
-  const { accountId, surname, zipCode, district, street, number, complement, error } = addressParams
+  const { id, accountId, surname, zipCode, district, street, number, complement, error } = addressParams
 
   const searchAddressByZipCode = mock<SearchAddressByZipCode>()
   const addressRepository = mock<AddAddressRepository>()
 
   beforeAll(() => {
     searchAddressByZipCode.search.mockResolvedValue({ district, street })
+    addressRepository.create.mockResolvedValue({ id, surname, zipCode, district, street, number, complement })
   })
 
   beforeEach(() => {
@@ -60,9 +61,9 @@ describe('AddAddressUseCase', () => {
     await expect(promise).rejects.toThrow(error)
   })
 
-  it('Should return undefined on success', async () => {
+  it('Should return address on success', async () => {
     const result = await sut({ accountId, surname, zipCode, district, street, number, complement })
 
-    expect(result).toBeUndefined()
+    expect(result).toEqual({ id, surname, zipCode, district, street, number, complement })
   })
 })

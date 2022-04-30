@@ -3,13 +3,15 @@ import { FieldInUseError } from '@/domain/errors'
 
 type Setup = (categoryRepository: CheckCategoryByNameRepository & AddCategoryRepository) => AddCategory
 type Input = { name: string }
-type Output = undefined | Error
+type Output = { id: string, name: string } | Error
 export type AddCategory = (input: Input) => Promise<Output>
 
 export const addCategoryUseCase: Setup = categoryRepository => async ({ name }) => {
-  const category = await categoryRepository.checkByName({ name })
+  const categoryExists = await categoryRepository.checkByName({ name })
 
-  if (category) return new FieldInUseError('name')
+  if (categoryExists) return new FieldInUseError('name')
 
-  await categoryRepository.create({ name })
+  const category = await categoryRepository.create({ name })
+
+  return category
 }

@@ -4,7 +4,7 @@ import { ValidationBuilder as Builder, Validator } from '@/application/validatio
 import { AddCategory } from '@/domain/use-cases/category'
 
 type HttpRequest = { name: string }
-type Model = undefined | Error
+type Model = { id: string, name: string } | Error
 
 export class AddCategoryController extends Controller {
   constructor (private readonly addCategory: AddCategory) { super() }
@@ -14,7 +14,7 @@ export class AddCategoryController extends Controller {
 
     if (category instanceof Error) return badRequest(category)
 
-    return created(undefined)
+    return created(category)
   }
 
   override buildValidators ({ name }: HttpRequest): Validator[] {

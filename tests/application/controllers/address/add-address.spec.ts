@@ -7,12 +7,12 @@ import { FieldNotFoundError } from '@/domain/errors'
 describe('AddAddressController', () => {
   let sut: AddAddressController
 
-  const { accountId, surname, zipCode, district, street, number, complement } = addressParams
+  const { id, accountId, surname, zipCode, district, street, number, complement } = addressParams
 
   const addAddress: jest.Mock = jest.fn()
 
   beforeAll(() => {
-    addAddress.mockResolvedValue(true)
+    addAddress.mockResolvedValue({ id, surname, zipCode, district, street, number, complement })
   })
 
   beforeEach(() => {
@@ -55,6 +55,6 @@ describe('AddAddressController', () => {
     const { statusCode, data } = await sut.handle({ accountId, surname, zipCode, district, street, number, complement })
 
     expect(statusCode).toBe(201)
-    expect(data).toBeUndefined()
+    expect(data).toEqual({ id, surname, zipCode, district, street, number, complement })
   })
 })

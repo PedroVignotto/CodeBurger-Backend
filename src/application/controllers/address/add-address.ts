@@ -4,7 +4,7 @@ import { ValidationBuilder as Builder, Validator } from '@/application/validatio
 import { AddAddress } from '@/domain/use-cases/address'
 
 type HttpRequest = { accountId: string, surname: string, zipCode: string, district: string, street: string, number: number, complement?: string }
-type Model = undefined | Error
+type Model = { id: string, surname: string, zipCode: string, district: string, street: string, number: number, complement?: string } | Error
 
 export class AddAddressController extends Controller {
   constructor (private readonly addAddress: AddAddress) { super() }
@@ -14,7 +14,7 @@ export class AddAddressController extends Controller {
 
     if (address instanceof Error) return badRequest(address)
 
-    return created(undefined)
+    return created(address)
   }
 
   override buildValidators ({ surname, zipCode, district, street, number }: HttpRequest): Validator[] {
