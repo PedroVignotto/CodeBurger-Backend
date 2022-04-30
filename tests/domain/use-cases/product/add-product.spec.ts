@@ -1,6 +1,7 @@
-import { categoryParams } from '@/tests/mocks'
+import { categoryParams, productParams } from '@/tests/mocks'
 import { CheckProductByNameRepository } from '@/domain/contracts/database/repositories/product'
 import { AddProduct, addProductUseCase } from '@/domain/use-cases/product'
+import { CheckCategoryByIdRepository } from '@/domain/contracts/database/repositories/category'
 import { FieldInUseError } from '@/domain/errors'
 
 import { mock } from 'jest-mock-extended'
@@ -8,16 +9,18 @@ import { mock } from 'jest-mock-extended'
 describe('AddProductUseCase', () => {
   let sut: AddProduct
 
-  const { name } = categoryParams
+  const { id: categoryId } = categoryParams
+  const { name } = productParams
 
   const productRepository = mock<CheckProductByNameRepository>()
+  const categoryRepository = mock<CheckCategoryByIdRepository>()
 
   beforeEach(() => {
-    sut = addProductUseCase(productRepository)
+    sut = addProductUseCase(productRepository, categoryRepository)
   })
 
   it('Should call CheckProductByNameRepository with correct name', async () => {
-    await sut({ name })
+    await sut({ categoryId, name })
 
     expect(productRepository.checkByName).toHaveBeenCalledWith({ name })
     expect(productRepository.checkByName).toHaveBeenCalledTimes(1)
@@ -26,8 +29,15 @@ describe('AddProductUseCase', () => {
   it('Should return FieldInUseError if CheckProductByNameRepository return true', async () => {
     productRepository.checkByName.mockResolvedValueOnce(true)
 
-    const result = await sut({ name })
+    const result = await sut({ categoryId, name })
 
     expect(result).toEqual(new FieldInUseError('name'))
+  })
+
+  it('Should call CheckCategoryByIdRepository with correct id', async () => {
+    await sut({ categoryId, name })
+
+    expect(categoryRepository.checkById).toHaveBeenCalledWith({ id: categoryId })
+    expect(categoryRepository.checkById).toHaveBeenCalledTimes(1)
   })
 })
