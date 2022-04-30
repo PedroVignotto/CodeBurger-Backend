@@ -5,7 +5,7 @@
 01. ✅ Receives a request of type **DELETE** in route **/api/address/:id**
 00. ✅ Validates if an address exists with the **id** provided
 00. ✅ Remove user **address**
-00. ✅ Returns **200** on success
+00. ✅ Returns **204** on success
 
 > ## Exceptions
 

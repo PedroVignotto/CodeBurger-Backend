@@ -6,7 +6,7 @@
 00. ✅ Validates required data **surname**, **zipCode**, **district**, **street** and **number**
 00. ✅ Validates that the **zipCode** field is a valid zip code
 00. ✅ Create an address with the **data** provided
-00. ✅ Returns **201** on success
+00. ✅ Returns **201** with the data created
 
 > ## Exceptions
 

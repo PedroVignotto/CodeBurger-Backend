@@ -10,7 +10,7 @@
 00. ❌ Save the **picture** received, in a FileStorage keeping the original format
 00. ❌ Send a unique key to FileStorage to avoid overwriting an **picture** that already exists
 00. ❌ Create an product with the **data** provided
-00. ❌ Returns **201** on success
+00. ❌ Returns **201** with the data created
 
 > ## Exceptions
 

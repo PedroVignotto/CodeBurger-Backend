@@ -6,7 +6,7 @@
 00. ✅ Validates required data **name**
 00. ✅ Validates if an category already exists with the **name** provided
 00. ✅ Create an category with the **data** provided
-00. ✅ Returns **201** on success
+00. ✅ Returns **201** with the data created
 
 > ## Exceptions
 

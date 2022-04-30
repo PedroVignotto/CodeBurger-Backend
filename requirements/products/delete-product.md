@@ -6,7 +6,7 @@
 00. ❌ Validates if an product exists with the **id** provided
 00. ❌ If the product has an **picture**, delete it from fileStorage
 00. ❌ Remove **product**
-00. ❌ Returns **200** on success
+00. ❌ Returns **204** on success
 
 > ## Exceptions
 
