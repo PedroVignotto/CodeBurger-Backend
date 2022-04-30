@@ -1,5 +1,4 @@
 import { Controller } from '@/application/controllers/controller'
-import { InvalidFieldError } from '@/application/errors'
 import { badRequest, HttpResponse, ok } from '@/application/helpers'
 import { LoadAddressByZipCode } from '@/domain/use-cases/address'
 
@@ -12,7 +11,7 @@ export class LoadAddressByZipCodeController extends Controller {
   async perform ({ zipCode }: HttpRequest): Promise<HttpResponse<Model>> {
     const address = await this.loadAddressByZipCode({ zipCode })
 
-    if (!address) return badRequest(new InvalidFieldError('zipCode'))
+    if (address instanceof Error) return badRequest(address)
 
     return ok(address)
   }

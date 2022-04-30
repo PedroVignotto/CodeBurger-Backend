@@ -1,7 +1,7 @@
 import { accountParams, addressParams } from '@/tests/mocks'
 import { makeFakeDatabase } from '@/tests/infra/database/postgres/mocks'
 import { app } from '@/main/config/app'
-import { InvalidFieldError, RequiredFieldError } from '@/application/errors'
+import { RequiredFieldError } from '@/application/errors'
 import { FieldNotFoundError, NonExistentFieldError } from '@/domain/errors'
 import { Account, Address } from '@/infra/database/postgres/entities'
 import { PgConnection } from '@/infra/database/postgres/helpers'
@@ -67,7 +67,7 @@ describe('Address routes', () => {
         .set({ authorization: `Bearer: ${token}` })
 
       expect(status).toBe(400)
-      expect(error).toBe(new InvalidFieldError('zipCode').message)
+      expect(error).toBe(new FieldNotFoundError('zipCode').message)
     })
   })
 

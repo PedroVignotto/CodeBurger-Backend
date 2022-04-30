@@ -1,7 +1,7 @@
 import { addressParams } from '@/tests/mocks'
 import { Controller } from '@/application/controllers'
 import { LoadAddressByZipCodeController } from '@/application/controllers/address'
-import { InvalidFieldError } from '@/application/errors'
+import { FieldNotFoundError } from '@/domain/errors'
 
 describe('LoadAddressByZipCodeController', () => {
   let sut: LoadAddressByZipCodeController
@@ -30,12 +30,12 @@ describe('LoadAddressByZipCodeController', () => {
   })
 
   it('Should return badRequest if loadAddressByZipCode return undefined', async () => {
-    loadAddressByZipCode.mockResolvedValueOnce(undefined)
+    loadAddressByZipCode.mockResolvedValueOnce(new FieldNotFoundError('zipCode'))
 
     const { statusCode, data } = await sut.handle({ zipCode })
 
     expect(statusCode).toBe(400)
-    expect(data).toEqual(new InvalidFieldError('zipCode'))
+    expect(data).toEqual(new FieldNotFoundError('zipCode'))
   })
 
   it('Should return ok if loadAddressByZipCode return address', async () => {
