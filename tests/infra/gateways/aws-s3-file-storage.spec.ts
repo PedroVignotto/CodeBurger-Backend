@@ -50,5 +50,11 @@ describe('AwsS3FileStorage', () => {
       expect(putObjectSpy).toHaveBeenCalledTimes(1)
       expect(putObjectPromiseSpy).toHaveBeenCalledTimes(1)
     })
+
+    it('Should return imageUrl on success', async () => {
+      const imageUrl = await sut.upload({ fileName, file })
+
+      expect(imageUrl).toBe(`https://${bucket}.s3.amazonaws.com/${fileName}`)
+    })
   })
 })
