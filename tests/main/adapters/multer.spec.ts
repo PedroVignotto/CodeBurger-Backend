@@ -83,4 +83,11 @@ describe('MulterAdapter', () => {
 
     expect(req.locals).toEqual({ [key]: value, file: { buffer: req.file?.buffer, mimeType: req.file?.mimetype } })
   })
+
+  it('Should call next on success', () => {
+    sut(req, res, next)
+
+    expect(next).toHaveBeenCalledWith()
+    expect(next).toHaveBeenCalledTimes(1)
+  })
 })
