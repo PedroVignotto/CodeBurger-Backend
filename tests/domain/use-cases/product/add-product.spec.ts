@@ -11,7 +11,7 @@ describe('AddProductUseCase', () => {
   let sut: AddProduct
 
   const { id: categoryId } = categoryParams
-  const { name, description, price, key, picture, file } = productParams
+  const { id, name, description, price, available, key, picture, file } = productParams
 
   const productRepository = mock<CheckProductByNameRepository & AddProductRepository>()
   const categoryRepository = mock<CheckCategoryByIdRepository>()
@@ -23,6 +23,7 @@ describe('AddProductUseCase', () => {
     categoryRepository.checkById.mockResolvedValue(true)
     uuid.generate.mockReturnValue(key)
     fileStorage.upload.mockResolvedValue(picture)
+    productRepository.create.mockResolvedValue({ id, categoryId, name, description, price, available, picture })
   })
 
   beforeEach(() => {
@@ -78,5 +79,11 @@ describe('AddProductUseCase', () => {
 
     expect(productRepository.create).toHaveBeenCalledWith({ categoryId, name, description, price, picture })
     expect(productRepository.create).toHaveBeenCalledTimes(1)
+  })
+
+  it('Should return product on success', async () => {
+    const result = await sut({ categoryId, name, description, price, file })
+
+    expect(result).toEqual({ id, categoryId, name, description, price, available, picture })
   })
 })
