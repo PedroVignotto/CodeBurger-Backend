@@ -16,6 +16,7 @@ export namespace AddProductRepository {
     name: string
     description: string
     price: number
+    available: boolean
     picture?: string
   }
 }

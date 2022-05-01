@@ -10,7 +10,7 @@ type Setup = (
   fileStorage: UploadFile,
 ) => AddProduct
 type Input = { categoryId: string, name: string, description: string, price: number, file?: { buffer: Buffer, mimeType: string } }
-type Output = undefined | Error
+type Output = { id: string, categoryId: string, name: string, description: string, price: number, available: boolean, picture?: string } | Error
 export type AddProduct = (input: Input) => Promise<Output>
 
 export const addProductUseCase: Setup = (productRepository, categoryRepository, uuid, fileStorage) => async ({ categoryId, name, description, price, file }) => {
@@ -28,5 +28,5 @@ export const addProductUseCase: Setup = (productRepository, categoryRepository, 
 
   if (file) picture = await fileStorage.upload({ file: file.buffer, fileName: `${key}.${file.mimeType.split('/')[1]}` })
 
-  await productRepository.create({ categoryId, name, description, price, picture })
+  return await productRepository.create({ categoryId, name, description, price, picture })
 }
