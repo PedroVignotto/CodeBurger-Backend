@@ -30,9 +30,9 @@ export class ValidationBuilder {
   }
 
   image ({ AllowedMimeTypes, maxSizeInMb }: { AllowedMimeTypes: Extension[], maxSizeInMb: number }): ValidationBuilder {
-    if (this.value.mimeType) this.validators.push(new AllowedMimeTypesValidation(AllowedMimeTypes, this.value.mimeType))
+    if (this.value?.mimeType) this.validators.push(new AllowedMimeTypesValidation(AllowedMimeTypes, this.value.mimeType))
 
-    if (this.value.buffer) this.validators.push(new MaxFileSizeValidation(maxSizeInMb, this.value.buffer))
+    if (this.value?.buffer) this.validators.push(new MaxFileSizeValidation(maxSizeInMb, this.value.buffer))
 
     return this
   }
