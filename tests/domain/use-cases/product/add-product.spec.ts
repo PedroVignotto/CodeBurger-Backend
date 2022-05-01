@@ -2,7 +2,7 @@ import { categoryParams, productParams } from '@/tests/mocks'
 import { AddProductRepository, CheckProductByNameRepository } from '@/domain/contracts/database/repositories/product'
 import { AddProduct, addProductUseCase } from '@/domain/use-cases/product'
 import { CheckCategoryByIdRepository } from '@/domain/contracts/database/repositories/category'
-import { UploadFile, UUIDGenerator } from '@/domain/contracts/gateways'
+import { DeleteFile, UploadFile, UUIDGenerator } from '@/domain/contracts/gateways'
 import { FieldInUseError, NonExistentFieldError } from '@/domain/errors'
 
 import { mock } from 'jest-mock-extended'
@@ -16,7 +16,7 @@ describe('AddProductUseCase', () => {
   const productRepository = mock<CheckProductByNameRepository & AddProductRepository>()
   const categoryRepository = mock<CheckCategoryByIdRepository>()
   const uuid = mock<UUIDGenerator>()
-  const fileStorage = mock<UploadFile>()
+  const fileStorage = mock<UploadFile & DeleteFile>()
 
   beforeAll(() => {
     productRepository.checkByName.mockResolvedValue(false)
@@ -111,6 +111,17 @@ describe('AddProductUseCase', () => {
 
     expect(productRepository.create).toHaveBeenCalledWith({ categoryId, name, description, price, picture })
     expect(productRepository.create).toHaveBeenCalledTimes(1)
+  })
+
+  it('Should call if DeleteFile when file exists and AddProductRepository throws', async () => {
+    productRepository.create.mockRejectedValueOnce(error)
+
+    const promise = sut({ categoryId, name, description, price, file })
+
+    promise.catch(() => {
+      expect(fileStorage.delete).toHaveBeenCalledWith({ fileName: key })
+      expect(fileStorage.delete).toHaveBeenCalledTimes(1)
+    })
   })
 
   it('Should return product on success', async () => {
