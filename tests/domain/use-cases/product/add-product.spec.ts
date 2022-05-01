@@ -83,6 +83,14 @@ describe('AddProductUseCase', () => {
     expect(uuid.generate).toHaveBeenCalledTimes(1)
   })
 
+  it('Should rethrow if UUIDGenerator throws', async () => {
+    uuid.generate.mockImplementationOnce(() => { throw error })
+
+    const promise = sut({ categoryId, name, description, price, file })
+
+    await expect(promise).rejects.toThrow(error)
+  })
+
   it('Should call UploadFile with correct values', async () => {
     await sut({ categoryId, name, description, price, file })
 
