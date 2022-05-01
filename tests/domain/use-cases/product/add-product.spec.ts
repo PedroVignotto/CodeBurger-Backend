@@ -11,7 +11,7 @@ describe('AddProductUseCase', () => {
   let sut: AddProduct
 
   const { id: categoryId } = categoryParams
-  const { id, name, description, price, available, key, picture, file } = productParams
+  const { id, name, description, price, available, key, picture, file, error } = productParams
 
   const productRepository = mock<CheckProductByNameRepository & AddProductRepository>()
   const categoryRepository = mock<CheckCategoryByIdRepository>()
@@ -43,6 +43,14 @@ describe('AddProductUseCase', () => {
     const result = await sut({ categoryId, name, description, price, file })
 
     expect(result).toEqual(new FieldInUseError('name'))
+  })
+
+  it('Should rethrow if CheckProductByNameRepository throws', async () => {
+    productRepository.checkByName.mockRejectedValueOnce(error)
+
+    const promise = sut({ categoryId, name, description, price, file })
+
+    await expect(promise).rejects.toThrow(error)
   })
 
   it('Should call CheckCategoryByIdRepository with correct id', async () => {

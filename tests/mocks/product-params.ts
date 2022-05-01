@@ -14,5 +14,6 @@ export const productParams = {
   file: {
     buffer: Buffer.from(faker.random.word()),
     mimeType: mimeTypes[faker.datatype.number(mimeTypes.length - 1)]
-  }
+  },
+  error: new Error(faker.random.word())
 }
