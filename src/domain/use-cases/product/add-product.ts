@@ -1,13 +1,13 @@
 import { CheckCategoryByIdRepository } from '@/domain/contracts/database/repositories/category'
 import { AddProductRepository, CheckProductByNameRepository } from '@/domain/contracts/database/repositories/product'
-import { UploadFile, UUIDGenerator } from '@/domain/contracts/gateways'
+import { DeleteFile, UploadFile, UUIDGenerator } from '@/domain/contracts/gateways'
 import { FieldInUseError, NonExistentFieldError } from '@/domain/errors'
 
 type Setup = (
   productRepository: CheckProductByNameRepository & AddProductRepository,
   categoryRepository: CheckCategoryByIdRepository,
   uuid: UUIDGenerator,
-  fileStorage: UploadFile,
+  fileStorage: UploadFile & DeleteFile,
 ) => AddProduct
 type Input = { categoryId: string, name: string, description: string, price: number, file?: { buffer: Buffer, mimeType: string } }
 type Output = { id: string, categoryId: string, name: string, description: string, price: number, available: boolean, picture?: string } | Error
@@ -28,5 +28,11 @@ export const addProductUseCase: Setup = (productRepository, categoryRepository, 
 
   if (file) picture = await fileStorage.upload({ file: file.buffer, fileName: `${key}.${file.mimeType.split('/')[1]}` })
 
-  return await productRepository.create({ categoryId, name, description, price, picture })
+  try {
+    return await productRepository.create({ categoryId, name, description, price, picture })
+  } catch (error) {
+    if (file) await fileStorage.delete({ fileName: key })
+
+    throw error
+  }
 }
