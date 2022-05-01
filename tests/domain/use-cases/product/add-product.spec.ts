@@ -98,6 +98,14 @@ describe('AddProductUseCase', () => {
     expect(fileStorage.upload).toHaveBeenCalledTimes(1)
   })
 
+  it('Should rethrow if UploadFile throws', async () => {
+    fileStorage.upload.mockRejectedValueOnce(error)
+
+    const promise = sut({ categoryId, name, description, price, file })
+
+    await expect(promise).rejects.toThrow(error)
+  })
+
   it('Should call AddProductRepository with correct values', async () => {
     await sut({ categoryId, name, description, price, file })
 
