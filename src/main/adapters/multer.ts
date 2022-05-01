@@ -10,5 +10,7 @@ export const multerAdapter: RequestHandler = (req, res, next) => {
     if (error) return res.status(500).json({ error: new ServerError(error).message })
 
     if (req.file) req.locals = { ...req.locals, file: { buffer: req.file.buffer, mimeType: req.file.mimetype } }
+
+    next()
   })
 }
