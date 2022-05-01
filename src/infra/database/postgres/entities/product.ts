@@ -7,7 +7,7 @@ export class Product {
   @PrimaryColumn()
   id!: string
 
-  @Column()
+  @Column({ nullable: true })
   categoryId!: string
 
   @ManyToOne(() => Category)
@@ -19,7 +19,7 @@ export class Product {
   @Column()
   description!: string
 
-  @Column()
+  @Column({ type: 'decimal' })
   price!: number
 
   @Column({ default: true })
