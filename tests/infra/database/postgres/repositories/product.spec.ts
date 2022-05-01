@@ -5,19 +5,23 @@ import { PgConnection } from '@/infra/database/postgres/helpers'
 import { Category, Product } from '@/infra/database/postgres/entities'
 
 import { IBackup, IMemoryDb } from 'pg-mem'
+import { Repository } from 'typeorm'
 
 describe('ProductRepository', () => {
   let sut: ProductRepository
 
-  const { name } = productParams
+  const { id, name, description, price } = productParams
 
+  let connection: PgConnection
   let database: IMemoryDb
   let backup: IBackup
+  let repository: Repository<Product>
 
   beforeAll(async () => {
-    PgConnection.getInstance()
+    connection = PgConnection.getInstance()
     database = await makeFakeDatabase([Product, Category])
     backup = database.backup()
+    repository = connection.getRepository(Product)
   })
 
   beforeEach(() => {
@@ -34,5 +38,13 @@ describe('ProductRepository', () => {
     const result = await sut.checkByName({ name })
 
     expect(result).toBe(false)
+  })
+
+  it('Should return true if product already exists', async () => {
+    await repository.save({ id, name, description, price })
+
+    const result = await sut.checkByName({ name })
+
+    expect(result).toBe(true)
   })
 })
