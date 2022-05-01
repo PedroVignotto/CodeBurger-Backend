@@ -1,9 +1,9 @@
-import { expressRouterAdapter as adapt } from '@/main/adapters'
+import { expressRouterAdapter as adapt, multerAdapter as upload } from '@/main/adapters'
 import { makeAddProductController } from '@/main/factories/application/controllers/product'
 import { authAdmin } from '@/main/middlewares'
 
 import { Router } from 'express'
 
 export default (router: Router): void => {
-  router.post('/product', authAdmin, adapt(makeAddProductController()))
+  router.post('/product', authAdmin, upload, adapt(makeAddProductController()))
 }
