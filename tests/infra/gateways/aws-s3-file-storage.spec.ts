@@ -13,12 +13,14 @@ describe('AwsS3FileStorage', () => {
   let accessKeyId: string
   let bucket: string
   let fileName: string
+  let error: Error
 
   beforeAll(() => {
     accessKeyId = faker.datatype.uuid()
     secretAccessKey = faker.datatype.uuid()
     bucket = faker.database.column()
     fileName = faker.datatype.uuid()
+    error = new Error(faker.random.word())
   })
 
   beforeEach(() => {
@@ -49,6 +51,14 @@ describe('AwsS3FileStorage', () => {
       expect(putObjectSpy).toHaveBeenCalledWith({ Bucket: bucket, Key: fileName, Body: file, ACL: 'public-read' })
       expect(putObjectSpy).toHaveBeenCalledTimes(1)
       expect(putObjectPromiseSpy).toHaveBeenCalledTimes(1)
+    })
+
+    it('Should rethrow if putObject throw', async () => {
+      putObjectPromiseSpy.mockRejectedValueOnce(error)
+
+      const promise = sut.upload({ fileName, file })
+
+      await expect(promise).rejects.toThrow(error)
     })
 
     it('Should return imageUrl on success', async () => {
