@@ -26,11 +26,15 @@ describe('MulterAdapter', () => {
   const multerSpy: jest.Mock = jest.fn()
 
   beforeAll(() => {
-    req = getMockReq({ locals: { [key]: value } })
-    res = getMockRes().res
-    next = getMockRes().next
+    key = faker.database.column()
+    value = faker.random.words()
     error = new Error(faker.random.word())
 
+    uploadSpy.mockImplementation((req, res, next) => {
+      req.file = { buffer: Buffer.from(key), mimetype: value }
+
+      next()
+    })
     singleSpy.mockImplementation(() => uploadSpy)
     multerSpy.mockImplementation(() => ({ single: singleSpy }))
     mocked(fakeMulter).mockImplementation(multerSpy)
@@ -38,6 +42,10 @@ describe('MulterAdapter', () => {
 
   beforeEach(() => {
     sut = multerAdapter
+
+    req = getMockReq({ locals: { [key]: value } })
+    res = getMockRes().res
+    next = getMockRes().next
   })
 
   it('Should call single upload with correct values', () => {
@@ -62,11 +70,17 @@ describe('MulterAdapter', () => {
     expect(res.json).toHaveBeenCalledTimes(1)
   })
 
-  it('should not add file to req.locals if req is empty', () => {
+  it('Should not add file to req.locals if req is empty', () => {
     uploadSpy.mockImplementationOnce((req, res, next) => { next() })
 
     sut(req, res, next)
 
     expect(req.locals).toEqual({ [key]: value })
+  })
+
+  it('Should add file to req.locals', () => {
+    sut(req, res, next)
+
+    expect(req.locals).toEqual({ [key]: value, file: { buffer: req.file?.buffer, mimeType: req.file?.mimetype } })
   })
 })
