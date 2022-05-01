@@ -1,5 +1,5 @@
 import { Controller } from '@/application/controllers/controller'
-import { HttpResponse, created } from '@/application/helpers'
+import { HttpResponse, created, badRequest } from '@/application/helpers'
 import { ValidationBuilder as Builder, Validator } from '@/application/validation'
 import { AddProduct } from '@/domain/use-cases/product'
 
@@ -10,7 +10,9 @@ export class AddProductController extends Controller {
   constructor (private readonly addProduct: AddProduct) { super() }
 
   async perform (httpRequest: HttpRequest): Promise<HttpResponse<Model>> {
-    await this.addProduct(httpRequest)
+    const product = await this.addProduct(httpRequest)
+
+    if (product instanceof Error) return badRequest(product)
 
     return created(undefined)
   }
