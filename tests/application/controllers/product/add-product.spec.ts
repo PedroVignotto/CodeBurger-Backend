@@ -8,9 +8,13 @@ describe('AddProductController', () => {
   let sut: AddProductController
 
   const { id: categoryId } = categoryParams
-  const { name, description, price, file } = productParams
+  const { id, name, description, price, available, picture, file } = productParams
 
   const addProduct: jest.Mock = jest.fn()
+
+  beforeAll(() => {
+    addProduct.mockResolvedValue({ id, categoryId, name, description, price, available, picture })
+  })
 
   beforeEach(() => {
     sut = new AddProductController(addProduct)
@@ -47,5 +51,12 @@ describe('AddProductController', () => {
 
     expect(statusCode).toBe(400)
     expect(data).toEqual(new FieldInUseError('name'))
+  })
+
+  it('Should return created if valid data is provided', async () => {
+    const { statusCode, data } = await sut.handle({ categoryId, name, description, price, file })
+
+    expect(statusCode).toBe(201)
+    expect(data).toEqual({ id, categoryId, name, description, price, available, picture })
   })
 })
