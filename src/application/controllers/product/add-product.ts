@@ -4,7 +4,7 @@ import { ValidationBuilder as Builder, Validator } from '@/application/validatio
 import { AddProduct } from '@/domain/use-cases/product'
 
 type HttpRequest = { categoryId: string, name: string, description: string, price: number, file?: { buffer: Buffer, mimeType: string } }
-type Model = undefined | Error
+type Model = { id: string, categoryId: string, name: string, description: string, price: number, available: boolean, picture?: string } | Error
 
 export class AddProductController extends Controller {
   constructor (private readonly addProduct: AddProduct) { super() }
@@ -14,7 +14,7 @@ export class AddProductController extends Controller {
 
     if (product instanceof Error) return badRequest(product)
 
-    return created(undefined)
+    return created(product)
   }
 
   override buildValidators ({ categoryId, name, description, price, file }: HttpRequest): Validator[] {
