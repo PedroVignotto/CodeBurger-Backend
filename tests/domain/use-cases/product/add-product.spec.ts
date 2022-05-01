@@ -68,7 +68,15 @@ describe('AddProductUseCase', () => {
     expect(result).toEqual(new NonExistentFieldError('categoryId'))
   })
 
-  it('Should call UUIDGenerator if file is provided', async () => {
+  it('Should rethrow if CheckCategoryByIdRepository throws', async () => {
+    categoryRepository.checkById.mockRejectedValueOnce(error)
+
+    const promise = sut({ categoryId, name, description, price, file })
+
+    await expect(promise).rejects.toThrow(error)
+  })
+
+  it('Should call UUIDGenerator', async () => {
     await sut({ categoryId, name, description, price, file })
 
     expect(uuid.generate).toHaveBeenCalledWith()
