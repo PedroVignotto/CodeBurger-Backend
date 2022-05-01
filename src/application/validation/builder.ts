@@ -1,4 +1,4 @@
-import { CompareValidation, EmailValidation, RequiredValidation, Validator } from '@/application/validation'
+import { AllowedMimeTypesValidation, CompareValidation, EmailValidation, Extension, MaxFileSizeValidation, RequiredValidation, Validator } from '@/application/validation'
 
 export class ValidationBuilder {
   private constructor (
@@ -25,6 +25,14 @@ export class ValidationBuilder {
 
   sameAs (fieldToCompare: string): ValidationBuilder {
     this.validators.push(new CompareValidation(this.value, fieldToCompare, this.fieldName))
+
+    return this
+  }
+
+  image ({ AllowedMimeTypes, maxSizeInMb }: { AllowedMimeTypes: Extension[], maxSizeInMb: number }): ValidationBuilder {
+    if (this.value.mimeType) this.validators.push(new AllowedMimeTypesValidation(AllowedMimeTypes, this.value.mimeType))
+
+    if (this.value.buffer) this.validators.push(new MaxFileSizeValidation(maxSizeInMb, this.value.buffer))
 
     return this
   }
