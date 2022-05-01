@@ -7,6 +7,6 @@ export class EmailValidation implements Validator {
   validate (): Error | undefined {
     const validEmail = /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/
 
-    return (!this.email || validEmail.test(this.email)) ? undefined : new InvalidFieldError(this.fieldName)
+    if (this.email && !validEmail.test(this.email)) return new InvalidFieldError(this.fieldName)
   }
 }

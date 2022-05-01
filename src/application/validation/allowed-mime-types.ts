@@ -3,18 +3,14 @@ import { Validator } from '@/application/validation'
 
 export type Extension = 'png' | 'jpg'
 
-export class AllowedMimeTypes implements Validator {
+export class AllowedMimeTypesValidation implements Validator {
   constructor (
     private readonly allowed: Extension[],
     private readonly mimeType: string
   ) {}
 
   validate (): Error | undefined {
-    let isValid = false
-
-    if (this.isPng() || this.isJpg()) isValid = true
-
-    if (!isValid) return new InvalidMimeTypeError(this.allowed)
+    if (!this.isPng() && !this.isJpg()) return new InvalidMimeTypeError(this.allowed)
   }
 
   private isPng (): boolean {

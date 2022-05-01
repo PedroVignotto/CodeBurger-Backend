@@ -1,9 +1,9 @@
 import { InvalidMimeTypeError } from '@/application/errors'
-import { AllowedMimeTypes } from '@/application/validation'
+import { AllowedMimeTypesValidation } from '@/application/validation'
 
-describe('AllowedMimeTypes', () => {
+describe('AllowedMimeTypesValidation', () => {
   it('Should return InvalidMimeTypeError if value is invalid', () => {
-    const sut = new AllowedMimeTypes(['png'], 'image/jpg')
+    const sut = new AllowedMimeTypesValidation(['png'], 'image/jpg')
 
     const error = sut.validate()
 
@@ -11,7 +11,7 @@ describe('AllowedMimeTypes', () => {
   })
 
   it('Should return undefined if value is valid', () => {
-    const sut = new AllowedMimeTypes(['png'], 'image/png')
+    const sut = new AllowedMimeTypesValidation(['png'], 'image/png')
 
     const error = sut.validate()
 
@@ -19,7 +19,7 @@ describe('AllowedMimeTypes', () => {
   })
 
   it('Should return undefined if value is valid', () => {
-    const sut = new AllowedMimeTypes(['jpg'], 'image/jpg')
+    const sut = new AllowedMimeTypesValidation(['jpg'], 'image/jpg')
 
     const error = sut.validate()
 
@@ -27,7 +27,7 @@ describe('AllowedMimeTypes', () => {
   })
 
   it('Should return undefined if value is valid', () => {
-    const sut = new AllowedMimeTypes(['jpg'], 'image/jpeg')
+    const sut = new AllowedMimeTypesValidation(['jpg'], 'image/jpeg')
 
     const error = sut.validate()
 
