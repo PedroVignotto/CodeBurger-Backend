@@ -16,5 +16,6 @@ module.exports = {
   testMatch: ['**/*.spec.ts', '**/*.test.ts'],
   roots: ['<rootDir>/src', '<rootDir>/tests'],
   transform: { '\\.ts$': 'ts-jest' },
+  setupFiles: ['dotenv/config'],
   clearMocks: true
 }
