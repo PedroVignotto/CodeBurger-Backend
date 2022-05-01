@@ -9,8 +9,10 @@ describe('AddProductController', () => {
   const { id: categoryId } = categoryParams
   const { name, description, price, file } = productParams
 
+  const addProduct: jest.Mock = jest.fn()
+
   beforeEach(() => {
-    sut = new AddProductController()
+    sut = new AddProductController(addProduct)
   })
 
   it('Should extend Controller', async () => {
@@ -28,5 +30,12 @@ describe('AddProductController', () => {
       new AllowedMimeTypesValidation(['png', 'jpg'], file.mimeType),
       new MaxFileSizeValidation(5, file.buffer)
     ])
+  })
+
+  it('Should call addProduct with correct values', async () => {
+    await sut.handle({ categoryId, name, description, price, file })
+
+    expect(addProduct).toHaveBeenCalledWith({ categoryId, name, description, price, file })
+    expect(addProduct).toHaveBeenCalledTimes(1)
   })
 })
