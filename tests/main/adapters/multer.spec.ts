@@ -12,6 +12,8 @@ jest.mock('multer')
 describe('MulterAdapter', () => {
   let sut: RequestHandler
 
+  let key: string
+  let value: string
   let error: Error
   let req: Request
   let res: Response
@@ -24,7 +26,7 @@ describe('MulterAdapter', () => {
   const multerSpy: jest.Mock = jest.fn()
 
   beforeAll(() => {
-    req = getMockReq()
+    req = getMockReq({ locals: { [key]: value } })
     res = getMockRes().res
     next = getMockRes().next
     error = new Error(faker.random.word())
@@ -58,5 +60,13 @@ describe('MulterAdapter', () => {
     expect(res.status).toHaveBeenCalledTimes(1)
     expect(res.json).toHaveBeenCalledWith({ error: new ServerError(error).message })
     expect(res.json).toHaveBeenCalledTimes(1)
+  })
+
+  it('should not add file to req.locals if req is empty', () => {
+    uploadSpy.mockImplementationOnce((req, res, next) => { next() })
+
+    sut(req, res, next)
+
+    expect(req.locals).toEqual({ [key]: value })
   })
 })
