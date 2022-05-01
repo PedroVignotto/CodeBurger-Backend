@@ -1,6 +1,8 @@
 import { accountParams, categoryParams, productParams } from '@/tests/mocks'
 import { makeFakeDatabase } from '@/tests/infra/database/postgres/mocks'
 import { app } from '@/main/config/app'
+import { RequiredFieldError } from '@/application/errors'
+import { FieldInUseError } from '@/domain/errors'
 import { Account, Category, Product } from '@/infra/database/postgres/entities'
 import { PgConnection } from '@/infra/database/postgres/helpers'
 import { AwsS3FileStorage } from '@/infra/gateways'
@@ -9,14 +11,13 @@ import { mocked } from 'jest-mock'
 import { IBackup, IMemoryDb } from 'pg-mem'
 import request from 'supertest'
 import { Repository } from 'typeorm'
-import { RequiredFieldError } from '@/application/errors'
 
 jest.mock('@/infra/gateways/aws-s3-file-storage')
 
 describe('Product routes', () => {
   const { name: accountName, email, password, passwordConfirmation } = accountParams
   const { id: categoryId, name: categoryName } = categoryParams
-  const { name, description, price, key, picture, file } = productParams
+  const { id, name, description, price, key, picture, file } = productParams
 
   let token: string
 
@@ -25,6 +26,7 @@ describe('Product routes', () => {
   let backup: IBackup
   let repositoryAccount: Repository<Account>
   let repositoryCategory: Repository<Category>
+  let repositoryProduct: Repository<Product>
 
   const uploadSpy: jest.Mock = jest.fn()
 
@@ -36,6 +38,7 @@ describe('Product routes', () => {
     backup = database.backup()
     repositoryAccount = connection.getRepository(Account)
     repositoryCategory = connection.getRepository(Category)
+    repositoryProduct = connection.getRepository(Product)
   })
 
   beforeEach(async () => {
@@ -80,6 +83,18 @@ describe('Product routes', () => {
 
       expect(status).toBe(400)
       expect(error).toBe(new RequiredFieldError('categoryId').message)
+    })
+
+    it('Should return 400 if name already exists', async () => {
+      await repositoryProduct.save({ id, name, description, price })
+
+      const { status, body: { error } } = await request(app)
+        .post('/api/product')
+        .send({ categoryId, name, description, price })
+        .set({ authorization: `Bearer: ${token}` })
+
+      expect(status).toBe(400)
+      expect(error).toBe(new FieldInUseError('name').message)
     })
   })
 })
