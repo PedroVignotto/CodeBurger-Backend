@@ -9,6 +9,7 @@ import { mocked } from 'jest-mock'
 import { IBackup, IMemoryDb } from 'pg-mem'
 import request from 'supertest'
 import { Repository } from 'typeorm'
+import { RequiredFieldError } from '@/application/errors'
 
 jest.mock('@/infra/gateways/aws-s3-file-storage')
 
@@ -69,6 +70,16 @@ describe('Product routes', () => {
         .field('price', price)
 
       expect(status).toBe(201)
+    })
+
+    it('Should return 400 if has invalid data', async () => {
+      const { status, body: { error } } = await request(app)
+        .post('/api/product')
+        .send({ name, description, price })
+        .set({ authorization: `Bearer: ${token}` })
+
+      expect(status).toBe(400)
+      expect(error).toBe(new RequiredFieldError('categoryId').message)
     })
   })
 })
