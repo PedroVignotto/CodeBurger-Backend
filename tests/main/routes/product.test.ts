@@ -2,7 +2,7 @@ import { accountParams, categoryParams, productParams } from '@/tests/mocks'
 import { makeFakeDatabase } from '@/tests/infra/database/postgres/mocks'
 import { app } from '@/main/config/app'
 import { RequiredFieldError } from '@/application/errors'
-import { FieldInUseError } from '@/domain/errors'
+import { FieldInUseError, NonExistentFieldError } from '@/domain/errors'
 import { Account, Category, Product } from '@/infra/database/postgres/entities'
 import { PgConnection } from '@/infra/database/postgres/helpers'
 import { AwsS3FileStorage } from '@/infra/gateways'
@@ -95,6 +95,16 @@ describe('Product routes', () => {
 
       expect(status).toBe(400)
       expect(error).toBe(new FieldInUseError('name').message)
+    })
+
+    it('Should return 400 if category does not exists', async () => {
+      const { status, body: { error } } = await request(app)
+        .post('/api/product')
+        .send({ categoryId, name, description, price })
+        .set({ authorization: `Bearer: ${token}` })
+
+      expect(status).toBe(400)
+      expect(error).toBe(new NonExistentFieldError('categoryId').message)
     })
   })
 })
