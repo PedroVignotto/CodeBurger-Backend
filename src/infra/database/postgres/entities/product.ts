@@ -23,7 +23,7 @@ export class Product {
   price!: number
 
   @Column({ default: true })
-  available!: string
+  available!: boolean
 
   @Column({ nullable: true })
   picture?: string
