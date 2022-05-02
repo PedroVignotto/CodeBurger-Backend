@@ -110,5 +110,13 @@ describe('ProductRepository', () => {
 
       expect(result).toBeUndefined()
     })
+
+    it('Should return the product if it exists', async () => {
+      await repositoryProduct.save({ id, name, description, price, available, picture })
+
+      const result = await sut.load({ id })
+
+      expect(result).toMatchObject({ id, name, description, price, available, picture })
+    })
   })
 })
