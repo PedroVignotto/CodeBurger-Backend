@@ -3,7 +3,7 @@ import { CheckProductByIdRepository, CheckProductByNameRepository, LoadProductRe
 import { CheckCategoryByIdRepository } from '@/domain/contracts/database/repositories/category'
 import { UpdateProduct, updateProductUseCase } from '@/domain/use-cases/product'
 import { FieldInUseError, NonExistentFieldError } from '@/domain/errors'
-import { DeleteFile, UUIDGenerator } from '@/domain/contracts/gateways'
+import { DeleteFile, UploadFile, UUIDGenerator } from '@/domain/contracts/gateways'
 
 import { mock } from 'jest-mock-extended'
 
@@ -11,11 +11,11 @@ describe('UpdateProductUseCase', () => {
   let sut: UpdateProduct
 
   const { id: categoryId } = categoryParams
-  const { id, name, description, price, available, picture, file, error } = productParams
+  const { id, name, description, price, available, key, picture, file, error } = productParams
 
   const productRepository = mock<CheckProductByIdRepository & CheckProductByNameRepository & LoadProductRepository>()
   const categoryRepository = mock<CheckCategoryByIdRepository>()
-  const fileStorage = mock<DeleteFile>()
+  const fileStorage = mock<UploadFile & DeleteFile>()
   const uuid = mock<UUIDGenerator>()
 
   beforeAll(() => {
@@ -23,6 +23,7 @@ describe('UpdateProductUseCase', () => {
     productRepository.checkByName.mockResolvedValue(false)
     categoryRepository.checkById.mockResolvedValue(true)
     productRepository.load.mockResolvedValue({ id, categoryId, name, description, price, available, picture })
+    uuid.generate.mockReturnValue(key)
   })
 
   beforeEach(() => {
@@ -141,5 +142,12 @@ describe('UpdateProductUseCase', () => {
     const promise = sut({ id, name, categoryId, file })
 
     await expect(promise).rejects.toThrow(error)
+  })
+
+  it('Should call UploadFile with correct values', async () => {
+    await sut({ id, name, categoryId, file })
+
+    expect(fileStorage.upload).toHaveBeenCalledWith({ file: file.buffer, fileName: `${key}.${file.mimeType.split('/')[1]}` })
+    expect(fileStorage.upload).toHaveBeenCalledTimes(1)
   })
 })
