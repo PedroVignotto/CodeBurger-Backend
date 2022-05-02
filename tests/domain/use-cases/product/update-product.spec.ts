@@ -120,6 +120,14 @@ describe('UpdateProductUseCase', () => {
     expect(fileStorage.delete).toHaveBeenCalledTimes(1)
   })
 
+  it('Should rethrow if DeleteFile throws', async () => {
+    fileStorage.delete.mockRejectedValueOnce(error)
+
+    const promise = sut({ id, name, categoryId, file })
+
+    await expect(promise).rejects.toThrow(error)
+  })
+
   it('Should call UUIDGenerator', async () => {
     await sut({ id, name, categoryId, file })
 
