@@ -1,5 +1,5 @@
 import { Controller } from '@/application/controllers/controller'
-import { HttpResponse, noContent } from '@/application/helpers'
+import { badRequest, HttpResponse, noContent } from '@/application/helpers'
 import { ValidationBuilder as Builder, Validator } from '@/application/validation'
 import { UpdateProduct } from '@/domain/use-cases/product'
 
@@ -17,7 +17,9 @@ export class UpdateProductController extends Controller {
   constructor (private readonly updateProduct: UpdateProduct) { super() }
 
   async perform (HttpRequest: HttpRequest): Promise<HttpResponse> {
-    await this.updateProduct(HttpRequest)
+    const product = await this.updateProduct(HttpRequest)
+
+    if (product instanceof Error) return badRequest(product)
 
     return noContent()
   }
