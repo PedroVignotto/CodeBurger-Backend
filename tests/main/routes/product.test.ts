@@ -162,5 +162,14 @@ describe('Product routes', () => {
       expect(status).toBe(400)
       expect(error).toBe(new InvalidMimeTypeError(['png', 'jpg']).message)
     })
+
+    it('Should return 400 if id does not exists', async () => {
+      const { status, body: { error } } = await request(app)
+        .put(`/api/product/${id}`)
+        .set({ authorization: `Bearer: ${token}` })
+
+      expect(status).toBe(400)
+      expect(error).toBe(new NonExistentFieldError('id').message)
+    })
   })
 })
