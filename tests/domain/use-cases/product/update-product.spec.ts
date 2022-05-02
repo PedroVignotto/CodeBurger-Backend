@@ -3,7 +3,7 @@ import { CheckProductByIdRepository, CheckProductByNameRepository, LoadProductRe
 import { CheckCategoryByIdRepository } from '@/domain/contracts/database/repositories/category'
 import { UpdateProduct, updateProductUseCase } from '@/domain/use-cases/product'
 import { FieldInUseError, NonExistentFieldError } from '@/domain/errors'
-import { DeleteFile } from '@/domain/contracts/gateways'
+import { DeleteFile, UUIDGenerator } from '@/domain/contracts/gateways'
 
 import { mock } from 'jest-mock-extended'
 
@@ -16,6 +16,7 @@ describe('UpdateProductUseCase', () => {
   const productRepository = mock<CheckProductByIdRepository & CheckProductByNameRepository & LoadProductRepository>()
   const categoryRepository = mock<CheckCategoryByIdRepository>()
   const fileStorage = mock<DeleteFile>()
+  const uuid = mock<UUIDGenerator>()
 
   beforeAll(() => {
     productRepository.checkById.mockResolvedValue(true)
@@ -25,7 +26,7 @@ describe('UpdateProductUseCase', () => {
   })
 
   beforeEach(() => {
-    sut = updateProductUseCase(productRepository, categoryRepository, fileStorage)
+    sut = updateProductUseCase(productRepository, categoryRepository, fileStorage, uuid)
   })
 
   it('Should call CheckProductByIdRepository with correct id', async () => {
@@ -109,5 +110,12 @@ describe('UpdateProductUseCase', () => {
 
     expect(fileStorage.delete).toHaveBeenCalledWith({ fileName: picture })
     expect(fileStorage.delete).toHaveBeenCalledTimes(1)
+  })
+
+  it('Should call UUIDGenerator', async () => {
+    await sut({ id, name, categoryId, file })
+
+    expect(uuid.generate).toHaveBeenCalledWith()
+    expect(uuid.generate).toHaveBeenCalledTimes(1)
   })
 })
