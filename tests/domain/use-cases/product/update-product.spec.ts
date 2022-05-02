@@ -1,5 +1,5 @@
 import { categoryParams, productParams } from '@/tests/mocks'
-import { CheckProductByIdRepository, CheckProductByNameRepository, LoadProductRepository } from '@/domain/contracts/database/repositories/product'
+import { CheckProductByIdRepository, CheckProductByNameRepository, LoadProductRepository, UpdateProductRepository } from '@/domain/contracts/database/repositories/product'
 import { CheckCategoryByIdRepository } from '@/domain/contracts/database/repositories/category'
 import { UpdateProduct, updateProductUseCase } from '@/domain/use-cases/product'
 import { FieldInUseError, NonExistentFieldError } from '@/domain/errors'
@@ -13,7 +13,7 @@ describe('UpdateProductUseCase', () => {
   const { id: categoryId } = categoryParams
   const { id, name, description, price, available, key, picture, file, error } = productParams
 
-  const productRepository = mock<CheckProductByIdRepository & CheckProductByNameRepository & LoadProductRepository>()
+  const productRepository = mock<CheckProductByIdRepository & CheckProductByNameRepository & LoadProductRepository & UpdateProductRepository>()
   const categoryRepository = mock<CheckCategoryByIdRepository>()
   const fileStorage = mock<UploadFile & DeleteFile>()
   const uuid = mock<UUIDGenerator>()
@@ -24,6 +24,7 @@ describe('UpdateProductUseCase', () => {
     categoryRepository.checkById.mockResolvedValue(true)
     productRepository.load.mockResolvedValue({ id, categoryId, name, description, price, available, picture })
     uuid.generate.mockReturnValue(key)
+    fileStorage.upload.mockResolvedValue(picture)
   })
 
   beforeEach(() => {
@@ -157,5 +158,12 @@ describe('UpdateProductUseCase', () => {
     const promise = sut({ id, name, categoryId, file })
 
     await expect(promise).rejects.toThrow(error)
+  })
+
+  it('Should call UpdateProductRepository with correct values', async () => {
+    await sut({ id, name, description, price, available, categoryId, file })
+
+    expect(productRepository.update).toHaveBeenCalledWith({ id, categoryId, name, description, price, available, picture })
+    expect(productRepository.update).toHaveBeenCalledTimes(1)
   })
 })
