@@ -1,9 +1,9 @@
 import { Product } from '@/infra/database/postgres/entities'
 import { PgRepository } from '@/infra/database/postgres/repositories'
 import { UUIDGenerator } from '@/domain/contracts/gateways'
-import { AddProductRepository, CheckProductByIdRepository, CheckProductByNameRepository, ListProductsRepository, LoadProductRepository } from '@/domain/contracts/database/repositories/product'
+import { AddProductRepository, CheckProductByIdRepository, CheckProductByNameRepository, ListProductsRepository, LoadProductRepository, UpdateProductRepository } from '@/domain/contracts/database/repositories/product'
 
-export class ProductRepository extends PgRepository implements CheckProductByNameRepository, AddProductRepository, ListProductsRepository, CheckProductByIdRepository, LoadProductRepository {
+export class ProductRepository extends PgRepository implements CheckProductByNameRepository, AddProductRepository, ListProductsRepository, CheckProductByIdRepository, LoadProductRepository, UpdateProductRepository {
   constructor (private readonly uuid: UUIDGenerator) { super() }
 
   async checkByName ({ name }: CheckProductByNameRepository.Input): Promise<CheckProductByNameRepository.Output> {
@@ -34,5 +34,15 @@ export class ProductRepository extends PgRepository implements CheckProductByNam
     const repository = this.getRepository(Product)
 
     return await repository.findOne(id)
+  }
+
+  async update ({ id, ...input }: UpdateProductRepository.Input): Promise<UpdateProductRepository.Output> {
+    const repository = this.getRepository(Product)
+
+    await repository
+      .createQueryBuilder()
+      .update(JSON.parse(JSON.stringify(input)))
+      .where({ id })
+      .execute()
   }
 }
