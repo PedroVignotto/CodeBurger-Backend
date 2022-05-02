@@ -3,7 +3,7 @@ export interface ListProductsRepository {
 }
 
 export namespace ListProductsRepository {
-  export type Input = { categoryId?: string, available?: boolean }
+  export type Input = { categoryId?: string }
   export type Output = Array<{
     id: string
     categoryId?: string
