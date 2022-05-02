@@ -85,6 +85,14 @@ describe('AwsS3FileStorage', () => {
       expect(deleteObjectPromiseSpy).toHaveBeenCalledTimes(1)
     })
 
+    it('Should format url and call deleteObject', async () => {
+      await sut.delete({ fileName: 'https://any_bucket.s3.amazonaws.com/any_picture.png' })
+
+      expect(deleteObjectSpy).toHaveBeenCalledWith({ Bucket: bucket, Key: 'any_picture.png' })
+      expect(deleteObjectSpy).toHaveBeenCalledTimes(1)
+      expect(deleteObjectPromiseSpy).toHaveBeenCalledTimes(1)
+    })
+
     it('Should rethrow if deleteObject throw', async () => {
       deleteObjectPromiseSpy.mockRejectedValueOnce(error)
 
