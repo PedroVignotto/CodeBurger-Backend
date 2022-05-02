@@ -134,4 +134,12 @@ describe('UpdateProductUseCase', () => {
     expect(uuid.generate).toHaveBeenCalledWith()
     expect(uuid.generate).toHaveBeenCalledTimes(1)
   })
+
+  it('Should rethrow if UUIDGenerator throws', async () => {
+    uuid.generate.mockImplementationOnce(() => { throw error })
+
+    const promise = sut({ id, name, categoryId, file })
+
+    await expect(promise).rejects.toThrow(error)
+  })
 })
