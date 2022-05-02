@@ -171,5 +171,17 @@ describe('Product routes', () => {
       expect(status).toBe(400)
       expect(error).toBe(new NonExistentFieldError('id').message)
     })
+
+    it('Should return 400 if name already exists', async () => {
+      await repositoryProduct.save({ id, name, description, price })
+
+      const { status, body: { error } } = await request(app)
+        .put(`/api/product/${id}`)
+        .send({ name })
+        .set({ authorization: `Bearer: ${token}` })
+
+      expect(status).toBe(400)
+      expect(error).toBe(new FieldInUseError('name').message)
+    })
   })
 })
