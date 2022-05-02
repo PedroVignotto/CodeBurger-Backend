@@ -94,5 +94,13 @@ describe('ProductRepository', () => {
 
       expect(result).toBe(false)
     })
+
+    it('Should return true if product already exists', async () => {
+      await repositoryProduct.save({ id, name, description, price, available, picture })
+
+      const result = await sut.checkById({ id })
+
+      expect(result).toBe(true)
+    })
   })
 })
