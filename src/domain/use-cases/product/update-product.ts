@@ -1,13 +1,15 @@
-import { CheckProductByIdRepository } from '@/domain/contracts/database/repositories/product'
+import { CheckProductByIdRepository, CheckProductByNameRepository } from '@/domain/contracts/database/repositories/product'
 import { NonExistentFieldError } from '@/domain/errors'
 
-type Setup = (productRepository: CheckProductByIdRepository) => UpdateProduct
-type Input = { id: string }
+type Setup = (productRepository: CheckProductByIdRepository & CheckProductByNameRepository) => UpdateProduct
+type Input = { id: string, name: string }
 type Output = undefined | Error
 export type UpdateProduct = (input: Input) => Promise<Output>
 
-export const updateProductUseCase: Setup = productRepository => async ({ id }) => {
-  await productRepository.checkById({ id })
+export const updateProductUseCase: Setup = productRepository => async ({ id, name }) => {
+  const productExists = await productRepository.checkById({ id })
 
-  return new NonExistentFieldError('id')
+  if (!productExists) return new NonExistentFieldError('id')
+
+  await productRepository.checkByName({ name })
 }
