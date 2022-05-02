@@ -21,7 +21,7 @@ type Input = {
 type Output = undefined | Error
 export type UpdateProduct = (input: Input) => Promise<Output>
 
-export const updateProductUseCase: Setup = (productRepository, categoryRepository, fileStorage, uuid) => async ({ id, name, categoryId, file, ...input }) => {
+export const updateProductUseCase: Setup = (productRepository, categoryRepository, fileStorage, uuid) => async ({ id, name, categoryId, file, description, price, available }) => {
   const productNotExists = await productRepository.checkById({ id })
 
   if (!productNotExists) return new NonExistentFieldError('id')
@@ -51,7 +51,7 @@ export const updateProductUseCase: Setup = (productRepository, categoryRepositor
   }
 
   try {
-    await productRepository.update({ id, categoryId, name, picture, ...input })
+    await productRepository.update({ id, categoryId, name, picture, description, price, available })
   } catch (error) {
     if (file) await fileStorage.delete({ fileName: key })
 
