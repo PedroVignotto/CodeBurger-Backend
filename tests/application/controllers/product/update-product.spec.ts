@@ -2,6 +2,7 @@ import { categoryParams, productParams } from '@/tests/mocks'
 import { Controller } from '@/application/controllers'
 import { AllowedMimeTypesValidation, MaxFileSizeValidation, RequiredValidation } from '@/application/validation'
 import { UpdateProductController } from '@/application/controllers/product'
+import { NonExistentFieldError } from '@/domain/errors'
 
 describe('UpdateProductController', () => {
   let sut: UpdateProductController
@@ -38,5 +39,14 @@ describe('UpdateProductController', () => {
 
     expect(updateProduct).toHaveBeenCalledWith({ id, categoryId, name, description, price, available, file })
     expect(updateProduct).toHaveBeenCalledTimes(1)
+  })
+
+  it('Should return badRequest if updateProduct return Error', async () => {
+    updateProduct.mockResolvedValueOnce(new NonExistentFieldError('id'))
+
+    const { statusCode, data } = await sut.handle({ id })
+
+    expect(statusCode).toBe(400)
+    expect(data).toEqual(new NonExistentFieldError('id'))
   })
 })
