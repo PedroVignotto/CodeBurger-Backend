@@ -19,6 +19,8 @@ export const updateProductUseCase: Setup = (productRepository, categoryRepositor
   }
 
   if (categoryId) {
-    await categoryRepository.checkById({ id: categoryId })
+    const categoryExists = await categoryRepository.checkById({ id: categoryId })
+
+    if (!categoryExists) return new NonExistentFieldError('categoryId')
   }
 }
