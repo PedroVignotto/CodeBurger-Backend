@@ -1,5 +1,5 @@
 import { productParams } from '@/tests/mocks'
-import { CheckProductByIdRepository } from '@/domain/contracts/database/repositories/product'
+import { CheckProductByIdRepository, CheckProductByNameRepository } from '@/domain/contracts/database/repositories/product'
 import { UpdateProduct, updateProductUseCase } from '@/domain/use-cases/product'
 import { NonExistentFieldError } from '@/domain/errors'
 
@@ -8,16 +8,20 @@ import { mock } from 'jest-mock-extended'
 describe('UpdateProductUseCase', () => {
   let sut: UpdateProduct
 
-  const { id, error } = productParams
+  const { id, name, error } = productParams
 
-  const productRepository = mock<CheckProductByIdRepository>()
+  const productRepository = mock<CheckProductByIdRepository & CheckProductByNameRepository>()
+
+  beforeAll(() => {
+    productRepository.checkById.mockResolvedValue(true)
+  })
 
   beforeEach(() => {
     sut = updateProductUseCase(productRepository)
   })
 
   it('Should call CheckProductByIdRepository with correct id', async () => {
-    await sut({ id })
+    await sut({ id, name })
 
     expect(productRepository.checkById).toHaveBeenCalledWith({ id })
     expect(productRepository.checkById).toHaveBeenCalledTimes(1)
@@ -26,7 +30,7 @@ describe('UpdateProductUseCase', () => {
   it('Should return NonExistentFieldError if CheckProductByIdRepository return false', async () => {
     productRepository.checkById.mockResolvedValueOnce(false)
 
-    const result = await sut({ id })
+    const result = await sut({ id, name })
 
     expect(result).toEqual(new NonExistentFieldError('id'))
   })
@@ -34,8 +38,15 @@ describe('UpdateProductUseCase', () => {
   it('Should rethrow if CheckProductByIdRepository throws', async () => {
     productRepository.checkById.mockRejectedValueOnce(error)
 
-    const promise = sut({ id })
+    const promise = sut({ id, name })
 
     await expect(promise).rejects.toThrow(error)
+  })
+
+  it('Should call CheckProductByNameRepository with correct name', async () => {
+    await sut({ id, name })
+
+    expect(productRepository.checkByName).toHaveBeenCalledWith({ name })
+    expect(productRepository.checkByName).toHaveBeenCalledTimes(1)
   })
 })
