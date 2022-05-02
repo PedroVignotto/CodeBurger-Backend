@@ -183,5 +183,17 @@ describe('Product routes', () => {
       expect(status).toBe(400)
       expect(error).toBe(new FieldInUseError('name').message)
     })
+
+    it('Should return 400 if category does not exists', async () => {
+      await repositoryProduct.save({ id, name, description, price, picture })
+
+      const { status, body: { error } } = await request(app)
+        .put(`/api/product/${id}`)
+        .send({ categoryId, name: 'any_name' })
+        .set({ authorization: `Bearer: ${token}` })
+
+      expect(status).toBe(400)
+      expect(error).toBe(new NonExistentFieldError('categoryId').message)
+    })
   })
 })
