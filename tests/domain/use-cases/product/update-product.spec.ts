@@ -1,7 +1,7 @@
 import { productParams } from '@/tests/mocks'
 import { CheckProductByIdRepository, CheckProductByNameRepository } from '@/domain/contracts/database/repositories/product'
 import { UpdateProduct, updateProductUseCase } from '@/domain/use-cases/product'
-import { NonExistentFieldError } from '@/domain/errors'
+import { FieldInUseError, NonExistentFieldError } from '@/domain/errors'
 
 import { mock } from 'jest-mock-extended'
 
@@ -48,5 +48,13 @@ describe('UpdateProductUseCase', () => {
 
     expect(productRepository.checkByName).toHaveBeenCalledWith({ name })
     expect(productRepository.checkByName).toHaveBeenCalledTimes(1)
+  })
+
+  it('Should return FieldInUseError if CheckProductByNameRepository return true', async () => {
+    productRepository.checkByName.mockResolvedValueOnce(true)
+
+    const result = await sut({ id, name })
+
+    expect(result).toEqual(new FieldInUseError('name'))
   })
 })
