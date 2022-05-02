@@ -129,4 +129,14 @@ describe('ProductRepository', () => {
       expect(await repositoryProduct.findOne(id)).toMatchObject({ name: 'any_name' })
     })
   })
+
+  describe('delete()', () => {
+    it('Should delete a product on success', async () => {
+      await repositoryProduct.save({ id, name, description, price, available, picture })
+
+      await sut.delete({ id })
+
+      expect(await repositoryProduct.findOne(id)).toBeUndefined()
+    })
+  })
 })
