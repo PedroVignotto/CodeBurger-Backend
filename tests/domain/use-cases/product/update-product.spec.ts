@@ -177,4 +177,14 @@ describe('UpdateProductUseCase', () => {
       expect(fileStorage.delete).toHaveBeenCalledTimes(2)
     })
   })
+
+  it('Should not call DeleteFile when file does not exists and UpdateProductRepository throws', async () => {
+    productRepository.update.mockRejectedValueOnce(error)
+
+    const promise = sut({ id, name, description, price, available, categoryId })
+
+    promise.catch(() => {
+      expect(fileStorage.delete).not.toHaveBeenCalled()
+    })
+  })
 })
