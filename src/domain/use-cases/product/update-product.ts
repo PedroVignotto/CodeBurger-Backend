@@ -45,7 +45,7 @@ export const updateProductUseCase: Setup = (productRepository, categoryRepositor
   if (file) {
     const product = await productRepository.load({ id })
 
-    if (product.picture) await fileStorage.delete({ fileName: product.picture })
+    if (product?.picture) await fileStorage.delete({ fileName: product?.picture })
 
     picture = await fileStorage.upload({ file: file.buffer, fileName: `${key}.${file.mimeType.split('/')[1]}` })
   }

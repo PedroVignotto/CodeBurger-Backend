@@ -12,5 +12,5 @@ export namespace LoadProductRepository {
     price: number
     available: boolean
     picture?: string
-  }
+  } | undefined
 }

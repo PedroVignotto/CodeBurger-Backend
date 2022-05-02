@@ -1,9 +1,9 @@
 import { Product } from '@/infra/database/postgres/entities'
 import { PgRepository } from '@/infra/database/postgres/repositories'
 import { UUIDGenerator } from '@/domain/contracts/gateways'
-import { AddProductRepository, CheckProductByIdRepository, CheckProductByNameRepository, ListProductsRepository } from '@/domain/contracts/database/repositories/product'
+import { AddProductRepository, CheckProductByIdRepository, CheckProductByNameRepository, ListProductsRepository, LoadProductRepository } from '@/domain/contracts/database/repositories/product'
 
-export class ProductRepository extends PgRepository implements CheckProductByNameRepository, AddProductRepository, ListProductsRepository, CheckProductByIdRepository {
+export class ProductRepository extends PgRepository implements CheckProductByNameRepository, AddProductRepository, ListProductsRepository, CheckProductByIdRepository, LoadProductRepository {
   constructor (private readonly uuid: UUIDGenerator) { super() }
 
   async checkByName ({ name }: CheckProductByNameRepository.Input): Promise<CheckProductByNameRepository.Output> {
@@ -28,5 +28,11 @@ export class ProductRepository extends PgRepository implements CheckProductByNam
     const repository = this.getRepository(Product)
 
     return !!await repository.findOne(id)
+  }
+
+  async load ({ id }: LoadProductRepository.Input): Promise<LoadProductRepository.Output> {
+    const repository = this.getRepository(Product)
+
+    return await repository.findOne(id)
   }
 }
