@@ -60,4 +60,12 @@ describe('DeleteProductUseCase', () => {
 
     expect(fileStorage.delete).not.toHaveBeenCalled()
   })
+
+  it('Should rethrow if DeleteFile throws', async () => {
+    fileStorage.delete.mockRejectedValueOnce(error)
+
+    const promise = sut({ id })
+
+    await expect(promise).rejects.toThrow(error)
+  })
 })
