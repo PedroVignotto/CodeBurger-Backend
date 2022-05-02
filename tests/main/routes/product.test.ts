@@ -29,8 +29,9 @@ describe('Product routes', () => {
   let repositoryProduct: Repository<Product>
 
   const uploadSpy: jest.Mock = jest.fn()
+  const deleteSpy: jest.Mock = jest.fn()
 
-  mocked(AwsS3FileStorage).mockImplementation(jest.fn().mockImplementation(() => ({ upload: uploadSpy })))
+  mocked(AwsS3FileStorage).mockImplementation(jest.fn().mockImplementation(() => ({ upload: uploadSpy, delete: deleteSpy })))
 
   beforeAll(async () => {
     connection = PgConnection.getInstance()
@@ -130,6 +131,26 @@ describe('Product routes', () => {
 
       expect(status).toBe(200)
       expect(body).toEqual([])
+    })
+  })
+
+  describe('PUT /product/:id', () => {
+    it('Should return 204 on success', async () => {
+      uploadSpy.mockResolvedValueOnce(picture)
+
+      await repositoryCategory.save({ id: categoryId, name: categoryName })
+      await repositoryProduct.save({ id, categoryId, name, description, price, picture })
+
+      const { status } = await request(app)
+        .put(`/api/product/${id}`)
+        .set({ authorization: `Bearer: ${token}` })
+        .attach('picture', file.buffer, { filename: key, contentType: file.mimeType })
+        .field('categoryId', categoryId)
+        .field('name', 'any_name')
+        .field('description', description)
+        .field('price', price)
+
+      expect(status).toBe(204)
     })
   })
 })
