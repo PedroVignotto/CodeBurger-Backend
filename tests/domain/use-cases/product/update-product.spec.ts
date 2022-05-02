@@ -1,5 +1,6 @@
-import { productParams } from '@/tests/mocks'
+import { categoryParams, productParams } from '@/tests/mocks'
 import { CheckProductByIdRepository, CheckProductByNameRepository } from '@/domain/contracts/database/repositories/product'
+import { CheckCategoryByIdRepository } from '@/domain/contracts/database/repositories/category'
 import { UpdateProduct, updateProductUseCase } from '@/domain/use-cases/product'
 import { FieldInUseError, NonExistentFieldError } from '@/domain/errors'
 
@@ -8,20 +9,23 @@ import { mock } from 'jest-mock-extended'
 describe('UpdateProductUseCase', () => {
   let sut: UpdateProduct
 
+  const { id: categoryId } = categoryParams
   const { id, name, error } = productParams
 
   const productRepository = mock<CheckProductByIdRepository & CheckProductByNameRepository>()
+  const categoryRepository = mock<CheckCategoryByIdRepository>()
 
   beforeAll(() => {
     productRepository.checkById.mockResolvedValue(true)
+    productRepository.checkByName.mockResolvedValue(false)
   })
 
   beforeEach(() => {
-    sut = updateProductUseCase(productRepository)
+    sut = updateProductUseCase(productRepository, categoryRepository)
   })
 
   it('Should call CheckProductByIdRepository with correct id', async () => {
-    await sut({ id, name })
+    await sut({ id })
 
     expect(productRepository.checkById).toHaveBeenCalledWith({ id })
     expect(productRepository.checkById).toHaveBeenCalledTimes(1)
@@ -30,7 +34,7 @@ describe('UpdateProductUseCase', () => {
   it('Should return NonExistentFieldError if CheckProductByIdRepository return false', async () => {
     productRepository.checkById.mockResolvedValueOnce(false)
 
-    const result = await sut({ id, name })
+    const result = await sut({ id })
 
     expect(result).toEqual(new NonExistentFieldError('id'))
   })
@@ -38,7 +42,7 @@ describe('UpdateProductUseCase', () => {
   it('Should rethrow if CheckProductByIdRepository throws', async () => {
     productRepository.checkById.mockRejectedValueOnce(error)
 
-    const promise = sut({ id, name })
+    const promise = sut({ id })
 
     await expect(promise).rejects.toThrow(error)
   })
@@ -64,5 +68,12 @@ describe('UpdateProductUseCase', () => {
     const promise = sut({ id, name })
 
     await expect(promise).rejects.toThrow(error)
+  })
+
+  it('Should call CheckCategoryByIdRepository with correct id', async () => {
+    await sut({ id, name, categoryId })
+
+    expect(categoryRepository.checkById).toHaveBeenCalledWith({ id: categoryId })
+    expect(categoryRepository.checkById).toHaveBeenCalledTimes(1)
   })
 })
