@@ -150,4 +150,12 @@ describe('UpdateProductUseCase', () => {
     expect(fileStorage.upload).toHaveBeenCalledWith({ file: file.buffer, fileName: `${key}.${file.mimeType.split('/')[1]}` })
     expect(fileStorage.upload).toHaveBeenCalledTimes(1)
   })
+
+  it('Should rethrow if UploadFile throws', async () => {
+    fileStorage.upload.mockRejectedValueOnce(error)
+
+    const promise = sut({ id, name, categoryId, file })
+
+    await expect(promise).rejects.toThrow(error)
+  })
 })
