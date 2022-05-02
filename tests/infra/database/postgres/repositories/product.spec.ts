@@ -13,7 +13,7 @@ describe('ProductRepository', () => {
   let sut: ProductRepository
 
   const { id: categoryId, name: categoryName } = categoryParams
-  const { id, name, description, price } = productParams
+  const { id, name, description, price, available, picture } = productParams
 
   let connection: PgConnection
   let database: IMemoryDb
@@ -66,6 +66,17 @@ describe('ProductRepository', () => {
       await sut.create({ categoryId, name, description, price })
 
       expect(await repositoryProduct.findOne(id)).toBeTruthy()
+    })
+  })
+
+  describe('list()', () => {
+    it('Should return all products', async () => {
+      await repositoryCategory.save({ id: categoryId, name: categoryName })
+      await repositoryProduct.save({ id, categoryId, name, description, price, available, picture })
+
+      const result = await sut.list({})
+
+      expect(result).toEqual([{ id, categoryId, name, description, price, available, picture }])
     })
   })
 })
