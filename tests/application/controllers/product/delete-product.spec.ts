@@ -33,4 +33,10 @@ describe('DeleteProductController', () => {
     expect(statusCode).toBe(400)
     expect(data).toEqual(new NonExistentFieldError('id'))
   })
+
+  it('Should return noContent if deleteProduct return undefined', async () => {
+    const { statusCode } = await sut.handle({ id })
+
+    expect(statusCode).toBe(204)
+  })
 })
