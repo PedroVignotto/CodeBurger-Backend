@@ -78,5 +78,13 @@ describe('ProductRepository', () => {
 
       expect(result).toEqual([{ id, categoryId, name, description, price, available, picture }])
     })
+
+    it('Should return all products in a category', async () => {
+      await repositoryProduct.save({ id, name, description, price, available, picture })
+
+      const result = await sut.list({ categoryId })
+
+      expect(result).toEqual([])
+    })
   })
 })
