@@ -61,6 +61,12 @@ describe('UpdateProductUseCase', () => {
     expect(productRepository.checkByName).toHaveBeenCalledTimes(1)
   })
 
+  it('Should not call CheckProductByNameRepository if name is not provided', async () => {
+    await sut({ id })
+
+    expect(productRepository.checkByName).not.toHaveBeenCalled()
+  })
+
   it('Should return FieldInUseError if CheckProductByNameRepository return true', async () => {
     productRepository.checkByName.mockResolvedValueOnce(true)
 
