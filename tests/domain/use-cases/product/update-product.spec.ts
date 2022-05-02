@@ -90,6 +90,12 @@ describe('UpdateProductUseCase', () => {
     expect(categoryRepository.checkById).toHaveBeenCalledTimes(1)
   })
 
+  it('Should not call CheckCategoryByIdRepository if categoryId is not provided', async () => {
+    await sut({ id, name })
+
+    expect(categoryRepository.checkById).not.toHaveBeenCalled()
+  })
+
   it('Should return NonExistentFieldError if CheckCategoryByIdRepository return false', async () => {
     categoryRepository.checkById.mockResolvedValueOnce(false)
 
