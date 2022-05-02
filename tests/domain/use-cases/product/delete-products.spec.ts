@@ -1,6 +1,7 @@
-import { productParams } from '@/tests/mocks'
+import { categoryParams, productParams } from '@/tests/mocks'
 import { LoadProductRepository } from '@/domain/contracts/database/repositories/product'
 import { DeleteProduct, deleteProductUseCase } from '@/domain/use-cases/product'
+import { DeleteFile } from '@/domain/contracts/gateways'
 import { NonExistentFieldError } from '@/domain/errors'
 
 import { mock } from 'jest-mock-extended'
@@ -8,12 +9,18 @@ import { mock } from 'jest-mock-extended'
 describe('DeleteProductUseCase', () => {
   let sut: DeleteProduct
 
-  const { id, error } = productParams
+  const { id: categoryId } = categoryParams
+  const { id, name, description, price, available, error, picture } = productParams
 
   const productRepository = mock<LoadProductRepository>()
+  const fileStorage = mock<DeleteFile>()
+
+  beforeAll(() => {
+    productRepository.load.mockResolvedValue({ id, categoryId, name, description, price, available, picture })
+  })
 
   beforeEach(() => {
-    sut = deleteProductUseCase(productRepository)
+    sut = deleteProductUseCase(productRepository, fileStorage)
   })
 
   it('Should call LoadProductRepository with correct id', async () => {
@@ -37,5 +44,12 @@ describe('DeleteProductUseCase', () => {
     const promise = sut({ id })
 
     await expect(promise).rejects.toThrow(error)
+  })
+
+  it('Should call DeleteFile if product has image', async () => {
+    await sut({ id })
+
+    expect(fileStorage.delete).toHaveBeenCalledWith({ fileName: picture })
+    expect(fileStorage.delete).toHaveBeenCalledTimes(1)
   })
 })
