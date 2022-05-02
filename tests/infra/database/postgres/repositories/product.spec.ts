@@ -103,4 +103,12 @@ describe('ProductRepository', () => {
       expect(result).toBe(true)
     })
   })
+
+  describe('load()', () => {
+    it('Should return undefined if product does not exists', async () => {
+      const result = await sut.load({ id })
+
+      expect(result).toBeUndefined()
+    })
+  })
 })
