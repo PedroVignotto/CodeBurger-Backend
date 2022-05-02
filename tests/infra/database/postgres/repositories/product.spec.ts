@@ -119,4 +119,14 @@ describe('ProductRepository', () => {
       expect(result).toMatchObject({ id, name, description, price, available, picture })
     })
   })
+
+  describe('update()', () => {
+    it('Should update product on success', async () => {
+      await repositoryProduct.save({ id, name, description, price, available, picture })
+
+      await sut.update({ id, name: 'any_name' })
+
+      expect(await repositoryProduct.findOne(id)).toMatchObject({ name: 'any_name' })
+    })
+  })
 })
