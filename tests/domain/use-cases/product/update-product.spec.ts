@@ -155,6 +155,14 @@ describe('UpdateProductUseCase', () => {
     expect(fileStorage.delete).toHaveBeenCalledTimes(1)
   })
 
+  it('Should not call DeleteFile if product not have picture', async () => {
+    productRepository.load.mockResolvedValueOnce({ id, categoryId, name, description, price, available })
+
+    await sut({ id, name, categoryId, file })
+
+    expect(fileStorage.delete).not.toHaveBeenCalled()
+  })
+
   it('Should rethrow if DeleteFile throws', async () => {
     fileStorage.delete.mockRejectedValueOnce(error)
 
