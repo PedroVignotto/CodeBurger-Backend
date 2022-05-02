@@ -1,9 +1,9 @@
 import { Product } from '@/infra/database/postgres/entities'
 import { PgRepository } from '@/infra/database/postgres/repositories'
 import { UUIDGenerator } from '@/domain/contracts/gateways'
-import { AddProductRepository, CheckProductByIdRepository, CheckProductByNameRepository, ListProductsRepository, LoadProductRepository, UpdateProductRepository } from '@/domain/contracts/database/repositories/product'
+import { AddProductRepository, CheckProductByIdRepository, CheckProductByNameRepository, DeleteProductRepository, ListProductsRepository, LoadProductRepository, UpdateProductRepository } from '@/domain/contracts/database/repositories/product'
 
-export class ProductRepository extends PgRepository implements CheckProductByNameRepository, AddProductRepository, ListProductsRepository, CheckProductByIdRepository, LoadProductRepository, UpdateProductRepository {
+export class ProductRepository extends PgRepository implements CheckProductByNameRepository, AddProductRepository, ListProductsRepository, CheckProductByIdRepository, LoadProductRepository, UpdateProductRepository, DeleteProductRepository {
   constructor (private readonly uuid: UUIDGenerator) { super() }
 
   async checkByName ({ name }: CheckProductByNameRepository.Input): Promise<CheckProductByNameRepository.Output> {
@@ -44,5 +44,11 @@ export class ProductRepository extends PgRepository implements CheckProductByNam
       .update(JSON.parse(JSON.stringify(input)))
       .where({ id })
       .execute()
+  }
+
+  async delete ({ id }: DeleteProductRepository.Input): Promise<DeleteProductRepository.Output> {
+    const repository = this.getRepository(Product)
+
+    await repository.delete({ id })
   }
 }
