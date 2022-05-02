@@ -49,4 +49,10 @@ describe('UpdateProductController', () => {
     expect(statusCode).toBe(400)
     expect(data).toEqual(new NonExistentFieldError('id'))
   })
+
+  it('Should return noContent if valid data is provided', async () => {
+    const { statusCode } = await sut.handle({ id, categoryId, name, description, price, available, file })
+
+    expect(statusCode).toBe(204)
+  })
 })
