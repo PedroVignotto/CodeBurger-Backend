@@ -105,6 +105,14 @@ describe('UpdateProductUseCase', () => {
     expect(productRepository.load).toHaveBeenCalledTimes(1)
   })
 
+  it('Should rethrow if LoadProductRepository throws', async () => {
+    productRepository.load.mockRejectedValueOnce(error)
+
+    const promise = sut({ id, name, categoryId, file })
+
+    await expect(promise).rejects.toThrow(error)
+  })
+
   it('Should call DeleteFile if product already picture', async () => {
     await sut({ id, name, categoryId, file })
 
