@@ -100,6 +100,21 @@ describe('UpdateProductUseCase', () => {
     await expect(promise).rejects.toThrow(error)
   })
 
+  it('Should call UUIDGenerator', async () => {
+    await sut({ id, name, categoryId, file })
+
+    expect(uuid.generate).toHaveBeenCalledWith()
+    expect(uuid.generate).toHaveBeenCalledTimes(1)
+  })
+
+  it('Should rethrow if UUIDGenerator throws', async () => {
+    uuid.generate.mockImplementationOnce(() => { throw error })
+
+    const promise = sut({ id, name, categoryId, file })
+
+    await expect(promise).rejects.toThrow(error)
+  })
+
   it('Should call LoadProductRepository with correct id', async () => {
     await sut({ id, name, categoryId, file })
 
@@ -130,21 +145,6 @@ describe('UpdateProductUseCase', () => {
     await expect(promise).rejects.toThrow(error)
   })
 
-  it('Should call UUIDGenerator', async () => {
-    await sut({ id, name, categoryId, file })
-
-    expect(uuid.generate).toHaveBeenCalledWith()
-    expect(uuid.generate).toHaveBeenCalledTimes(1)
-  })
-
-  it('Should rethrow if UUIDGenerator throws', async () => {
-    uuid.generate.mockImplementationOnce(() => { throw error })
-
-    const promise = sut({ id, name, categoryId, file })
-
-    await expect(promise).rejects.toThrow(error)
-  })
-
   it('Should call UploadFile with correct values', async () => {
     await sut({ id, name, categoryId, file })
 
@@ -165,5 +165,16 @@ describe('UpdateProductUseCase', () => {
 
     expect(productRepository.update).toHaveBeenCalledWith({ id, categoryId, name, description, price, available, picture })
     expect(productRepository.update).toHaveBeenCalledTimes(1)
+  })
+
+  it('Should call DeleteFile when file exists and UpdateProductRepository throws', async () => {
+    productRepository.update.mockRejectedValueOnce(error)
+
+    const promise = sut({ id, name, description, price, available, categoryId, file })
+
+    promise.catch(() => {
+      expect(fileStorage.delete).toHaveBeenCalledWith({ fileName: key })
+      expect(fileStorage.delete).toHaveBeenCalledTimes(2)
+    })
   })
 })
