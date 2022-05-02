@@ -107,4 +107,29 @@ describe('Product routes', () => {
       expect(error).toBe(new NonExistentFieldError('categoryId').message)
     })
   })
+
+  describe('GET /products', () => {
+    it('Should return 200 on success', async () => {
+      await repositoryProduct.save({ id, name, description, price })
+
+      const { status, body } = await request(app)
+        .get('/api/products')
+        .set({ authorization: `Bearer: ${token}` })
+
+      expect(status).toBe(200)
+      expect(body).toMatchObject([{ id, name, description, price }])
+    })
+
+    it('Should return 200 on success', async () => {
+      await repositoryCategory.save({ id: categoryId, name: categoryName })
+      await repositoryProduct.save({ id, name, description, price })
+
+      const { status, body } = await request(app)
+        .get(`/api/products?categoryId=${categoryId}`)
+        .set({ authorization: `Bearer: ${token}` })
+
+      expect(status).toBe(200)
+      expect(body).toEqual([])
+    })
+  })
 })
