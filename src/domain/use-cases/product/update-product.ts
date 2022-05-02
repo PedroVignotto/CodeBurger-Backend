@@ -53,7 +53,7 @@ export const updateProductUseCase: Setup = (productRepository, categoryRepositor
   try {
     await productRepository.update({ id, categoryId, name, picture, description, price, available })
   } catch (error) {
-    if (file) await fileStorage.delete({ fileName: key })
+    if (file) await fileStorage.delete({ fileName: `${key}.${file.mimeType.split('/')[1]}` })
 
     throw error
   }

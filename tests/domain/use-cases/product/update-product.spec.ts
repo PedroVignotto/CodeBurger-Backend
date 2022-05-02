@@ -199,7 +199,7 @@ describe('UpdateProductUseCase', () => {
     const promise = sut({ id, name, description, price, available, categoryId, file })
 
     promise.catch(() => {
-      expect(fileStorage.delete).toHaveBeenCalledWith({ fileName: key })
+      expect(fileStorage.delete).toHaveBeenCalledWith({ fileName: `${key}.${file.mimeType.split('/')[1]}` })
       expect(fileStorage.delete).toHaveBeenCalledTimes(2)
     })
   })

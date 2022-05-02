@@ -31,7 +31,7 @@ export const addProductUseCase: Setup = (productRepository, categoryRepository, 
   try {
     return await productRepository.create({ categoryId, name, description, price, picture })
   } catch (error) {
-    if (file) await fileStorage.delete({ fileName: key })
+    if (file) await fileStorage.delete({ fileName: `${key}.${file.mimeType.split('/')[1]}` })
 
     throw error
   }

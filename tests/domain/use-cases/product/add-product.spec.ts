@@ -119,7 +119,7 @@ describe('AddProductUseCase', () => {
     const promise = sut({ categoryId, name, description, price, file })
 
     promise.catch(() => {
-      expect(fileStorage.delete).toHaveBeenCalledWith({ fileName: key })
+      expect(fileStorage.delete).toHaveBeenCalledWith({ fileName: `${key}.${file.mimeType.split('/')[1]}` })
       expect(fileStorage.delete).toHaveBeenCalledTimes(1)
     })
   })
