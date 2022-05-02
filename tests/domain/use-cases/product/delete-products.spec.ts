@@ -1,5 +1,5 @@
 import { categoryParams, productParams } from '@/tests/mocks'
-import { LoadProductRepository } from '@/domain/contracts/database/repositories/product'
+import { DeleteProductRepository, LoadProductRepository } from '@/domain/contracts/database/repositories/product'
 import { DeleteProduct, deleteProductUseCase } from '@/domain/use-cases/product'
 import { DeleteFile } from '@/domain/contracts/gateways'
 import { NonExistentFieldError } from '@/domain/errors'
@@ -12,7 +12,7 @@ describe('DeleteProductUseCase', () => {
   const { id: categoryId } = categoryParams
   const { id, name, description, price, available, error, picture } = productParams
 
-  const productRepository = mock<LoadProductRepository>()
+  const productRepository = mock<LoadProductRepository & DeleteProductRepository>()
   const fileStorage = mock<DeleteFile>()
 
   beforeAll(() => {
@@ -67,5 +67,12 @@ describe('DeleteProductUseCase', () => {
     const promise = sut({ id })
 
     await expect(promise).rejects.toThrow(error)
+  })
+
+  it('Should call DeleteProductRepository with correct id', async () => {
+    await sut({ id })
+
+    expect(productRepository.delete).toHaveBeenCalledWith({ id })
+    expect(productRepository.delete).toHaveBeenCalledTimes(1)
   })
 })
