@@ -84,4 +84,12 @@ describe('UpdateProductUseCase', () => {
 
     expect(result).toEqual(new NonExistentFieldError('categoryId'))
   })
+
+  it('Should rethrow if CheckCategoryByIdRepository throws', async () => {
+    categoryRepository.checkById.mockRejectedValueOnce(error)
+
+    const promise = sut({ id, name, categoryId })
+
+    await expect(promise).rejects.toThrow(error)
+  })
 })
