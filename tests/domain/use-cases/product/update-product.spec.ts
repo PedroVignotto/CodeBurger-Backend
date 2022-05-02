@@ -187,4 +187,12 @@ describe('UpdateProductUseCase', () => {
       expect(fileStorage.delete).not.toHaveBeenCalled()
     })
   })
+
+  it('Should rethrow if UpdateProductRepository throws', async () => {
+    productRepository.update.mockRejectedValueOnce(error)
+
+    const promise = sut({ id, name, description, price, available, categoryId })
+
+    await expect(promise).rejects.toThrow(error)
+  })
 })
