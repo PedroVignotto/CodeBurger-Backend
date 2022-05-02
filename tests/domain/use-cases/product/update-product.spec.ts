@@ -57,4 +57,12 @@ describe('UpdateProductUseCase', () => {
 
     expect(result).toEqual(new FieldInUseError('name'))
   })
+
+  it('Should rethrow if CheckProductByNameRepository throws', async () => {
+    productRepository.checkByName.mockRejectedValueOnce(error)
+
+    const promise = sut({ id, name })
+
+    await expect(promise).rejects.toThrow(error)
+  })
 })
