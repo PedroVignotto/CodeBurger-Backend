@@ -8,7 +8,7 @@ import { mock } from 'jest-mock-extended'
 describe('DeleteProductUseCase', () => {
   let sut: DeleteProduct
 
-  const { id } = productParams
+  const { id, error } = productParams
 
   const productRepository = mock<LoadProductRepository>()
 
@@ -29,5 +29,13 @@ describe('DeleteProductUseCase', () => {
     const result = await sut({ id })
 
     expect(result).toEqual(new NonExistentFieldError('id'))
+  })
+
+  it('Should rethrow if LoadProductRepository throws', async () => {
+    productRepository.load.mockRejectedValueOnce(error)
+
+    const promise = sut({ id })
+
+    await expect(promise).rejects.toThrow(error)
   })
 })
