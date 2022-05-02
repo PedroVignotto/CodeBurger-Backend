@@ -52,4 +52,12 @@ describe('DeleteProductUseCase', () => {
     expect(fileStorage.delete).toHaveBeenCalledWith({ fileName: picture })
     expect(fileStorage.delete).toHaveBeenCalledTimes(1)
   })
+
+  it('Should not call DeleteFile if product not have image', async () => {
+    productRepository.load.mockResolvedValueOnce({ id, categoryId, name, description, price, available })
+
+    await sut({ id })
+
+    expect(fileStorage.delete).not.toHaveBeenCalled()
+  })
 })
