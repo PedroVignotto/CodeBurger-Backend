@@ -8,7 +8,7 @@ import { mock } from 'jest-mock-extended'
 describe('UpdateProductUseCase', () => {
   let sut: UpdateProduct
 
-  const { id } = productParams
+  const { id, error } = productParams
 
   const productRepository = mock<CheckProductByIdRepository>()
 
@@ -29,5 +29,13 @@ describe('UpdateProductUseCase', () => {
     const result = await sut({ id })
 
     expect(result).toEqual(new NonExistentFieldError('id'))
+  })
+
+  it('Should rethrow if CheckProductByIdRepository throws', async () => {
+    productRepository.checkById.mockRejectedValueOnce(error)
+
+    const promise = sut({ id })
+
+    await expect(promise).rejects.toThrow(error)
   })
 })
