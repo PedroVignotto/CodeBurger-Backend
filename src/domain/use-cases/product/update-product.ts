@@ -40,15 +40,21 @@ export const updateProductUseCase: Setup = (productRepository, categoryRepositor
 
   let picture: string | undefined
 
+  const key = uuid.generate()
+
   if (file) {
     const product = await productRepository.load({ id })
 
     if (product.picture) await fileStorage.delete({ fileName: product.picture })
 
-    const key = uuid.generate()
-
     picture = await fileStorage.upload({ file: file.buffer, fileName: `${key}.${file.mimeType.split('/')[1]}` })
   }
 
-  await productRepository.update({ id, categoryId, name, picture, ...input })
+  try {
+    await productRepository.update({ id, categoryId, name, picture, ...input })
+  } catch (error) {
+    if (file) await fileStorage.delete({ fileName: key })
+
+    throw error
+  }
 }
