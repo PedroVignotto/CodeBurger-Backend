@@ -1,7 +1,7 @@
 import { accountParams, categoryParams, productParams } from '@/tests/mocks'
 import { makeFakeDatabase } from '@/tests/infra/database/postgres/mocks'
 import { app } from '@/main/config/app'
-import { RequiredFieldError } from '@/application/errors'
+import { InvalidMimeTypeError, RequiredFieldError } from '@/application/errors'
 import { FieldInUseError, NonExistentFieldError } from '@/domain/errors'
 import { Account, Category, Product } from '@/infra/database/postgres/entities'
 import { PgConnection } from '@/infra/database/postgres/helpers'
@@ -151,6 +151,16 @@ describe('Product routes', () => {
         .field('price', price)
 
       expect(status).toBe(204)
+    })
+
+    it('Should return 400 if has invalid data', async () => {
+      const { status, body: { error } } = await request(app)
+        .put(`/api/product/${id}`)
+        .set({ authorization: `Bearer: ${token}` })
+        .attach('picture', file.buffer, { filename: key, contentType: 'text/plain' })
+
+      expect(status).toBe(400)
+      expect(error).toBe(new InvalidMimeTypeError(['png', 'jpg']).message)
     })
   })
 })
