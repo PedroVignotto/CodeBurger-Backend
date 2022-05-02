@@ -1,5 +1,5 @@
 import { categoryParams, productParams } from '@/tests/mocks'
-import { CheckProductByIdRepository, CheckProductByNameRepository } from '@/domain/contracts/database/repositories/product'
+import { CheckProductByIdRepository, CheckProductByNameRepository, LoadProductRepository } from '@/domain/contracts/database/repositories/product'
 import { CheckCategoryByIdRepository } from '@/domain/contracts/database/repositories/category'
 import { UpdateProduct, updateProductUseCase } from '@/domain/use-cases/product'
 import { FieldInUseError, NonExistentFieldError } from '@/domain/errors'
@@ -10,14 +10,15 @@ describe('UpdateProductUseCase', () => {
   let sut: UpdateProduct
 
   const { id: categoryId } = categoryParams
-  const { id, name, error } = productParams
+  const { id, name, error, file } = productParams
 
-  const productRepository = mock<CheckProductByIdRepository & CheckProductByNameRepository>()
+  const productRepository = mock<CheckProductByIdRepository & CheckProductByNameRepository & LoadProductRepository>()
   const categoryRepository = mock<CheckCategoryByIdRepository>()
 
   beforeAll(() => {
     productRepository.checkById.mockResolvedValue(true)
     productRepository.checkByName.mockResolvedValue(false)
+    categoryRepository.checkById.mockResolvedValue(true)
   })
 
   beforeEach(() => {
@@ -91,5 +92,12 @@ describe('UpdateProductUseCase', () => {
     const promise = sut({ id, name, categoryId })
 
     await expect(promise).rejects.toThrow(error)
+  })
+
+  it('Should call LoadProductRepository with correct id', async () => {
+    await sut({ id, name, categoryId, file })
+
+    expect(productRepository.load).toHaveBeenCalledWith({ id })
+    expect(productRepository.load).toHaveBeenCalledTimes(1)
   })
 })
