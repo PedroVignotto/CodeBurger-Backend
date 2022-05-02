@@ -18,9 +18,9 @@ export class ProductRepository extends PgRepository implements CheckProductByNam
     return await repository.save({ id: this.uuid.generate(), categoryId, name, description, price, picture })
   }
 
-  async list (input: ListProductsRepository.Input): Promise<ListProductsRepository.Output> {
+  async list ({ categoryId }: ListProductsRepository.Input): Promise<ListProductsRepository.Output> {
     const repository = this.getRepository(Product)
 
-    return await repository.find()
+    return await repository.find(categoryId ? { where: { categoryId } } : undefined)
   }
 }
