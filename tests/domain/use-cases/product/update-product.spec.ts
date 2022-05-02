@@ -3,6 +3,7 @@ import { CheckProductByIdRepository, CheckProductByNameRepository, LoadProductRe
 import { CheckCategoryByIdRepository } from '@/domain/contracts/database/repositories/category'
 import { UpdateProduct, updateProductUseCase } from '@/domain/use-cases/product'
 import { FieldInUseError, NonExistentFieldError } from '@/domain/errors'
+import { DeleteFile } from '@/domain/contracts/gateways'
 
 import { mock } from 'jest-mock-extended'
 
@@ -10,19 +11,21 @@ describe('UpdateProductUseCase', () => {
   let sut: UpdateProduct
 
   const { id: categoryId } = categoryParams
-  const { id, name, error, file } = productParams
+  const { id, name, description, price, available, picture, file, error } = productParams
 
   const productRepository = mock<CheckProductByIdRepository & CheckProductByNameRepository & LoadProductRepository>()
   const categoryRepository = mock<CheckCategoryByIdRepository>()
+  const fileStorage = mock<DeleteFile>()
 
   beforeAll(() => {
     productRepository.checkById.mockResolvedValue(true)
     productRepository.checkByName.mockResolvedValue(false)
     categoryRepository.checkById.mockResolvedValue(true)
+    productRepository.load.mockResolvedValue({ id, categoryId, name, description, price, available, picture })
   })
 
   beforeEach(() => {
-    sut = updateProductUseCase(productRepository, categoryRepository)
+    sut = updateProductUseCase(productRepository, categoryRepository, fileStorage)
   })
 
   it('Should call CheckProductByIdRepository with correct id', async () => {
@@ -99,5 +102,12 @@ describe('UpdateProductUseCase', () => {
 
     expect(productRepository.load).toHaveBeenCalledWith({ id })
     expect(productRepository.load).toHaveBeenCalledTimes(1)
+  })
+
+  it('Should call DeleteFile if product already picture', async () => {
+    await sut({ id, name, categoryId, file })
+
+    expect(fileStorage.delete).toHaveBeenCalledWith({ fileName: picture })
+    expect(fileStorage.delete).toHaveBeenCalledTimes(1)
   })
 })
