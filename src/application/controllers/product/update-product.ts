@@ -24,9 +24,8 @@ export class UpdateProductController extends Controller {
     return noContent()
   }
 
-  override buildValidators ({ id, file }: HttpRequest): Validator[] {
+  override buildValidators ({ file }: HttpRequest): Validator[] {
     return [
-      ...Builder.of(id, 'id').required().build(),
       ...Builder.of(file, 'file').image({ AllowedMimeTypes: ['png', 'jpg'], maxSizeInMb: 5 }).build()
     ]
   }

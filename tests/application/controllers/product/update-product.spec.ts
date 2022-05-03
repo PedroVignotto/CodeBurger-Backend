@@ -1,6 +1,6 @@
 import { categoryParams, productParams } from '@/tests/mocks'
 import { Controller } from '@/application/controllers'
-import { AllowedMimeTypesValidation, MaxFileSizeValidation, RequiredValidation } from '@/application/validation'
+import { AllowedMimeTypesValidation, MaxFileSizeValidation } from '@/application/validation'
 import { UpdateProductController } from '@/application/controllers/product'
 import { NonExistentFieldError } from '@/domain/errors'
 
@@ -28,7 +28,6 @@ describe('UpdateProductController', () => {
     const validators = sut.buildValidators({ id, file })
 
     expect(validators).toEqual([
-      new RequiredValidation(id, 'id'),
       new AllowedMimeTypesValidation(['png', 'jpg'], file.mimeType),
       new MaxFileSizeValidation(5, file.buffer)
     ])
