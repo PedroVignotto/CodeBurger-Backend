@@ -208,5 +208,14 @@ describe('Product routes', () => {
       expect(status).toBe(204)
       expect(await repositoryProduct.findOne(id)).toBeUndefined()
     })
+
+    it('Should return 400 if no have product with id provided', async () => {
+      const { status, body: { error } } = await request(app)
+        .delete('/api/product/any_id')
+        .set({ authorization: `Bearer: ${token}` })
+
+      expect(status).toBe(400)
+      expect(error).toEqual(new NonExistentFieldError('id').message)
+    })
   })
 })
