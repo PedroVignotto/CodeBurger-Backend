@@ -12,6 +12,7 @@ export const loadAddressByZipCode = {
     responses: {
       200: { content: { 'application/json': { schema: { $ref: '#/schemas/loadAddressByZipCodeResponse' } } } },
       400: { $ref: '#/components/badRequest' },
+      401: { $ref: '#/components/unauthorized' },
       500: { $ref: '#/components/serverError' }
     }
   }
