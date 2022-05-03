@@ -196,4 +196,17 @@ describe('Product routes', () => {
       expect(error).toBe(new NonExistentFieldError('categoryId').message)
     })
   })
+
+  describe('DELETE /product/:id', () => {
+    it('Should return 204 on success', async () => {
+      await repositoryProduct.save({ id, name, description, price, picture })
+
+      const { status } = await request(app)
+        .delete(`/api/product/${id}`)
+        .set({ authorization: `Bearer: ${token}` })
+
+      expect(status).toBe(204)
+      expect(await repositoryProduct.findOne(id)).toBeUndefined()
+    })
+  })
 })
