@@ -2,10 +2,12 @@ import { badRequest, forbidden, securitySchemes, serverError, unauthorized } fro
 import { signup, login } from '@/main/docs/paths/account'
 import { addAddress, deleteAddress, listAddresses, loadAddressByZipCode, updateAddress } from '@/main/docs/paths/address'
 import { addCategory, deleteCategory, listCategories } from '@/main/docs/paths/category'
+import { addProduct, deleteProduct, listProducts, updateProduct } from '@/main/docs/paths/product'
 import { error } from '@/main/docs/schemas/errors'
 import { signUpRequest, signUpResponse, loginRequest, loginResponse } from '@/main/docs/schemas/account'
 import { loadAddressByZipCodeResponse, addAddressRequest, addAddressResponse, listAddressesResponse, updateAddressRequest } from '@/main/docs/schemas/address'
 import { addCategoryRequest, addCategoryResponse, listCategoriesResponse } from '@/main/docs/schemas/category'
+import { addProductRequest, addProductResponse, listProductsResponse, updateProductRequest } from '@/main/docs/schemas/product'
 
 export const swagger = {
   openapi: '3.0.0',
@@ -19,7 +21,7 @@ export const swagger = {
     }
   },
   servers: [{ url: '/api' }],
-  tags: [{ name: 'Account' }, { name: 'Address' }, { name: 'Category' }],
+  tags: [{ name: 'Account' }, { name: 'Address' }, { name: 'Category' }, { name: 'Product' }],
   paths: {
     '/signup': signup,
     '/login': login,
@@ -30,7 +32,11 @@ export const swagger = {
     '/address/{id} ': deleteAddress,
     '/category': addCategory,
     '/categories': listCategories,
-    '/category/{id}': deleteCategory
+    '/category/{id}': deleteCategory,
+    '/product': addProduct,
+    '/products': listProducts,
+    '/product/{id}': updateProduct,
+    '/product/{id} ': deleteProduct
   },
   schemas: {
     error,
@@ -45,7 +51,11 @@ export const swagger = {
     updateAddressRequest,
     addCategoryRequest,
     addCategoryResponse,
-    listCategoriesResponse
+    listCategoriesResponse,
+    addProductRequest,
+    addProductResponse,
+    listProductsResponse,
+    updateProductRequest
   },
   components: { securitySchemes, badRequest, forbidden, serverError, unauthorized }
 }
