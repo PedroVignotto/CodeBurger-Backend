@@ -61,7 +61,6 @@ describe('Product routes', () => {
   describe('POST /product', () => {
     it('Should return 201 on success', async () => {
       uploadSpy.mockResolvedValueOnce(picture)
-
       await repositoryCategory.save({ id: categoryId, name: categoryName })
 
       const { status } = await request(app)
@@ -137,7 +136,6 @@ describe('Product routes', () => {
   describe('PUT /product/:id', () => {
     it('Should return 204 on success', async () => {
       uploadSpy.mockResolvedValueOnce(picture)
-
       await repositoryCategory.save({ id: categoryId, name: categoryName })
       await repositoryProduct.save({ id, categoryId, name, description, price, picture })
 

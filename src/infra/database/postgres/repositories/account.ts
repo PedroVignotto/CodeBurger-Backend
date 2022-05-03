@@ -3,7 +3,9 @@ import { PgRepository } from '@/infra/database/postgres/repositories'
 import { UUIDGenerator } from '@/domain/contracts/gateways'
 import { AddAccountRepository, CheckAccountByEmailRepository, LoadAccountByEmailRepository, CheckAccountRole } from '@/domain/contracts/database/repositories/account'
 
-export class AccountRepository extends PgRepository implements CheckAccountByEmailRepository, AddAccountRepository, LoadAccountByEmailRepository, CheckAccountRole {
+type Setup = CheckAccountByEmailRepository & AddAccountRepository & LoadAccountByEmailRepository & CheckAccountRole
+
+export class AccountRepository extends PgRepository implements Setup {
   constructor (private readonly uuid: UUIDGenerator) { super() }
 
   async checkByEmail ({ email }: CheckAccountByEmailRepository.Input): Promise<CheckAccountByEmailRepository.Output> {

@@ -8,7 +8,7 @@ import { mock } from 'jest-mock-extended'
 describe('DeleteCategoryUseCase', () => {
   let sut: DeleteCategory
 
-  const { id } = categoryParams
+  const { id, error } = categoryParams
 
   const categoryRepository = mock<CheckCategoryByIdRepository & DeleteCategoryRepository>()
 
@@ -27,7 +27,7 @@ describe('DeleteCategoryUseCase', () => {
     expect(categoryRepository.checkById).toHaveBeenCalledTimes(1)
   })
 
-  it('Should return NonExistentFieldError if CheckAddressByIdRepository return false', async () => {
+  it('Should return NonExistentFieldError if CheckCategoryByIdRepository return false', async () => {
     categoryRepository.checkById.mockResolvedValueOnce(false)
 
     const result = await sut({ id })
@@ -35,11 +35,27 @@ describe('DeleteCategoryUseCase', () => {
     expect(result).toEqual(new NonExistentFieldError('id'))
   })
 
+  it('Should rethrow if CheckCategoryByIdRepository throws', async () => {
+    categoryRepository.checkById.mockRejectedValueOnce(error)
+
+    const promise = sut({ id })
+
+    await expect(promise).rejects.toThrow(error)
+  })
+
   it('Should call DeleteCategoryRepository with correct id', async () => {
     await sut({ id })
 
     expect(categoryRepository.delete).toHaveBeenCalledWith({ id })
     expect(categoryRepository.delete).toHaveBeenCalledTimes(1)
+  })
+
+  it('Should rethrow if DeleteCategoryRepository throws', async () => {
+    categoryRepository.delete.mockRejectedValueOnce(error)
+
+    const promise = sut({ id })
+
+    await expect(promise).rejects.toThrow(error)
   })
 
   it('Should return undefined on success', async () => {

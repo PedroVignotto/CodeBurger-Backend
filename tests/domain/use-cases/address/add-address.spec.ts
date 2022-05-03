@@ -1,4 +1,4 @@
-import { addressParams } from '@/tests/mocks'
+import { accountParams, addressParams } from '@/tests/mocks'
 import { AddAddressRepository } from '@/domain/contracts/database/repositories/address'
 import { SearchAddressByZipCode } from '@/domain/contracts/gateways'
 import { AddAddress, addAddressUseCase } from '@/domain/use-cases/address'
@@ -9,7 +9,8 @@ import { mock } from 'jest-mock-extended'
 describe('AddAddressUseCase', () => {
   let sut: AddAddress
 
-  const { id, accountId, surname, zipCode, district, street, number, complement, error } = addressParams
+  const { id: accountId } = accountParams
+  const { id, surname, zipCode, district, street, number, complement, error } = addressParams
 
   const searchAddressByZipCode = mock<SearchAddressByZipCode>()
   const addressRepository = mock<AddAddressRepository>()

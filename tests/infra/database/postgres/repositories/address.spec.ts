@@ -12,8 +12,8 @@ import { Repository } from 'typeorm'
 describe('AddressRepository', () => {
   let sut: AddressRepository
 
-  const { id, name, email, password } = accountParams
-  const { surname, zipCode, district, street, number, complement } = addressParams
+  const { id: accountId, name, email, password } = accountParams
+  const { id, surname, zipCode, district, street, number, complement } = addressParams
 
   let connection: PgConnection
   let database: IMemoryDb
@@ -45,26 +45,26 @@ describe('AddressRepository', () => {
 
   describe('create()', () => {
     it('Should create a address on success', async () => {
-      const account = await repositoryAccount.save({ id, name, email, password })
+      await repositoryAccount.save({ id: accountId, name, email, password })
 
-      await sut.create({ accountId: account.id, surname, zipCode, district, street, number, complement })
+      await sut.create({ accountId, surname, zipCode, district, street, number, complement })
 
-      expect(await repositoryAccount.findOne(id)).toBeTruthy()
+      expect(await repositoryAddress.findOne(id)).toBeTruthy()
     })
   })
 
   describe('list()', () => {
     it('Should return all user addresses', async () => {
-      const { id: accountId } = await repositoryAccount.save({ id, name, email, password })
-      const { id: addressId } = await repositoryAddress.save({ id, accountId, surname, zipCode, district, street, number, complement })
+      await repositoryAccount.save({ id: accountId, name, email, password })
+      await repositoryAddress.save({ id, accountId, surname, zipCode, district, street, number, complement })
 
       const result = await sut.list({ accountId })
 
-      expect(result).toEqual([{ id: addressId, surname, zipCode, district, street, number, complement }])
+      expect(result).toEqual([{ id, surname, zipCode, district, street, number, complement }])
     })
 
     it('Should return [] if does not find any address', async () => {
-      const result = await sut.list({ accountId: id })
+      const result = await sut.list({ accountId })
 
       expect(result).toEqual([])
     })
@@ -72,12 +72,12 @@ describe('AddressRepository', () => {
 
   describe('update()', () => {
     it('Should update address on success', async () => {
-      const account = await repositoryAccount.save({ id, name, email, password })
-      const address = await repositoryAddress.save({ id, accountId: account.id, surname, zipCode, district, street, number, complement })
+      await repositoryAccount.save({ id: accountId, name, email, password })
+      await repositoryAddress.save({ id, accountId, surname, zipCode, district, street, number, complement })
 
-      await sut.update({ id: address.id, surname: 'updated_surname' })
+      await sut.update({ id, surname: 'updated_surname' })
 
-      expect(await repositoryAddress.findOne(address.id)).toMatchObject({ surname: 'updated_surname' })
+      expect(await repositoryAddress.findOne(id)).toMatchObject({ surname: 'updated_surname' })
     })
   })
 
@@ -89,10 +89,10 @@ describe('AddressRepository', () => {
     })
 
     it('Should return true if address already exists', async () => {
-      const account = await repositoryAccount.save({ id, name, email, password })
-      const address = await repositoryAddress.save({ id, accountId: account.id, surname, zipCode, district, street, number, complement })
+      await repositoryAccount.save({ id: accountId, name, email, password })
+      await repositoryAddress.save({ id, accountId, surname, zipCode, district, street, number, complement })
 
-      const result = await sut.checkById({ id: address.id })
+      const result = await sut.checkById({ id })
 
       expect(result).toBe(true)
     })
@@ -100,12 +100,12 @@ describe('AddressRepository', () => {
 
   describe('delete()', () => {
     it('Should delete a address on success', async () => {
-      const account = await repositoryAccount.save({ id, name, email, password })
-      const address = await repositoryAddress.save({ id, accountId: account.id, surname, zipCode, district, street, number, complement })
+      await repositoryAccount.save({ id: accountId, name, email, password })
+      await repositoryAddress.save({ id, accountId, surname, zipCode, district, street, number, complement })
 
-      await sut.delete({ id: address.id })
+      await sut.delete({ id })
 
-      expect(await repositoryAddress.findOne(address.id)).toBeUndefined()
+      expect(await repositoryAddress.findOne(id)).toBeUndefined()
     })
   })
 })

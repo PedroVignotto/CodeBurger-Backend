@@ -3,7 +3,9 @@ import { PgRepository } from '@/infra/database/postgres/repositories'
 import { UUIDGenerator } from '@/domain/contracts/gateways'
 import { AddProductRepository, CheckProductByIdRepository, CheckProductByNameRepository, DeleteProductRepository, ListProductsRepository, LoadProductRepository, UpdateProductRepository } from '@/domain/contracts/database/repositories/product'
 
-export class ProductRepository extends PgRepository implements CheckProductByNameRepository, AddProductRepository, ListProductsRepository, CheckProductByIdRepository, LoadProductRepository, UpdateProductRepository, DeleteProductRepository {
+type Setup = CheckProductByNameRepository & AddProductRepository & ListProductsRepository & CheckProductByIdRepository & LoadProductRepository & UpdateProductRepository & DeleteProductRepository
+
+export class ProductRepository extends PgRepository implements Setup {
   constructor (private readonly uuid: UUIDGenerator) { super() }
 
   async checkByName ({ name }: CheckProductByNameRepository.Input): Promise<CheckProductByNameRepository.Output> {

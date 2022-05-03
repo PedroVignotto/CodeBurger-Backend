@@ -3,7 +3,9 @@ import { PgRepository } from '@/infra/database/postgres/repositories'
 import { UUIDGenerator } from '@/domain/contracts/gateways'
 import { AddAddressRepository, CheckAddressByIdRepository, DeleteAddressRepository, ListAddressesRepository, UpdateAddressRepository } from '@/domain/contracts/database/repositories/address'
 
-export class AddressRepository extends PgRepository implements AddAddressRepository, ListAddressesRepository, UpdateAddressRepository, CheckAddressByIdRepository, DeleteAddressRepository {
+type Setup = AddAddressRepository & ListAddressesRepository & UpdateAddressRepository & CheckAddressByIdRepository & DeleteAddressRepository
+
+export class AddressRepository extends PgRepository implements Setup {
   constructor (private readonly uuid: UUIDGenerator) { super() }
 
   async create (input: AddAddressRepository.Input): Promise<AddAddressRepository.Output> {

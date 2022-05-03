@@ -4,7 +4,6 @@ const mimeTypes = ['image/png', 'image/jpeg']
 
 export const productParams = {
   id: faker.datatype.uuid(),
-  accountId: faker.datatype.uuid(),
   name: faker.name.findName(),
   description: faker.random.words(2),
   price: faker.datatype.float({ max: 100 }),

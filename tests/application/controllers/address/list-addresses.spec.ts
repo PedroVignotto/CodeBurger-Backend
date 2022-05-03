@@ -1,11 +1,12 @@
-import { addressParams } from '@/tests/mocks'
+import { accountParams, addressParams } from '@/tests/mocks'
 import { Controller } from '@/application/controllers'
 import { ListAddressesController } from '@/application/controllers/address'
 
 describe('ListAddressesController', () => {
   let sut: ListAddressesController
 
-  const { id, accountId, surname, zipCode, district, street, number, complement } = addressParams
+  const { id: accountId } = accountParams
+  const { id, surname, zipCode, district, street, number, complement } = addressParams
 
   const listAddresses: jest.Mock = jest.fn()
 

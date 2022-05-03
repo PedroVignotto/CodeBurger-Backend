@@ -68,6 +68,7 @@ describe('Category routes', () => {
 
     it('Should return 400 if name already exists', async () => {
       await repositoryCategory.save({ id, name })
+
       const { status, body: { error } } = await request(app)
         .post('/api/category')
         .send({ name })

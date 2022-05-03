@@ -18,17 +18,20 @@ describe('ExpressRouterAdapter', () => {
 
   const controller = mock<Controller>()
 
-  beforeEach(() => {
-    sut = expressRouterAdapter(controller)
-
+  beforeAll(() => {
     key = faker.database.column()
     value = faker.random.words()
     error = faker.random.word()
+
+    controller.handle.mockResolvedValue({ statusCode: 200, data: { data: value } })
+  })
+
+  beforeEach(() => {
+    sut = expressRouterAdapter(controller)
+
     req = getMockReq({ body: { [key]: value } })
     res = getMockRes().res
     next = getMockRes().next
-
-    controller.handle.mockResolvedValue({ statusCode: 200, data: { data: value } })
   })
 
   it('Should call handle with correct request', async () => {

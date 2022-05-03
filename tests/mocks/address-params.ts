@@ -2,7 +2,6 @@ import faker from 'faker'
 
 export const addressParams = {
   id: faker.datatype.uuid(),
-  accountId: faker.datatype.uuid(),
   surname: faker.random.word(),
   zipCode: faker.address.zipCode('########'),
   district: faker.random.words(2),

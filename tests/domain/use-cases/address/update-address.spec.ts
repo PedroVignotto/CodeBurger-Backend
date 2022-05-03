@@ -8,7 +8,7 @@ import { mock } from 'jest-mock-extended'
 describe('UpdateAddressUseCase', () => {
   let sut: UpdateAddress
 
-  const { id, surname, number, complement } = addressParams
+  const { id, surname, number, complement, error } = addressParams
 
   const addressRepository = mock<CheckAddressByIdRepository & UpdateAddressRepository>()
 
@@ -35,11 +35,27 @@ describe('UpdateAddressUseCase', () => {
     expect(result).toEqual(new NonExistentFieldError('id'))
   })
 
+  it('Should rethrow if CheckAddressByIdRepository throws', async () => {
+    addressRepository.checkById.mockRejectedValueOnce(error)
+
+    const promise = sut({ id })
+
+    await expect(promise).rejects.toThrow(error)
+  })
+
   it('Should call UpdateAddressRepository with correct values', async () => {
     await sut({ id, surname, number, complement })
 
     expect(addressRepository.update).toHaveBeenCalledWith({ id, surname, number, complement })
     expect(addressRepository.update).toHaveBeenCalledTimes(1)
+  })
+
+  it('Should rethrow if UpdateAddressRepository throws', async () => {
+    addressRepository.update.mockRejectedValueOnce(error)
+
+    const promise = sut({ id })
+
+    await expect(promise).rejects.toThrow(error)
   })
 
   it('Should return undefined on success', async () => {

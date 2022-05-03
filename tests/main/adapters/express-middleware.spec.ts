@@ -18,17 +18,20 @@ describe('ExpressMidlewareAdapter', () => {
 
   const middleware = mock<Middleware>()
 
-  beforeEach(() => {
-    sut = expressMiddlewareAdapter(middleware)
-
+  beforeAll(() => {
     key = faker.database.column()
     value = faker.random.words()
     error = faker.random.word()
+
+    middleware.handle.mockResolvedValue({ statusCode: 200, data: { [key]: value, null: null, undefined: undefined, empty: '' } })
+  })
+
+  beforeEach(() => {
+    sut = expressMiddlewareAdapter(middleware)
+
     req = getMockReq({ headers: { [key]: value } })
     res = getMockRes().res
     next = getMockRes().next
-
-    middleware.handle.mockResolvedValue({ statusCode: 200, data: { [key]: value, null: null, undefined: undefined, empty: '' } })
   })
 
   it('Should call handle with correct values', async () => {

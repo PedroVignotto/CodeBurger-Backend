@@ -53,6 +53,14 @@ describe('Authorize', () => {
     expect(result).toEqual(new InsuficientPermissionError())
   })
 
+  it('Should rethrow if CheckAccountRole throws', async () => {
+    accountRepository.checkRole.mockRejectedValueOnce(error)
+
+    const promise = sut({ accessToken, role })
+
+    await expect(promise).rejects.toThrow(error)
+  })
+
   it('Should return a accountId on success', async () => {
     const result = await sut({ accessToken })
 

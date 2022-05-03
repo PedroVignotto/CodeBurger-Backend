@@ -1,4 +1,4 @@
-import { addressParams } from '@/tests/mocks'
+import { accountParams, addressParams } from '@/tests/mocks'
 import { Controller } from '@/application/controllers'
 import { AddAddressController } from '@/application/controllers/address'
 import { RequiredValidation } from '@/application/validation'
@@ -7,7 +7,8 @@ import { FieldNotFoundError } from '@/domain/errors'
 describe('AddAddressController', () => {
   let sut: AddAddressController
 
-  const { id, accountId, surname, zipCode, district, street, number, complement } = addressParams
+  const { id: accountId } = accountParams
+  const { id, surname, zipCode, district, street, number, complement } = addressParams
 
   const addAddress: jest.Mock = jest.fn()
 

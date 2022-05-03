@@ -123,15 +123,15 @@ describe('Address routes', () => {
   describe('PUT /address/:id', () => {
     it('Should return 204 on success', async () => {
       const account = await repositoryAccount.find()
-      const address = await repositoryAddress.save({ id, accountId: account[0].id, surname, zipCode, district, street, number, complement })
+      await repositoryAddress.save({ id, accountId: account[0].id, surname, zipCode, district, street, number, complement })
 
       const { status } = await request(app)
-        .put(`/api/address/${address.id}`)
+        .put(`/api/address/${id}`)
         .send({ surname: 'updated_surname' })
         .set({ authorization: `Bearer: ${token}` })
 
       expect(status).toBe(204)
-      expect(await repositoryAddress.findOne(address.id)).toMatchObject({ surname: 'updated_surname' })
+      expect(await repositoryAddress.findOne(id)).toMatchObject({ surname: 'updated_surname' })
     })
 
     it('Should return 400 if no have address with id provided', async () => {
@@ -147,14 +147,14 @@ describe('Address routes', () => {
   describe('DELETE /address/:id', () => {
     it('Should return 204 on success', async () => {
       const account = await repositoryAccount.find()
-      const address = await repositoryAddress.save({ id, accountId: account[0].id, surname, zipCode, district, street, number, complement })
+      await repositoryAddress.save({ id, accountId: account[0].id, surname, zipCode, district, street, number, complement })
 
       const { status } = await request(app)
-        .delete(`/api/address/${address.id}`)
+        .delete(`/api/address/${id}`)
         .set({ authorization: `Bearer: ${token}` })
 
       expect(status).toBe(204)
-      expect(await repositoryAddress.findOne(address.id)).toBeUndefined()
+      expect(await repositoryAddress.findOne(id)).toBeUndefined()
     })
 
     it('Should return 400 if no have address with id provided', async () => {

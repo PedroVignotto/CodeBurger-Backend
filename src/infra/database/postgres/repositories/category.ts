@@ -3,7 +3,9 @@ import { PgRepository } from '@/infra/database/postgres/repositories'
 import { UUIDGenerator } from '@/domain/contracts/gateways'
 import { AddCategoryRepository, CheckCategoryByIdRepository, CheckCategoryByNameRepository, DeleteCategoryRepository, ListCategoriesRepository } from '@/domain/contracts/database/repositories/category'
 
-export class CategoryRepository extends PgRepository implements CheckCategoryByNameRepository, AddCategoryRepository, ListCategoriesRepository, CheckCategoryByIdRepository, DeleteCategoryRepository {
+type Setup = CheckCategoryByNameRepository & AddCategoryRepository & ListCategoriesRepository & CheckCategoryByIdRepository & DeleteCategoryRepository
+
+export class CategoryRepository extends PgRepository implements Setup {
   constructor (private readonly uuid: UUIDGenerator) { super() }
 
   async checkByName ({ name }: CheckCategoryByNameRepository.Input): Promise<CheckCategoryByNameRepository.Output> {
