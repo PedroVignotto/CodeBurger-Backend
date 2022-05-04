@@ -8,12 +8,14 @@ describe('AddOrderController', () => {
 
   const { id: accountId } = accountParams
   const { id: productId } = productParams
-  const { total, paymentMode } = orderParams
+  const { note, total, paymentMode } = orderParams
 
   const productsId = [productId]
 
+  const addOrder: jest.Mock = jest.fn()
+
   beforeEach(() => {
-    sut = new AddOrderController()
+    sut = new AddOrderController(addOrder)
   })
 
   it('Should extend Controller', async () => {
@@ -29,5 +31,12 @@ describe('AddOrderController', () => {
       new RequiredValidation(total, 'total'),
       new RequiredValidation(paymentMode, 'paymentMode')
     ])
+  })
+
+  it('Should call addOrder with correct values', async () => {
+    await sut.handle({ accountId, productsId, note, total, paymentMode })
+
+    expect(addOrder).toHaveBeenCalledWith({ accountId, productsId, note, total, paymentMode })
+    expect(addOrder).toHaveBeenCalledTimes(1)
   })
 })
