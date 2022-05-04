@@ -15,6 +15,10 @@ describe('AddOrderController', () => {
 
   const addOrder: jest.Mock = jest.fn()
 
+  beforeAll(() => {
+    addOrder.mockResolvedValue(undefined)
+  })
+
   beforeEach(() => {
     sut = new AddOrderController(addOrder)
   })
@@ -48,5 +52,11 @@ describe('AddOrderController', () => {
 
     expect(statusCode).toBe(400)
     expect(data).toEqual(new NonExistentFieldError('productsId'))
+  })
+
+  it('Should return created if valid data is provided', async () => {
+    const { statusCode } = await sut.handle({ accountId, productsId, note, total, paymentMode })
+
+    expect(statusCode).toBe(201)
   })
 })
