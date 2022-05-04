@@ -1,5 +1,5 @@
 import { Controller } from '@/application/controllers/controller'
-import { HttpResponse, created } from '@/application/helpers'
+import { HttpResponse, created, badRequest } from '@/application/helpers'
 import { ValidationBuilder as Builder, Validator } from '@/application/validation'
 import { AddOrder } from '@/domain/use-cases/order'
 
@@ -10,9 +10,11 @@ export class AddOrderController extends Controller {
   constructor (private readonly addOrder: AddOrder) { super() }
 
   async perform (httpRequest: HttpRequest): Promise<HttpResponse<Model>> {
-    await this.addOrder(httpRequest)
+    const order = await this.addOrder(httpRequest)
 
-    return created(undefined)
+    if (order instanceof Error) return badRequest(order)
+
+    return created(order)
   }
 
   override buildValidators ({ accountId, productsId, total, paymentMode }: HttpRequest): Validator[] {
