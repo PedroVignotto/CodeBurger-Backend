@@ -8,7 +8,7 @@ type Output = undefined | Error
 export type AddOrder = (input: Input) => Promise<Output>
 
 export const addOrderUseCase: Setup = (productRepository, orderRepository) => async ({ accountId, productsId, note, total, paymentMode }) => {
-  const products = await productRepository.loadAll({ productsId })
+  const products = await productRepository.loadAll({ ids: productsId })
 
   if (products.length <= 0) return new NonExistentFieldError('productsId')
 

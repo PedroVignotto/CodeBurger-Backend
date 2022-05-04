@@ -54,9 +54,9 @@ export class ProductRepository extends PgRepository implements Setup {
     await repository.delete({ id })
   }
 
-  async loadAll ({ productsId }: LoadProductsRepository.Input): Promise<LoadProductsRepository.Output> {
+  async loadAll ({ ids }: LoadProductsRepository.Input): Promise<LoadProductsRepository.Output> {
     const repository = this.getRepository(Product)
 
-    return await repository.findByIds(productsId)
+    return await repository.findByIds(ids)
   }
 }

@@ -31,7 +31,7 @@ describe('AddOrderUseCase', () => {
   it('Should call LoadProductsRepository with correct values', async () => {
     await sut({ accountId, productsId, note, total, paymentMode })
 
-    expect(productRepository.loadAll).toHaveBeenCalledWith({ productsId })
+    expect(productRepository.loadAll).toHaveBeenCalledWith({ ids: productsId })
     expect(productRepository.loadAll).toHaveBeenCalledTimes(1)
   })
 

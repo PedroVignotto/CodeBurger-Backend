@@ -3,7 +3,7 @@ export interface LoadProductsRepository {
 }
 
 export namespace LoadProductsRepository {
-  export type Input = { productsId: string[] }
+  export type Input = { ids: string[] }
   export type Output = Array<{
     id: string
     categoryId?: string
