@@ -146,5 +146,13 @@ describe('ProductRepository', () => {
 
       expect(result).toEqual([])
     })
+
+    it('Should return the products if they exists', async () => {
+      await repositoryProduct.save({ id, name, description, price, available, picture })
+
+      const result = await sut.loadAll({ productsId: [id] })
+
+      expect(result).toMatchObject([{ id, name, description, price, available, picture }])
+    })
   })
 })
