@@ -12,7 +12,7 @@ describe('AddOrderUseCase', () => {
   const { id: accountId } = accountParams
   const { id: categoryId } = categoryParams
   const { id: productId, name, description, price, available, picture } = productParams
-  const { note, total, paymentMode } = orderParams
+  const { note, total, paymentMode, error } = orderParams
 
   const productsId = [productId]
   const products = [{ id: productId, categoryId, name, description, price, available, picture }]
@@ -41,6 +41,14 @@ describe('AddOrderUseCase', () => {
     const result = await sut({ accountId, productsId, note, total, paymentMode })
 
     expect(result).toEqual(new NonExistentFieldError('productsId'))
+  })
+
+  it('Should rethrow if LoadProductsRepository throws', async () => {
+    productRepository.loadAll.mockRejectedValueOnce(error)
+
+    const promise = sut({ accountId, productsId, note, total, paymentMode })
+
+    await expect(promise).rejects.toThrow(error)
   })
 
   it('Should call AddOrderRepository with correct values', async () => {
