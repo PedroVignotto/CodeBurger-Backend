@@ -17,9 +17,8 @@ export class AddOrderController extends Controller {
     return created(order)
   }
 
-  override buildValidators ({ accountId, productsId, total, paymentMode }: HttpRequest): Validator[] {
+  override buildValidators ({ productsId, total, paymentMode }: HttpRequest): Validator[] {
     return [
-      ...Builder.of(accountId, 'accountId').required().build(),
       ...Builder.of(productsId, 'productsId').required().build(),
       ...Builder.of(total, 'total').required().build(),
       ...Builder.of(paymentMode, 'paymentMode').required().build()

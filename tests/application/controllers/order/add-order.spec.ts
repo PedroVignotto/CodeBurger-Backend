@@ -31,7 +31,6 @@ describe('AddOrderController', () => {
     const validators = sut.buildValidators({ accountId, productsId, total, paymentMode })
 
     expect(validators).toEqual([
-      new RequiredValidation(accountId, 'accountId'),
       new RequiredValidation(productsId, 'productsId'),
       new RequiredValidation(total, 'total'),
       new RequiredValidation(paymentMode, 'paymentMode')
