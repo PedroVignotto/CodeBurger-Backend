@@ -57,4 +57,10 @@ describe('AddOrderUseCase', () => {
     expect(orderRepository.create).toHaveBeenCalledWith({ accountId, products, note, total, paymentMode })
     expect(orderRepository.create).toHaveBeenCalledTimes(1)
   })
+
+  it('Should return undefined on success', async () => {
+    const result = await sut({ accountId, productsId, note, total, paymentMode })
+
+    expect(result).toBeUndefined()
+  })
 })
