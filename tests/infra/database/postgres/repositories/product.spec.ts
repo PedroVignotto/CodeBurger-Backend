@@ -139,4 +139,12 @@ describe('ProductRepository', () => {
       expect(await repositoryProduct.findOne(id)).toBeUndefined()
     })
   })
+
+  describe('loadAll()', () => {
+    it('Should return [] if products does not exists', async () => {
+      const result = await sut.loadAll({ productsId: [id] })
+
+      expect(result).toEqual([])
+    })
+  })
 })
