@@ -8,6 +8,7 @@ import { PgConnection } from '@/infra/database/postgres/helpers'
 import { IBackup, IMemoryDb } from 'pg-mem'
 import request from 'supertest'
 import { Repository } from 'typeorm'
+import { NonExistentFieldError } from '@/domain/errors'
 
 describe('Order routes', () => {
   const { name: accountName, email, password, passwordConfirmation } = accountParams
@@ -60,6 +61,16 @@ describe('Order routes', () => {
 
       expect(status).toBe(400)
       expect(error).toBe(new RequiredFieldError('total').message)
+    })
+
+    it('Should return 400 if the products do not exists', async () => {
+      const { status, body: { error } } = await request(app)
+        .post('/api/order')
+        .send({ productsId: [], note, total, paymentMode })
+        .set({ authorization: `Bearer: ${token}` })
+
+      expect(status).toBe(400)
+      expect(error).toBe(new NonExistentFieldError('productsId').message)
     })
   })
 })
