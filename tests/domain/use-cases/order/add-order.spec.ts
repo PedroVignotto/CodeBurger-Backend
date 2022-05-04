@@ -58,6 +58,14 @@ describe('AddOrderUseCase', () => {
     expect(orderRepository.create).toHaveBeenCalledTimes(1)
   })
 
+  it('Should rethrow if AddOrderRepository throws', async () => {
+    orderRepository.create.mockRejectedValueOnce(error)
+
+    const promise = sut({ accountId, productsId, note, total, paymentMode })
+
+    await expect(promise).rejects.toThrow(error)
+  })
+
   it('Should return undefined on success', async () => {
     const result = await sut({ accountId, productsId, note, total, paymentMode })
 
