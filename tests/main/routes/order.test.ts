@@ -1,6 +1,7 @@
 import { accountParams, orderParams, productParams } from '@/tests/mocks'
 import { makeFakeDatabase } from '@/tests/infra/database/postgres/mocks'
 import { app } from '@/main/config/app'
+import { RequiredFieldError } from '@/application/errors'
 import { Account, Category, Order, Product } from '@/infra/database/postgres/entities'
 import { PgConnection } from '@/infra/database/postgres/helpers'
 
@@ -49,6 +50,16 @@ describe('Order routes', () => {
         .set({ authorization: `Bearer: ${token}` })
 
       expect(status).toBe(201)
+    })
+
+    it('Should return 400 if has invalid data', async () => {
+      const { status, body: { error } } = await request(app)
+        .post('/api/order')
+        .send({ productsId: [productId], note, paymentMode })
+        .set({ authorization: `Bearer: ${token}` })
+
+      expect(status).toBe(400)
+      expect(error).toBe(new RequiredFieldError('total').message)
     })
   })
 })
