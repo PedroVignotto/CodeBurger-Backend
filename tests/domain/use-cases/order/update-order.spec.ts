@@ -49,4 +49,12 @@ describe('UpdateOrderUseCase', () => {
     expect(orderRepository.update).toHaveBeenCalledWith({ id, status })
     expect(orderRepository.update).toHaveBeenCalledTimes(1)
   })
+
+  it('Should rethrow if UpdateOrderRepository throws', async () => {
+    orderRepository.update.mockRejectedValueOnce(error)
+
+    const promise = sut({ id, status })
+
+    await expect(promise).rejects.toThrow(error)
+  })
 })
