@@ -2,6 +2,7 @@ import { orderParams } from '@/tests/mocks'
 import { Controller } from '@/application/controllers'
 import { UpdateOrderController } from '@/application/controllers/order'
 import { RequiredValidation } from '@/application/validation'
+import { NonExistentFieldError } from '@/domain/errors'
 
 describe('UpdateOrderController', () => {
   let sut: UpdateOrderController
@@ -29,5 +30,14 @@ describe('UpdateOrderController', () => {
 
     expect(updateOrder).toHaveBeenCalledWith({ id, status })
     expect(updateOrder).toHaveBeenCalledTimes(1)
+  })
+
+  it('Should return badRequest if updateOrder return NonExistentFieldError', async () => {
+    updateOrder.mockResolvedValueOnce(new NonExistentFieldError('id'))
+
+    const { statusCode, data } = await sut.handle({ id, status })
+
+    expect(statusCode).toBe(400)
+    expect(data).toEqual(new NonExistentFieldError('id'))
   })
 })
