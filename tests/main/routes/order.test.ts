@@ -20,13 +20,17 @@ describe('Order routes', () => {
   let connection: PgConnection
   let database: IMemoryDb
   let backup: IBackup
+  let repositoryAccount: Repository<Account>
   let repositoryProduct: Repository<Product>
+  let repositoryOrder: Repository<Order>
 
   beforeAll(async () => {
     connection = PgConnection.getInstance()
     database = await makeFakeDatabase([Account, Category, Product, Order])
     backup = database.backup()
+    repositoryAccount = connection.getRepository(Account)
     repositoryProduct = connection.getRepository(Product)
+    repositoryOrder = connection.getRepository(Order)
   })
 
   beforeEach(async () => {
@@ -35,6 +39,10 @@ describe('Order routes', () => {
     const { body } = await request(app).post('/api/signup').send({ name: accountName, email, password, passwordConfirmation })
 
     token = body.accessToken
+
+    const account = await repositoryAccount.find()
+
+    await repositoryAccount.update({ id: account[0].id }, { role: 'admin' })
   })
 
   afterAll(async () => {
@@ -86,7 +94,7 @@ describe('Order routes', () => {
     })
   })
 
-  describe('GET /addresses', () => {
+  describe('GET /orders', () => {
     it('Should return 200 on success', async () => {
       const product = await repositoryProduct.save({ id: productId, name: productName, description, price })
       await request(app).post('/api/order')
@@ -99,6 +107,24 @@ describe('Order routes', () => {
 
       expect(status).toBe(200)
       expect(body).toMatchObject([{ products: [product], note, total: price, paymentMode, status: 'opened' }])
+    })
+  })
+
+  describe('PUT /order/:id', () => {
+    it('Should return 204 on success', async () => {
+      await repositoryProduct.save({ id: productId, name: productName, description, price })
+      await request(app).post('/api/order')
+        .send({ productsId: [productId], note, total: price, paymentMode })
+        .set({ authorization: `Bearer: ${token}` })
+      const order = await repositoryOrder.find()
+
+      const { status } = await request(app)
+        .put(`/api/order/${order[0].id}`)
+        .send({ status: 'completed' })
+        .set({ authorization: `Bearer: ${token}` })
+
+      expect(status).toBe(204)
+      expect(await repositoryOrder.findOne(order[0].id)).toMatchObject({ status: 'completed' })
     })
   })
 })
