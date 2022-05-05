@@ -56,4 +56,16 @@ describe('OrderRepository', () => {
       expect(await repositoryOrder.findOne(id)).toBeTruthy()
     })
   })
+
+  describe('list()', () => {
+    it('Should return all user orders', async () => {
+      await repositoryAccount.save({ id: accountId, name: accountName, email, password })
+      const product = await repositoryProduct.save({ id: productId, name: productName, description, price })
+      const { accountId: removeAccountId, ...order } = await repositoryOrder.save({ id, accountId, products: [product], paymentMode, total, note })
+
+      const result = await sut.list({ accountId })
+
+      expect(result).toEqual([order])
+    })
+  })
 })
