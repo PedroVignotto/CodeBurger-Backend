@@ -8,7 +8,7 @@ import { PgConnection } from '@/infra/database/postgres/helpers'
 import { IBackup, IMemoryDb } from 'pg-mem'
 import request from 'supertest'
 import { Repository } from 'typeorm'
-import { NonExistentFieldError } from '@/domain/errors'
+import { NonExistentFieldError, ValueNotExpectedError } from '@/domain/errors'
 
 describe('Order routes', () => {
   const { name: accountName, email, password, passwordConfirmation } = accountParams
@@ -47,7 +47,7 @@ describe('Order routes', () => {
 
       const { status } = await request(app)
         .post('/api/order')
-        .send({ productsId: [productId], note, total, paymentMode })
+        .send({ productsId: [productId], note, total: price, paymentMode })
         .set({ authorization: `Bearer: ${token}` })
 
       expect(status).toBe(201)
@@ -71,6 +71,18 @@ describe('Order routes', () => {
 
       expect(status).toBe(400)
       expect(error).toBe(new NonExistentFieldError('productsId').message)
+    })
+
+    it('Should return 400 if total provided not match with price products', async () => {
+      await repositoryProduct.save({ id: productId, name: productName, description, price: 10 })
+
+      const { status, body: { error } } = await request(app)
+        .post('/api/order')
+        .send({ productsId: [productId], note, total: 20, paymentMode })
+        .set({ authorization: `Bearer: ${token}` })
+
+      expect(status).toBe(400)
+      expect(error).toBe(new ValueNotExpectedError('total').message)
     })
   })
 })
