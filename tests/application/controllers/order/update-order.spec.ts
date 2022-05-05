@@ -11,6 +11,10 @@ describe('UpdateOrderController', () => {
 
   const updateOrder: jest.Mock = jest.fn()
 
+  beforeAll(() => {
+    updateOrder.mockResolvedValue(undefined)
+  })
+
   beforeEach(() => {
     sut = new UpdateOrderController(updateOrder)
   })
@@ -39,5 +43,11 @@ describe('UpdateOrderController', () => {
 
     expect(statusCode).toBe(400)
     expect(data).toEqual(new NonExistentFieldError('id'))
+  })
+
+  it('Should return noContent if valid data is provided', async () => {
+    const { statusCode } = await sut.handle({ id, status })
+
+    expect(statusCode).toBe(204)
   })
 })
