@@ -9,7 +9,7 @@ describe('AddOrderController', () => {
 
   const { id: accountId } = accountParams
   const { id: productId } = productParams
-  const { note, total, paymentMode } = orderParams
+  const { note, paymentMode } = orderParams
 
   const productsId = [productId]
 
@@ -28,33 +28,32 @@ describe('AddOrderController', () => {
   })
 
   it('Should build Validators correctly', async () => {
-    const validators = sut.buildValidators({ accountId, productsId, total, paymentMode })
+    const validators = sut.buildValidators({ accountId, productsId, paymentMode })
 
     expect(validators).toEqual([
       new RequiredValidation(productsId, 'productsId'),
-      new RequiredValidation(total, 'total'),
       new RequiredValidation(paymentMode, 'paymentMode')
     ])
   })
 
   it('Should call addOrder with correct values', async () => {
-    await sut.handle({ accountId, productsId, note, total, paymentMode })
+    await sut.handle({ accountId, productsId, note, paymentMode })
 
-    expect(addOrder).toHaveBeenCalledWith({ accountId, productsId, note, total, paymentMode })
+    expect(addOrder).toHaveBeenCalledWith({ accountId, productsId, note, paymentMode })
     expect(addOrder).toHaveBeenCalledTimes(1)
   })
 
   it('Should return badRequest if addOrder return NonExistentFieldError', async () => {
     addOrder.mockResolvedValueOnce(new NonExistentFieldError('productsId'))
 
-    const { statusCode, data } = await sut.handle({ accountId, productsId, note, total, paymentMode })
+    const { statusCode, data } = await sut.handle({ accountId, productsId, note, paymentMode })
 
     expect(statusCode).toBe(400)
     expect(data).toEqual(new NonExistentFieldError('productsId'))
   })
 
   it('Should return created if valid data is provided', async () => {
-    const { statusCode } = await sut.handle({ accountId, productsId, note, total, paymentMode })
+    const { statusCode } = await sut.handle({ accountId, productsId, note, paymentMode })
 
     expect(statusCode).toBe(201)
   })

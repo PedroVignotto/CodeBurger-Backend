@@ -3,7 +3,7 @@ import { HttpResponse, created, badRequest } from '@/application/helpers'
 import { ValidationBuilder as Builder, Validator } from '@/application/validation'
 import { AddOrder } from '@/domain/use-cases/order'
 
-type HttpRequest = { accountId: string, productsId: string[], note?: string, total: number, paymentMode: string }
+type HttpRequest = { accountId: string, productsId: string[], note?: string, paymentMode: string }
 type Model = undefined | Error
 
 export class AddOrderController extends Controller {
@@ -17,10 +17,9 @@ export class AddOrderController extends Controller {
     return created(order)
   }
 
-  override buildValidators ({ productsId, total, paymentMode }: HttpRequest): Validator[] {
+  override buildValidators ({ productsId, paymentMode }: HttpRequest): Validator[] {
     return [
       ...Builder.of(productsId, 'productsId').required().build(),
-      ...Builder.of(total, 'total').required().build(),
       ...Builder.of(paymentMode, 'paymentMode').required().build()
     ]
   }

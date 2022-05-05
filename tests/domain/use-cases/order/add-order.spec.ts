@@ -1,7 +1,7 @@
 import { accountParams, categoryParams, orderParams, productParams } from '@/tests/mocks'
 import { LoadProductsRepository } from '@/domain/contracts/database/repositories/product'
 import { AddOrderRepository } from '@/domain/contracts/database/repositories/order'
-import { NonExistentFieldError, ValueNotExpectedError } from '@/domain/errors'
+import { NonExistentFieldError } from '@/domain/errors'
 import { AddOrder, addOrderUseCase } from '@/domain/use-cases/order'
 
 import { mock } from 'jest-mock-extended'
@@ -29,7 +29,7 @@ describe('AddOrderUseCase', () => {
   })
 
   it('Should call LoadProductsRepository with correct values', async () => {
-    await sut({ accountId, productsId, note, total, paymentMode })
+    await sut({ accountId, productsId, note, paymentMode })
 
     expect(productRepository.loadAll).toHaveBeenCalledWith({ ids: productsId })
     expect(productRepository.loadAll).toHaveBeenCalledTimes(1)
@@ -38,7 +38,7 @@ describe('AddOrderUseCase', () => {
   it('Should return NonExistentFieldError if LoadProductsRepository return []', async () => {
     productRepository.loadAll.mockResolvedValueOnce([])
 
-    const result = await sut({ accountId, productsId, note, total, paymentMode })
+    const result = await sut({ accountId, productsId, note, paymentMode })
 
     expect(result).toEqual(new NonExistentFieldError('productsId'))
   })
@@ -46,34 +46,28 @@ describe('AddOrderUseCase', () => {
   it('Should rethrow if LoadProductsRepository throws', async () => {
     productRepository.loadAll.mockRejectedValueOnce(error)
 
-    const promise = sut({ accountId, productsId, note, total, paymentMode })
+    const promise = sut({ accountId, productsId, note, paymentMode })
 
     await expect(promise).rejects.toThrow(error)
   })
 
-  it('Should return ValueNotExpectedError if total provided not match with price products', async () => {
-    const result = await sut({ accountId, productsId, note, total: 300, paymentMode })
-
-    expect(result).toEqual(new ValueNotExpectedError('total'))
-  })
-
   it('Should call AddOrderRepository with correct values', async () => {
-    await sut({ accountId, productsId, note, total, paymentMode })
+    await sut({ accountId, productsId, note, paymentMode })
 
-    expect(orderRepository.create).toHaveBeenCalledWith({ accountId, products, note, total, paymentMode })
+    expect(orderRepository.create).toHaveBeenCalledWith({ accountId, products, total, note, paymentMode })
     expect(orderRepository.create).toHaveBeenCalledTimes(1)
   })
 
   it('Should rethrow if AddOrderRepository throws', async () => {
     orderRepository.create.mockRejectedValueOnce(error)
 
-    const promise = sut({ accountId, productsId, note, total, paymentMode })
+    const promise = sut({ accountId, productsId, note, paymentMode })
 
     await expect(promise).rejects.toThrow(error)
   })
 
   it('Should return undefined on success', async () => {
-    const result = await sut({ accountId, productsId, note, total, paymentMode })
+    const result = await sut({ accountId, productsId, note, paymentMode })
 
     expect(result).toBeUndefined()
   })
