@@ -67,5 +67,11 @@ describe('OrderRepository', () => {
 
       expect(result).toEqual([order])
     })
+
+    it('Should return [] if does not find any order', async () => {
+      const result = await sut.list({ accountId })
+
+      expect(result).toEqual([])
+    })
   })
 })
