@@ -15,6 +15,7 @@ export type Order = {
   paymentMode: string
   status: string
   createdAt: Date
+  updatedAt: Date
   complement?: string
 }
 
