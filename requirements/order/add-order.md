@@ -4,7 +4,7 @@
 
 01. ✅ Receives a request of type **POST** in route **/api/order**
 00. ✅ Validates required data **productsId**, **total** and **paymentMode**
-00. ❌ Validates if the **total** provided matches the sum of the price of the products
+00. ✅ Validates if the **total** provided matches the sum of the price of the products
 00. ✅ Create an order with the **data** provided
 00. ✅ Returns **201** with the data created
 
