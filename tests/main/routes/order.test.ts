@@ -126,5 +126,14 @@ describe('Order routes', () => {
       expect(status).toBe(204)
       expect(await repositoryOrder.findOne(order[0].id)).toMatchObject({ status: 'completed' })
     })
+
+    it('Should return 400 if has invalid data', async () => {
+      const { status, body: { error } } = await request(app)
+        .put('/api/order/any_id')
+        .set({ authorization: `Bearer: ${token}` })
+
+      expect(status).toBe(400)
+      expect(error).toBe(new RequiredFieldError('status').message)
+    })
   })
 })
