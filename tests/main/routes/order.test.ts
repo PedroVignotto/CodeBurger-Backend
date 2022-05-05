@@ -135,5 +135,15 @@ describe('Order routes', () => {
       expect(status).toBe(400)
       expect(error).toBe(new RequiredFieldError('status').message)
     })
+
+    it('Should return 400 if no have order with id provided', async () => {
+      const { status, body: { error } } = await request(app)
+        .put('/api/order/any_id')
+        .send({ status: 'completed' })
+        .set({ authorization: `Bearer: ${token}` })
+
+      expect(status).toBe(400)
+      expect(error).toEqual(new NonExistentFieldError('id').message)
+    })
   })
 })
