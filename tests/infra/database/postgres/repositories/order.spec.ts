@@ -92,4 +92,16 @@ describe('OrderRepository', () => {
       expect(result).toBe(true)
     })
   })
+
+  describe('update()', () => {
+    it('Should update order on success', async () => {
+      await repositoryAccount.save({ id: accountId, name: accountName, email, password })
+      const product = await repositoryProduct.save({ id: productId, name: productName, description, price })
+      await repositoryOrder.save({ id, accountId, products: [product], paymentMode, total, note })
+
+      await sut.update({ id, status: 'completed' })
+
+      expect(await repositoryOrder.findOne(id)).toMatchObject({ status: 'completed' })
+    })
+  })
 })
