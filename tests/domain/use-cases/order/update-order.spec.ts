@@ -14,6 +14,7 @@ describe('UpdateOrderUseCase', () => {
 
   beforeAll(() => {
     orderRepository.checkById.mockResolvedValue(true)
+    orderRepository.update.mockResolvedValue(undefined)
   })
 
   beforeEach(() => {
@@ -56,5 +57,11 @@ describe('UpdateOrderUseCase', () => {
     const promise = sut({ id, status })
 
     await expect(promise).rejects.toThrow(error)
+  })
+
+  it('Should return undefined on success', async () => {
+    const result = await sut({ id, status })
+
+    expect(result).toBeUndefined()
   })
 })
