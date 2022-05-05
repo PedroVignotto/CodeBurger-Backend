@@ -85,4 +85,20 @@ describe('Order routes', () => {
       expect(error).toBe(new ValueNotExpectedError('total').message)
     })
   })
+
+  describe('GET /addresses', () => {
+    it('Should return 200 on success', async () => {
+      const product = await repositoryProduct.save({ id: productId, name: productName, description, price })
+      await request(app).post('/api/order')
+        .send({ productsId: [productId], note, total: price, paymentMode })
+        .set({ authorization: `Bearer: ${token}` })
+
+      const { status, body } = await request(app)
+        .get('/api/orders')
+        .set({ authorization: `Bearer: ${token}` })
+
+      expect(status).toBe(200)
+      expect(body).toMatchObject([{ products: [product], note, total: price, paymentMode, status: 'opened' }])
+    })
+  })
 })
