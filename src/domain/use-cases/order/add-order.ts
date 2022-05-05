@@ -12,7 +12,7 @@ export const addOrderUseCase: Setup = (productRepository, orderRepository) => as
 
   if (products.length <= 0) return new NonExistentFieldError('productsId')
 
-  const sum = products.reduce((oldPrice, product) => oldPrice + product.price, 0)
+  const sum = products.reduce((oldPrice, product) => oldPrice + +product.price, 0)
 
   if (sum !== total) return new ValueNotExpectedError('total')
 
