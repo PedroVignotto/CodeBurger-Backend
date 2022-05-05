@@ -74,4 +74,12 @@ describe('OrderRepository', () => {
       expect(result).toEqual([])
     })
   })
+
+  describe('checkById()', () => {
+    it('Should return false if order does not exists', async () => {
+      const result = await sut.checkById({ id })
+
+      expect(result).toBe(false)
+    })
+  })
 })
