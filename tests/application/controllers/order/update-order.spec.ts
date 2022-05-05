@@ -8,8 +8,10 @@ describe('UpdateOrderController', () => {
 
   const { id, status } = orderParams
 
+  const updateOrder: jest.Mock = jest.fn()
+
   beforeEach(() => {
-    sut = new UpdateOrderController()
+    sut = new UpdateOrderController(updateOrder)
   })
 
   it('Should extend Controller', async () => {
@@ -20,5 +22,12 @@ describe('UpdateOrderController', () => {
     const validators = sut.buildValidators({ id, status })
 
     expect(validators).toEqual([new RequiredValidation(status, 'status')])
+  })
+
+  it('Should call updateOrder with correct values', async () => {
+    await sut.handle({ id, status })
+
+    expect(updateOrder).toHaveBeenCalledWith({ id, status })
+    expect(updateOrder).toHaveBeenCalledTimes(1)
   })
 })
