@@ -1,9 +1,9 @@
 import { accountParams, orderParams } from '@/tests/mocks'
 import { Controller } from '@/application/controllers'
-import { ListOrderController } from '@/application/controllers/order'
+import { ListOrdersController } from '@/application/controllers/order'
 
-describe('ListOrderController', () => {
-  let sut: ListOrderController
+describe('ListOrdersController', () => {
+  let sut: ListOrdersController
 
   const { id: accountId } = accountParams
   const { id, note, total, paymentMode, status, createdAt, updatedAt } = orderParams
@@ -15,7 +15,7 @@ describe('ListOrderController', () => {
   })
 
   beforeEach(() => {
-    sut = new ListOrderController(listOrder)
+    sut = new ListOrdersController(listOrder)
   })
 
   it('Should extend Controller', async () => {
