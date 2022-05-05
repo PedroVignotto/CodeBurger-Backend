@@ -81,5 +81,15 @@ describe('OrderRepository', () => {
 
       expect(result).toBe(false)
     })
+
+    it('Should return true if order already exists', async () => {
+      await repositoryAccount.save({ id: accountId, name: accountName, email, password })
+      const product = await repositoryProduct.save({ id: productId, name: productName, description, price })
+      await repositoryOrder.save({ id, accountId, products: [product], paymentMode, total, note })
+
+      const result = await sut.checkById({ id })
+
+      expect(result).toBe(true)
+    })
   })
 })
