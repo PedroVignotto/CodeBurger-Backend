@@ -3,11 +3,13 @@ import { signup, login } from '@/main/docs/paths/account'
 import { addAddress, deleteAddress, listAddresses, loadAddressByZipCode, updateAddress } from '@/main/docs/paths/address'
 import { addCategory, deleteCategory, listCategories } from '@/main/docs/paths/category'
 import { addProduct, deleteProduct, listProducts, updateProduct } from '@/main/docs/paths/product'
+import { addOrder, listOrders, updateOrder } from '@/main/docs/paths/order'
 import { error } from '@/main/docs/schemas/errors'
 import { signUpRequest, signUpResponse, loginRequest, loginResponse } from '@/main/docs/schemas/account'
 import { loadAddressByZipCodeResponse, addAddressRequest, addAddressResponse, listAddressesResponse, updateAddressRequest } from '@/main/docs/schemas/address'
 import { addCategoryRequest, addCategoryResponse, listCategoriesResponse } from '@/main/docs/schemas/category'
 import { addProductRequest, addProductResponse, listProductsResponse, updateProductRequest } from '@/main/docs/schemas/product'
+import { addOrderRequest, listOrdersResponse, updateOrderRequest } from '@/main/docs/schemas/order'
 
 export const swagger = {
   openapi: '3.0.0',
@@ -36,7 +38,10 @@ export const swagger = {
     '/product': addProduct,
     '/products': listProducts,
     '/product/{id}': updateProduct,
-    '/product/{id} ': deleteProduct
+    '/product/{id} ': deleteProduct,
+    '/order': addOrder,
+    '/orders': listOrders,
+    '/order/{id}': updateOrder
   },
   schemas: {
     error,
@@ -55,7 +60,10 @@ export const swagger = {
     addProductRequest,
     addProductResponse,
     listProductsResponse,
-    updateProductRequest
+    updateProductRequest,
+    addOrderRequest,
+    listOrdersResponse,
+    updateOrderRequest
   },
   components: { securitySchemes, badRequest, forbidden, serverError, unauthorized }
 }
