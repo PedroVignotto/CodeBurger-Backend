@@ -19,7 +19,7 @@ export type Order = {
   complement?: string
 }
 
-type Product = {
+export type Product = {
   id: string
   categoryId?: string
   name: string

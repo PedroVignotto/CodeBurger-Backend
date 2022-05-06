@@ -1,5 +1,5 @@
 import { accountParams, categoryParams, orderParams, productParams } from '@/tests/mocks'
-import { LoadProductsRepository } from '@/domain/contracts/database/repositories/product'
+import { LoadProductRepository } from '@/domain/contracts/database/repositories/product'
 import { AddOrderRepository } from '@/domain/contracts/database/repositories/order'
 import { NonExistentFieldError } from '@/domain/errors'
 import { AddOrder, addOrderUseCase } from '@/domain/use-cases/order'
@@ -15,13 +15,14 @@ describe('AddOrderUseCase', () => {
   const { note, total, paymentMode, error } = orderParams
 
   const productsId = [productId]
-  const products = [{ id: productId, categoryId, name, description, price: total, available, picture }]
+  const product = { id: productId, categoryId, name, description, price: total, available, picture }
+  const products = [product]
 
-  const productRepository = mock<LoadProductsRepository>()
+  const productRepository = mock<LoadProductRepository>()
   const orderRepository = mock<AddOrderRepository>()
 
   beforeAll(() => {
-    productRepository.loadAll.mockResolvedValue(products)
+    productRepository.load.mockResolvedValue(product)
   })
 
   beforeEach(() => {
@@ -31,12 +32,12 @@ describe('AddOrderUseCase', () => {
   it('Should call LoadProductsRepository with correct values', async () => {
     await sut({ accountId, productsId, note, paymentMode })
 
-    expect(productRepository.loadAll).toHaveBeenCalledWith({ ids: productsId })
-    expect(productRepository.loadAll).toHaveBeenCalledTimes(1)
+    expect(productRepository.load).toHaveBeenCalledWith({ id: productId })
+    expect(productRepository.load).toHaveBeenCalledTimes(productsId.length)
   })
 
-  it('Should return NonExistentFieldError if LoadProductsRepository return []', async () => {
-    productRepository.loadAll.mockResolvedValueOnce([])
+  it('Should return NonExistentFieldError if LoadProductRepository return undefined', async () => {
+    productRepository.load.mockResolvedValueOnce(undefined)
 
     const result = await sut({ accountId, productsId, note, paymentMode })
 
@@ -44,7 +45,7 @@ describe('AddOrderUseCase', () => {
   })
 
   it('Should rethrow if LoadProductsRepository throws', async () => {
-    productRepository.loadAll.mockRejectedValueOnce(error)
+    productRepository.load.mockRejectedValueOnce(error)
 
     const promise = sut({ accountId, productsId, note, paymentMode })
 

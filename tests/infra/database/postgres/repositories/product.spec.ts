@@ -139,20 +139,4 @@ describe('ProductRepository', () => {
       expect(await repositoryProduct.findOne(id)).toBeUndefined()
     })
   })
-
-  describe('loadAll()', () => {
-    it('Should return [] if products does not exists', async () => {
-      const result = await sut.loadAll({ ids: [id] })
-
-      expect(result).toEqual([])
-    })
-
-    it('Should return the products if they exists', async () => {
-      await repositoryProduct.save({ id, name, description, price, available, picture })
-
-      const result = await sut.loadAll({ ids: [id] })
-
-      expect(result).toMatchObject([{ id, name, description, price, available, picture }])
-    })
-  })
 })

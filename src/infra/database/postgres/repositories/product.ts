@@ -1,9 +1,9 @@
 import { Product } from '@/infra/database/postgres/entities'
 import { PgRepository } from '@/infra/database/postgres/repositories'
 import { UUIDGenerator } from '@/domain/contracts/gateways'
-import { AddProductRepository, CheckProductByIdRepository, CheckProductByNameRepository, DeleteProductRepository, ListProductsRepository, LoadProductRepository, LoadProductsRepository, UpdateProductRepository } from '@/domain/contracts/database/repositories/product'
+import { AddProductRepository, CheckProductByIdRepository, CheckProductByNameRepository, DeleteProductRepository, ListProductsRepository, LoadProductRepository, UpdateProductRepository } from '@/domain/contracts/database/repositories/product'
 
-type Setup = CheckProductByNameRepository & AddProductRepository & ListProductsRepository & CheckProductByIdRepository & LoadProductRepository & UpdateProductRepository & DeleteProductRepository & LoadProductsRepository
+type Setup = CheckProductByNameRepository & AddProductRepository & ListProductsRepository & CheckProductByIdRepository & LoadProductRepository & UpdateProductRepository & DeleteProductRepository
 
 export class ProductRepository extends PgRepository implements Setup {
   constructor (private readonly uuid: UUIDGenerator) { super() }
@@ -52,11 +52,5 @@ export class ProductRepository extends PgRepository implements Setup {
     const repository = this.getRepository(Product)
 
     await repository.delete({ id })
-  }
-
-  async loadAll ({ ids }: LoadProductsRepository.Input): Promise<LoadProductsRepository.Output> {
-    const repository = this.getRepository(Product)
-
-    return await repository.findByIds(ids)
   }
 }
