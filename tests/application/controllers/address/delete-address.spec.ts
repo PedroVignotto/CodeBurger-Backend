@@ -30,7 +30,7 @@ describe('DeleteAddressController', () => {
   })
 
   it('Should return badRequest if deleteAddress return NonExistentFieldError', async () => {
-    deleteAddress.mockResolvedValueOnce(new NonExistentFieldError('id'))
+    deleteAddress.mockRejectedValueOnce(new NonExistentFieldError('id'))
 
     const { statusCode, data } = await sut.handle({ id })
 

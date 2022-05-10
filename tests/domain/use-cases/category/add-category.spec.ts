@@ -31,9 +31,9 @@ describe('AddCategoryUseCase', () => {
   it('Should return FieldInUseError if CheckCategoryByNameRepository return true', async () => {
     categoryRepository.checkByName.mockResolvedValueOnce(true)
 
-    const result = await sut({ name })
+    const promise = sut({ name })
 
-    expect(result).toEqual(new FieldInUseError('name'))
+    await expect(promise).rejects.toThrow(new FieldInUseError('name'))
   })
 
   it('Should rethrow if CheckCategoryByNameRepository throws', async () => {

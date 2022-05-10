@@ -30,7 +30,7 @@ describe('DeleteCategoryController', () => {
   })
 
   it('Should return badRequest if deleteCategory return NonExistentFieldError', async () => {
-    deleteCategory.mockResolvedValueOnce(new NonExistentFieldError('id'))
+    deleteCategory.mockRejectedValueOnce(new NonExistentFieldError('id'))
 
     const { statusCode, data } = await sut.handle({ id })
 

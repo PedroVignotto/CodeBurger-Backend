@@ -30,7 +30,7 @@ describe('LoadAddressByZipCodeController', () => {
   })
 
   it('Should return badRequest if loadAddressByZipCode return undefined', async () => {
-    loadAddressByZipCode.mockResolvedValueOnce(new FieldNotFoundError('zipCode'))
+    loadAddressByZipCode.mockRejectedValueOnce(new FieldNotFoundError('zipCode'))
 
     const { statusCode, data } = await sut.handle({ zipCode })
 

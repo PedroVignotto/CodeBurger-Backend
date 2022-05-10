@@ -17,12 +17,11 @@ export class AuthenticationMiddleware implements Middleware {
 
       const accountId = await this.authorize({ accessToken, role: this.role })
 
-      if (accountId instanceof AuthenticationError) return unauthorized()
-
-      if (accountId instanceof InsuficientPermissionError) return forbidden()
-
       return ok(accountId)
     } catch (error) {
+      if (error instanceof AuthenticationError) return unauthorized()
+      if (error instanceof InsuficientPermissionError) return forbidden()
+
       return serverError(error)
     }
   }

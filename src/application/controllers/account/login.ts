@@ -1,18 +1,16 @@
 import { Controller } from '@/application/controllers/controller'
-import { HttpResponse, ok, unauthorized } from '@/application/helpers'
+import { HttpResponse, ok } from '@/application/helpers'
 import { ValidationBuilder as Builder, Validator } from '@/application/validation'
 import { Authentication } from '@/domain/use-cases/account'
 
 type HttpRequest = { email: string, password: string }
-type Model = { name: string, accessToken: string } | Error
+type Model = { name: string, accessToken: string }
 
 export class LoginController extends Controller {
   constructor (private readonly authentication: Authentication) { super() }
 
   async perform ({ email, password }: HttpRequest): Promise<HttpResponse<Model>> {
     const data = await this.authentication({ email, password })
-
-    if (data instanceof Error) return unauthorized()
 
     return ok(data)
   }

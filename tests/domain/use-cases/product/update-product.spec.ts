@@ -38,12 +38,12 @@ describe('UpdateProductUseCase', () => {
     expect(productRepository.checkById).toHaveBeenCalledTimes(1)
   })
 
-  it('Should return NonExistentFieldError if CheckProductByIdRepository return false', async () => {
+  it('Should throw NonExistentFieldError if CheckProductByIdRepository return false', async () => {
     productRepository.checkById.mockResolvedValueOnce(false)
 
-    const result = await sut({ id })
+    const promise = sut({ id })
 
-    expect(result).toEqual(new NonExistentFieldError('id'))
+    await expect(promise).rejects.toThrow(new NonExistentFieldError('id'))
   })
 
   it('Should rethrow if CheckProductByIdRepository throws', async () => {
@@ -67,12 +67,12 @@ describe('UpdateProductUseCase', () => {
     expect(productRepository.checkByName).not.toHaveBeenCalled()
   })
 
-  it('Should return FieldInUseError if CheckProductByNameRepository return true', async () => {
+  it('Should throw FieldInUseError if CheckProductByNameRepository return true', async () => {
     productRepository.checkByName.mockResolvedValueOnce(true)
 
-    const result = await sut({ id, name })
+    const promise = sut({ id, name })
 
-    expect(result).toEqual(new FieldInUseError('name'))
+    await expect(promise).rejects.toThrow(new FieldInUseError('name'))
   })
 
   it('Should rethrow if CheckProductByNameRepository throws', async () => {
@@ -96,12 +96,12 @@ describe('UpdateProductUseCase', () => {
     expect(categoryRepository.checkById).not.toHaveBeenCalled()
   })
 
-  it('Should return NonExistentFieldError if CheckCategoryByIdRepository return false', async () => {
+  it('Should throw NonExistentFieldError if CheckCategoryByIdRepository return false', async () => {
     categoryRepository.checkById.mockResolvedValueOnce(false)
 
-    const result = await sut({ id, name, categoryId })
+    const promise = sut({ id, name, categoryId })
 
-    expect(result).toEqual(new NonExistentFieldError('categoryId'))
+    await expect(promise).rejects.toThrow(new NonExistentFieldError('categoryId'))
   })
 
   it('Should rethrow if CheckCategoryByIdRepository throws', async () => {

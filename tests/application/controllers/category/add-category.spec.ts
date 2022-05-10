@@ -37,7 +37,7 @@ describe('AddCategoryController', () => {
   })
 
   it('Should return badRequest if addCategory return FieldInUseError', async () => {
-    addCategory.mockResolvedValueOnce(new FieldInUseError('name'))
+    addCategory.mockRejectedValueOnce(new FieldInUseError('name'))
 
     const { statusCode, data } = await sut.handle({ name })
 

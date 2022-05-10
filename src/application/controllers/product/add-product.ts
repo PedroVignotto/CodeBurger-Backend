@@ -1,18 +1,16 @@
 import { Controller } from '@/application/controllers/controller'
-import { HttpResponse, created, badRequest } from '@/application/helpers'
+import { HttpResponse, created } from '@/application/helpers'
 import { ValidationBuilder as Builder, Validator } from '@/application/validation'
 import { AddProduct } from '@/domain/use-cases/product'
 
 type HttpRequest = { categoryId: string, name: string, description: string, price: number, file?: { buffer: Buffer, mimeType: string } }
-type Model = { id: string, categoryId: string, name: string, description: string, price: number, available: boolean, picture?: string } | Error
+type Model = { id: string, categoryId: string, name: string, description: string, price: number, available: boolean, picture?: string }
 
 export class AddProductController extends Controller {
   constructor (private readonly addProduct: AddProduct) { super() }
 
   async perform (httpRequest: HttpRequest): Promise<HttpResponse<Model>> {
     const product = await this.addProduct(httpRequest)
-
-    if (product instanceof Error) return badRequest(product)
 
     return created(product)
   }

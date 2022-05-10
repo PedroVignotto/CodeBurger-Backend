@@ -37,12 +37,12 @@ describe('AddProductUseCase', () => {
     expect(productRepository.checkByName).toHaveBeenCalledTimes(1)
   })
 
-  it('Should return FieldInUseError if CheckProductByNameRepository return true', async () => {
+  it('Should throw FieldInUseError if CheckProductByNameRepository return true', async () => {
     productRepository.checkByName.mockResolvedValueOnce(true)
 
-    const result = await sut({ categoryId, name, description, price, file })
+    const promise = sut({ categoryId, name, description, price, file })
 
-    expect(result).toEqual(new FieldInUseError('name'))
+    await expect(promise).rejects.toThrow(new FieldInUseError('name'))
   })
 
   it('Should rethrow if CheckProductByNameRepository throws', async () => {
@@ -60,12 +60,12 @@ describe('AddProductUseCase', () => {
     expect(categoryRepository.checkById).toHaveBeenCalledTimes(1)
   })
 
-  it('Should return NonExistentFieldError if CheckCategoryByIdRepository return false', async () => {
+  it('Should throw NonExistentFieldError if CheckCategoryByIdRepository return false', async () => {
     categoryRepository.checkById.mockResolvedValueOnce(false)
 
-    const result = await sut({ categoryId, name, description, price, file })
+    const promise = sut({ categoryId, name, description, price, file })
 
-    expect(result).toEqual(new NonExistentFieldError('categoryId'))
+    await expect(promise).rejects.toThrow(new NonExistentFieldError('categoryId'))
   })
 
   it('Should rethrow if CheckCategoryByIdRepository throws', async () => {

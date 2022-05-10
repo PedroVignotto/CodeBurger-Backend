@@ -31,12 +31,12 @@ describe('AddAddressUseCase', () => {
     expect(searchAddressByZipCode.search).toHaveBeenCalledTimes(1)
   })
 
-  it('Should return FieldNotFoundError if SearchAddressByZipCode return undefined', async () => {
+  it('Should throw FieldNotFoundError if SearchAddressByZipCode return undefined', async () => {
     searchAddressByZipCode.search.mockResolvedValueOnce(undefined)
 
-    const result = await sut({ accountId, surname, zipCode, district, street, number, complement })
+    const promise = sut({ accountId, surname, zipCode, district, street, number, complement })
 
-    expect(result).toEqual(new FieldNotFoundError('zipCode'))
+    await expect(promise).rejects.toThrow(new FieldNotFoundError('zipCode'))
   })
 
   it('Should rethrow if SearchAddressByZipCode throws', async () => {

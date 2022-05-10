@@ -41,7 +41,7 @@ describe('UpdateProductController', () => {
   })
 
   it('Should return badRequest if updateProduct return Error', async () => {
-    updateProduct.mockResolvedValueOnce(new NonExistentFieldError('id'))
+    updateProduct.mockRejectedValueOnce(new NonExistentFieldError('id'))
 
     const { statusCode, data } = await sut.handle({ id })
 

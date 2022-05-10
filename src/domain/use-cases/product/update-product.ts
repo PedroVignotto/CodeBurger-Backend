@@ -18,24 +18,24 @@ type Input = {
   available?: boolean
   file?: { buffer: Buffer, mimeType: string }
 }
-type Output = undefined | Error
+type Output = void
 export type UpdateProduct = (input: Input) => Promise<Output>
 
 export const updateProductUseCase: Setup = (productRepository, categoryRepository, fileStorage, uuid) => async ({ id, name, categoryId, file, description, price, available }) => {
   const productNotExists = await productRepository.checkById({ id })
 
-  if (!productNotExists) return new NonExistentFieldError('id')
+  if (!productNotExists) throw new NonExistentFieldError('id')
 
   if (name) {
     const productExists = await productRepository.checkByName({ name })
 
-    if (productExists) return new FieldInUseError('name')
+    if (productExists) throw new FieldInUseError('name')
   }
 
   if (categoryId) {
     const categoryExists = await categoryRepository.checkById({ id: categoryId })
 
-    if (!categoryExists) return new NonExistentFieldError('categoryId')
+    if (!categoryExists) throw new NonExistentFieldError('categoryId')
   }
 
   let picture: string | undefined

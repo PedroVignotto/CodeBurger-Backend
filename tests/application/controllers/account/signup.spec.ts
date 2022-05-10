@@ -46,7 +46,7 @@ describe('SignUpController', () => {
   })
 
   it('Should return badRequest if addAccount return FieldInUseError', async () => {
-    addAccount.mockResolvedValueOnce(new FieldInUseError('email'))
+    addAccount.mockRejectedValueOnce(new FieldInUseError('email'))
 
     const { statusCode, data } = await sut.handle({ name, email, password, passwordConfirmation })
 

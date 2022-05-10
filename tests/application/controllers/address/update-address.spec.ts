@@ -30,7 +30,7 @@ describe('UpdateAddressController', () => {
   })
 
   it('Should return badRequest if updateAddress return NonExistentFieldError', async () => {
-    updateAddress.mockResolvedValueOnce(new NonExistentFieldError('id'))
+    updateAddress.mockRejectedValueOnce(new NonExistentFieldError('id'))
 
     const { statusCode, data } = await sut.handle({ id, surname, number, complement })
 

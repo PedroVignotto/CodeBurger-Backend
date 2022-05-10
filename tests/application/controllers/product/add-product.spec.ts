@@ -45,7 +45,7 @@ describe('AddProductController', () => {
   })
 
   it('Should return badRequest if addProduct return Error', async () => {
-    addProduct.mockResolvedValueOnce(new FieldInUseError('name'))
+    addProduct.mockRejectedValueOnce(new FieldInUseError('name'))
 
     const { statusCode, data } = await sut.handle({ categoryId, name, description, price, file })
 

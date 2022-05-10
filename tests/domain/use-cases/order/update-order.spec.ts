@@ -28,12 +28,12 @@ describe('UpdateOrderUseCase', () => {
     expect(orderRepository.checkById).toHaveBeenCalledTimes(1)
   })
 
-  it('Should return NonExistentFieldError if CheckOrderByIdRepository return false', async () => {
+  it('Should throw NonExistentFieldError if CheckOrderByIdRepository return false', async () => {
     orderRepository.checkById.mockResolvedValueOnce(false)
 
-    const result = await sut({ id, status })
+    const promise = sut({ id, status })
 
-    expect(result).toEqual(new NonExistentFieldError('id'))
+    await expect(promise).rejects.toThrow(new NonExistentFieldError('id'))
   })
 
   it('Should rethrow if CheckOrderByIdRepository throws', async () => {

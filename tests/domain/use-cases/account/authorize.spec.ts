@@ -30,12 +30,12 @@ describe('Authorize', () => {
     expect(token.validate).toHaveBeenCalledTimes(1)
   })
 
-  it('Should return AuthenticationError if TokenValidator throws', async () => {
+  it('Should throw AuthenticationError if TokenValidator throws', async () => {
     token.validate.mockRejectedValueOnce(error)
 
-    const result = await sut({ accessToken })
+    const result = sut({ accessToken })
 
-    expect(result).toEqual(new AuthenticationError())
+    await expect(result).rejects.toThrow(new AuthenticationError())
   })
 
   it('Should call CheckAccountRole with correct values', async () => {
@@ -45,12 +45,12 @@ describe('Authorize', () => {
     expect(accountRepository.checkRole).toHaveBeenCalledTimes(1)
   })
 
-  it('Should return InsuficientPermissionError if CheckAccountRole return false', async () => {
+  it('Should throw InsuficientPermissionError if CheckAccountRole return false', async () => {
     accountRepository.checkRole.mockResolvedValueOnce(false)
 
-    const result = await sut({ accessToken })
+    const result = sut({ accessToken })
 
-    expect(result).toEqual(new InsuficientPermissionError())
+    await expect(result).rejects.toThrow(new InsuficientPermissionError())
   })
 
   it('Should rethrow if CheckAccountRole throws', async () => {

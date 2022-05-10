@@ -26,7 +26,7 @@ describe('DeleteProductController', () => {
   })
 
   it('Should return badRequest if deleteProduct return NonExistentFieldError', async () => {
-    deleteProduct.mockResolvedValueOnce(new NonExistentFieldError('id'))
+    deleteProduct.mockRejectedValueOnce(new NonExistentFieldError('id'))
 
     const { statusCode, data } = await sut.handle({ id })
 

@@ -37,7 +37,7 @@ describe('UpdateOrderController', () => {
   })
 
   it('Should return badRequest if updateOrder return NonExistentFieldError', async () => {
-    updateOrder.mockResolvedValueOnce(new NonExistentFieldError('id'))
+    updateOrder.mockRejectedValueOnce(new NonExistentFieldError('id'))
 
     const { statusCode, data } = await sut.handle({ id, status })
 

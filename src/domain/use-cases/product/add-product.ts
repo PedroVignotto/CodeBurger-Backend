@@ -10,17 +10,17 @@ type Setup = (
   fileStorage: UploadFile & DeleteFile,
 ) => AddProduct
 type Input = { categoryId: string, name: string, description: string, price: number, file?: { buffer: Buffer, mimeType: string } }
-type Output = { id: string, categoryId: string, name: string, description: string, price: number, available: boolean, picture?: string } | Error
+type Output = { id: string, categoryId: string, name: string, description: string, price: number, available: boolean, picture?: string }
 export type AddProduct = (input: Input) => Promise<Output>
 
 export const addProductUseCase: Setup = (productRepository, categoryRepository, uuid, fileStorage) => async ({ categoryId, name, description, price, file }) => {
   const productExists = await productRepository.checkByName({ name })
 
-  if (productExists) return new FieldInUseError('name')
+  if (productExists) throw new FieldInUseError('name')
 
   const categoryExists = await categoryRepository.checkById({ id: categoryId })
 
-  if (!categoryExists) return new NonExistentFieldError('categoryId')
+  if (!categoryExists) throw new NonExistentFieldError('categoryId')
 
   const key = uuid.generate()
 

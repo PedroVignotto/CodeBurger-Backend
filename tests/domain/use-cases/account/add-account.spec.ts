@@ -30,12 +30,12 @@ describe('AddAccount', () => {
     expect(accountRepository.checkByEmail).toHaveBeenCalledTimes(1)
   })
 
-  it('Should return FieldInUseError if CheckAccountByEmailRepository return true', async () => {
+  it('Should throw FieldInUseError if CheckAccountByEmailRepository return true', async () => {
     accountRepository.checkByEmail.mockResolvedValueOnce(true)
 
-    const result = await sut({ name, email, password })
+    const promise = sut({ name, email, password })
 
-    expect(result).toEqual(new FieldInUseError('email'))
+    await expect(promise).rejects.toThrow(new FieldInUseError('email'))
   })
 
   it('Should rethrow if CheckAccountByEmailRepository throws', async () => {

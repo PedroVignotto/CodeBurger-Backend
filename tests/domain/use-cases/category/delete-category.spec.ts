@@ -27,12 +27,12 @@ describe('DeleteCategoryUseCase', () => {
     expect(categoryRepository.checkById).toHaveBeenCalledTimes(1)
   })
 
-  it('Should return NonExistentFieldError if CheckCategoryByIdRepository return false', async () => {
+  it('Should throw NonExistentFieldError if CheckCategoryByIdRepository return false', async () => {
     categoryRepository.checkById.mockResolvedValueOnce(false)
 
-    const result = await sut({ id })
+    const promise = sut({ id })
 
-    expect(result).toEqual(new NonExistentFieldError('id'))
+    await expect(promise).rejects.toThrow(new NonExistentFieldError('id'))
   })
 
   it('Should rethrow if CheckCategoryByIdRepository throws', async () => {

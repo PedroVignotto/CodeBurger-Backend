@@ -48,7 +48,7 @@ describe('AuthenticationMiddleware', () => {
   })
 
   it('Should return unauthorized if authorize return AuthenticationError', async () => {
-    authorize.mockResolvedValueOnce(new AuthenticationError())
+    authorize.mockRejectedValueOnce(new AuthenticationError())
 
     const { statusCode, data } = await sut.handle({ authorization })
 
@@ -57,7 +57,7 @@ describe('AuthenticationMiddleware', () => {
   })
 
   it('Should return forbidden if authorize return InsuficientPermissionError', async () => {
-    authorize.mockResolvedValueOnce(new InsuficientPermissionError())
+    authorize.mockRejectedValueOnce(new InsuficientPermissionError())
 
     const { statusCode, data } = await sut.handle({ authorization })
 

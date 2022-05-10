@@ -42,7 +42,7 @@ describe('LoginController', () => {
   })
 
   it('Should return unauthorized if authentication return AuthenticationError', async () => {
-    authentication.mockResolvedValueOnce(new AuthenticationError())
+    authentication.mockRejectedValueOnce(new AuthenticationError())
 
     const { statusCode, data } = await sut.handle({ email, password })
 

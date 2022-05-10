@@ -1,18 +1,16 @@
 import { Controller } from '@/application/controllers/controller'
-import { HttpResponse, created, badRequest } from '@/application/helpers'
+import { HttpResponse, created } from '@/application/helpers'
 import { ValidationBuilder as Builder, Validator } from '@/application/validation'
 import { AddAccount, Authentication } from '@/domain/use-cases/account'
 
 type HttpRequest = { name: string, email: string, password: string, passwordConfirmation: string }
-type Model = { name: string, accessToken: string } | Error
+type Model = { name: string, accessToken: string }
 
 export class SignUpController extends Controller {
   constructor (private readonly addAccount: AddAccount, private readonly authentication: Authentication) { super() }
 
   async perform ({ name, email, password }: HttpRequest): Promise<HttpResponse<Model>> {
-    const account = await this.addAccount({ name, email, password })
-
-    if (account instanceof Error) return badRequest(account)
+    await this.addAccount({ name, email, password })
 
     const data = await this.authentication({ email, password })
 

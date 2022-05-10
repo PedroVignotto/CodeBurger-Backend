@@ -4,7 +4,7 @@ import { NonExistentFieldError } from '@/domain/errors'
 
 type Setup = (productRepository: LoadProductRepository, orderRepository: AddOrderRepository) => AddOrder
 type Input = { accountId: string, productsId: string[], note?: string, paymentMode: string }
-type Output = undefined | Error
+type Output = void
 export type AddOrder = (input: Input) => Promise<Output>
 
 export const addOrderUseCase: Setup = (productRepository, orderRepository) => async ({ accountId, productsId, note, paymentMode }) => {
@@ -12,7 +12,7 @@ export const addOrderUseCase: Setup = (productRepository, orderRepository) => as
 
   const products = result.filter(item => item) as Product[]
 
-  if (products.length <= 0) return new NonExistentFieldError('productsId')
+  if (products.length <= 0) throw new NonExistentFieldError('productsId')
 
   const total = products.reduce((oldPrice, product) => oldPrice + +product.price, 0)
 

@@ -2,7 +2,7 @@ import { Controller } from '@/application/controllers/controller'
 import { HttpResponse, ok } from '@/application/helpers'
 import { ListCategories } from '@/domain/use-cases/category'
 
-type Model = Array<{ id: string, name: string }> | Error
+type Model = Array<{ id: string, name: string }>
 
 export class ListCategoriesController extends Controller {
   constructor (private readonly listCategories: ListCategories) { super() }

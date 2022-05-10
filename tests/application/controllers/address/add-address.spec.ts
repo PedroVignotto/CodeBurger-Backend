@@ -44,7 +44,7 @@ describe('AddAddressController', () => {
   })
 
   it('Should return badRequest if addAddress return FieldNotFoundError', async () => {
-    addAddress.mockResolvedValueOnce(new FieldNotFoundError('zipCode'))
+    addAddress.mockRejectedValueOnce(new FieldNotFoundError('zipCode'))
 
     const { statusCode, data } = await sut.handle({ accountId, surname, zipCode, district, street, number, complement })
 
