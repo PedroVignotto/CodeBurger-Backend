@@ -1,4 +1,4 @@
-import { Account } from './account'
+import { Account } from '@/infra/database/postgres/entities'
 
 import { Entity, Column, PrimaryColumn, ManyToOne } from 'typeorm'
 
