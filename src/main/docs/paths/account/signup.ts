@@ -6,7 +6,6 @@ export const signup = {
     responses: {
       201: { content: { 'application/json': { schema: { $ref: '#/schemas/signUpResponse' } } } },
       400: { $ref: '#/components/badRequest' },
-      403: { $ref: '#/components/forbidden' },
       500: { $ref: '#/components/serverError' }
     }
   }
