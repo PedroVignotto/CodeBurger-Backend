@@ -2,7 +2,7 @@ import { categoryParams } from '@/tests/mocks'
 import { makeFakeDatabase } from '@/tests/infra/database/postgres/mocks'
 import { CategoryRepository, PgRepository } from '@/infra/database/postgres/repositories'
 import { PgConnection } from '@/infra/database/postgres/helpers'
-import { Category } from '@/infra/database/postgres/entities'
+import { Category, Product } from '@/infra/database/postgres/entities'
 import { UUIDGenerator } from '@/domain/contracts/gateways'
 
 import { IBackup, IMemoryDb } from 'pg-mem'
@@ -23,7 +23,7 @@ describe('CategoryRepository', () => {
 
   beforeAll(async () => {
     connection = PgConnection.getInstance()
-    database = await makeFakeDatabase([Category])
+    database = await makeFakeDatabase([Category, Product])
     backup = database.backup()
     repository = connection.getRepository(Category)
 
@@ -70,7 +70,7 @@ describe('CategoryRepository', () => {
 
       const result = await sut.list()
 
-      expect(result).toEqual([{ id, name }])
+      expect(result).toEqual([{ id, name, products: [] }])
     })
 
     it('Should return [] if does not find any category', async () => {

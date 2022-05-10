@@ -1,4 +1,6 @@
-import { Entity, Column, PrimaryColumn } from 'typeorm'
+import { Product } from '@/infra/database/postgres/entities'
+
+import { Entity, Column, PrimaryColumn, OneToMany } from 'typeorm'
 
 @Entity('categories')
 export class Category {
@@ -7,4 +9,7 @@ export class Category {
 
   @Column({ unique: true })
   name!: string
+
+  @OneToMany(() => Product, product => product.category)
+  products!: Product[]
 }

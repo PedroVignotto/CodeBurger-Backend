@@ -3,7 +3,7 @@ import { makeFakeDatabase } from '@/tests/infra/database/postgres/mocks'
 import { app } from '@/main/config/app'
 import { RequiredFieldError } from '@/application/errors'
 import { FieldInUseError, NonExistentFieldError } from '@/domain/errors'
-import { Account, Category } from '@/infra/database/postgres/entities'
+import { Account, Category, Product } from '@/infra/database/postgres/entities'
 import { PgConnection } from '@/infra/database/postgres/helpers'
 
 import { IBackup, IMemoryDb } from 'pg-mem'
@@ -24,7 +24,7 @@ describe('Category routes', () => {
 
   beforeAll(async () => {
     connection = PgConnection.getInstance()
-    database = await makeFakeDatabase([Account, Category])
+    database = await makeFakeDatabase([Account, Category, Product])
     backup = database.backup()
     repositoryAccount = connection.getRepository(Account)
     repositoryCategory = connection.getRepository(Category)

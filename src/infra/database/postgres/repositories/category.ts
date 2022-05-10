@@ -23,7 +23,7 @@ export class CategoryRepository extends PgRepository implements Setup {
   async list (): Promise<ListCategoriesRepository.Output> {
     const repository = this.getRepository(Category)
 
-    return await repository.find()
+    return await repository.find({ relations: ['products'] })
   }
 
   async checkById ({ id }: CheckCategoryByIdRepository.Input): Promise<CheckCategoryByIdRepository.Output> {
