@@ -2,6 +2,5 @@ import { makeAccountRepository } from '@/main/factories/infra/database/postgres/
 import { makeTokenAdapter } from '@/main/factories/infra/gateways'
 import { Authorize, authorizeUseCase } from '@/domain/use-cases/account'
 
-export const makeAuthorizeUseCase = (): Authorize => {
-  return authorizeUseCase(makeTokenAdapter(), makeAccountRepository())
-}
+export const makeAuthorizeUseCase = (): Authorize =>
+  authorizeUseCase(makeTokenAdapter(), makeAccountRepository())

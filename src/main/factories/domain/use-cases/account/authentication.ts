@@ -2,6 +2,5 @@ import { Authentication, authenticationUseCase } from '@/domain/use-cases/accoun
 import { makeHashAdapter, makeTokenAdapter } from '@/main/factories/infra/gateways'
 import { makeAccountRepository } from '@/main/factories/infra/database/postgres/repositories'
 
-export const makeAuthenticationUseCase = (): Authentication => {
-  return authenticationUseCase(makeAccountRepository(), makeHashAdapter(), makeTokenAdapter())
-}
+export const makeAuthenticationUseCase = (): Authentication =>
+  authenticationUseCase(makeAccountRepository(), makeHashAdapter(), makeTokenAdapter())

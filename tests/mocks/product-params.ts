@@ -1,7 +1,5 @@
 import faker from 'faker'
 
-const mimeTypes = ['image/png', 'image/jpeg']
-
 export const productParams = {
   id: faker.datatype.uuid(),
   name: faker.name.findName(),
@@ -12,7 +10,7 @@ export const productParams = {
   picture: faker.internet.url(),
   file: {
     buffer: Buffer.from(faker.random.word()),
-    mimeType: mimeTypes[faker.datatype.number(mimeTypes.length - 1)]
+    mimeType: faker.random.arrayElement(['image/png', 'image/jpeg'])
   },
   error: new Error(faker.random.word())
 }
