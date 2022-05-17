@@ -3,6 +3,7 @@ export const updateAddressRequest = {
   properties: {
     surname: { type: 'string' },
     number: { type: 'number' },
-    complement: { type: 'string' }
+    complement: { type: 'string' },
+    active: { type: 'boolean' }
   }
 }

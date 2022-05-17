@@ -9,7 +9,8 @@ export const listAddressesResponse = {
       district: { type: 'string' },
       street: { type: 'string' },
       number: { type: 'number' },
-      complement: { type: 'string' }
+      complement: { type: 'string' },
+      active: { type: 'boolean' }
     }
   }
 }
