@@ -15,6 +15,7 @@ describe('UpdateAddressUseCase', () => {
 
   beforeAll(() => {
     addressRepository.checkById.mockResolvedValue(true)
+    addressRepository.list.mockResolvedValue([addressParams])
   })
 
   beforeEach(() => {
@@ -55,6 +56,13 @@ describe('UpdateAddressUseCase', () => {
     await sut({ accountId, id })
 
     expect(addressRepository.list).not.toHaveBeenCalled()
+  })
+
+  it('Should update active to false from addresses returned by ListAddressesRepository', async () => {
+    await sut({ accountId, id, active: true })
+
+    expect(addressRepository.update).toHaveBeenCalledWith({ id, active: false })
+    expect(addressRepository.update).toHaveBeenCalledTimes(2)
   })
 
   it('Should call UpdateAddressRepository with correct values', async () => {
