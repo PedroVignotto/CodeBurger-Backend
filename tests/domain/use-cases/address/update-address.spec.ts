@@ -44,11 +44,17 @@ describe('UpdateAddressUseCase', () => {
     await expect(promise).rejects.toThrow(error)
   })
 
-  it('Should call ListAddressesRepository with correct value', async () => {
-    await sut({ accountId, id, surname, number, complement })
+  it('Should call ListAddressesRepository with correct value if active is provided', async () => {
+    await sut({ accountId, id, active: true })
 
     expect(addressRepository.list).toHaveBeenCalledWith({ accountId })
     expect(addressRepository.list).toHaveBeenCalledTimes(1)
+  })
+
+  it('Should not call ListAddressesRepository if active is not provided', async () => {
+    await sut({ accountId, id })
+
+    expect(addressRepository.list).not.toHaveBeenCalled()
   })
 
   it('Should call UpdateAddressRepository with correct values', async () => {
