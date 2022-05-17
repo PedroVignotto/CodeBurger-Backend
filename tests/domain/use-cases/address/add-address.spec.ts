@@ -1,5 +1,5 @@
 import { accountParams, addressParams } from '@/tests/mocks'
-import { AddAddressRepository } from '@/domain/contracts/database/repositories/address'
+import { AddAddressRepository, ListAddressesRepository } from '@/domain/contracts/database/repositories/address'
 import { SearchAddressByZipCode } from '@/domain/contracts/gateways'
 import { AddAddress, addAddressUseCase } from '@/domain/use-cases/address'
 import { FieldNotFoundError } from '@/domain/errors'
@@ -13,7 +13,7 @@ describe('AddAddressUseCase', () => {
   const { id, surname, zipCode, district, street, number, complement, error } = addressParams
 
   const searchAddressByZipCode = mock<SearchAddressByZipCode>()
-  const addressRepository = mock<AddAddressRepository>()
+  const addressRepository = mock<AddAddressRepository & ListAddressesRepository>()
 
   beforeAll(() => {
     searchAddressByZipCode.search.mockResolvedValue({ district, street })
@@ -45,6 +45,13 @@ describe('AddAddressUseCase', () => {
     const promise = sut({ accountId, surname, zipCode, district, street, number, complement })
 
     await expect(promise).rejects.toThrow(error)
+  })
+
+  it('Should call ListAddressesRepository with correct value', async () => {
+    await sut({ accountId, surname, zipCode, district, street, number, complement })
+
+    expect(addressRepository.list).toHaveBeenCalledWith({ accountId })
+    expect(addressRepository.list).toHaveBeenCalledTimes(1)
   })
 
   it('Should call AddAddressRepository with correct values', async () => {
