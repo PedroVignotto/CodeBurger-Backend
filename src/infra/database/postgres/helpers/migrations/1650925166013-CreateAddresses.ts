@@ -39,6 +39,10 @@ export class CreateAddresses1650925166013 implements MigrationInterface {
             name: 'complement',
             type: 'varchar',
             isNullable: true
+          },
+          {
+            name: 'active',
+            type: 'boolean'
           }
         ],
         foreignKeys: [
