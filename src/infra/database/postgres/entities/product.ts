@@ -1,4 +1,4 @@
-import { Category } from '@/infra/database/postgres/entities'
+import { Category } from './category'
 
 import { Entity, Column, PrimaryColumn, ManyToOne } from 'typeorm'
 

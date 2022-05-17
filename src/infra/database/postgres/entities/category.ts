@@ -1,4 +1,4 @@
-import { Product } from '@/infra/database/postgres/entities'
+import { Product } from './product'
 
 import { Entity, Column, PrimaryColumn, OneToMany } from 'typeorm'
 
