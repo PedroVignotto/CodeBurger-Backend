@@ -3,6 +3,6 @@ export interface UpdateAddressRepository {
 }
 
 export namespace UpdateAddressRepository {
-  export type Input = { id: string, surname?: string, number?: number, complement?: string }
+  export type Input = { id: string, surname?: string, number?: number, complement?: string, active?: boolean }
   export type Output = void
 }

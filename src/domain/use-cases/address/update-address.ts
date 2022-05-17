@@ -11,7 +11,11 @@ export const updateAddressUseCase: Setup = addressRepository => async ({ account
 
   if (!address) throw new NonExistentFieldError('id')
 
-  if (active) await addressRepository.list({ accountId })
+  if (active) {
+    const addresses = await addressRepository.list({ accountId })
 
-  await addressRepository.update({ id, surname, number, complement })
+    if (addresses.length) addresses.map(async address => await addressRepository.update({ id: address.id, active: false }))
+  }
+
+  await addressRepository.update({ id, surname, number, complement, active })
 }
