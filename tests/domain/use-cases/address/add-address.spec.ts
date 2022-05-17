@@ -62,6 +62,15 @@ describe('AddAddressUseCase', () => {
     expect(addressRepository.create).toHaveBeenCalledTimes(1)
   })
 
+  it('Should call AddAddressRepository with active false if the user have addresses', async () => {
+    addressRepository.list.mockResolvedValueOnce([addressParams])
+
+    await sut({ accountId, surname, zipCode, district, street, number, complement })
+
+    expect(addressRepository.create).toHaveBeenCalledWith({ accountId, surname, zipCode, district, street, number, complement, active: false })
+    expect(addressRepository.create).toHaveBeenCalledTimes(1)
+  })
+
   it('Should rethrow if AddAddressRepository throws', async () => {
     addressRepository.create.mockRejectedValueOnce(error)
 
