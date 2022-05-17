@@ -16,7 +16,7 @@ export const addAddressUseCase: Setup = (searchAddressByZipCode, addressReposito
 
   const addresses = await addressRepository.list({ accountId })
 
-  if (addresses.length < 1) active = true
+  if (!addresses.length) active = true
 
   return await addressRepository.create({ accountId, zipCode: zipCode.replace('-', ''), ...input, active })
 }
