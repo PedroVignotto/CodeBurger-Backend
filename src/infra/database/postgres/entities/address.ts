@@ -30,4 +30,7 @@ export class Address {
 
   @Column({ nullable: true })
   complement?: string
+
+  @Column()
+  active!: boolean
 }

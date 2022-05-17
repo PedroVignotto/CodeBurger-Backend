@@ -56,11 +56,11 @@ describe('AddressRepository', () => {
   describe('list()', () => {
     it('Should return all user addresses', async () => {
       await repositoryAccount.save({ id: accountId, name, email, password })
-      await repositoryAddress.save({ id, accountId, surname, zipCode, district, street, number, complement })
+      await repositoryAddress.save({ id, accountId, surname, zipCode, district, street, number, complement, active })
 
       const result = await sut.list({ accountId })
 
-      expect(result).toEqual([{ id, surname, zipCode, district, street, number, complement }])
+      expect(result).toEqual([{ id, surname, zipCode, district, street, number, complement, active }])
     })
 
     it('Should return [] if does not find any address', async () => {
@@ -73,7 +73,7 @@ describe('AddressRepository', () => {
   describe('update()', () => {
     it('Should update address on success', async () => {
       await repositoryAccount.save({ id: accountId, name, email, password })
-      await repositoryAddress.save({ id, accountId, surname, zipCode, district, street, number, complement })
+      await repositoryAddress.save({ id, accountId, surname, zipCode, district, street, number, complement, active })
 
       await sut.update({ id, surname: 'updated_surname' })
 
@@ -90,7 +90,7 @@ describe('AddressRepository', () => {
 
     it('Should return true if address already exists', async () => {
       await repositoryAccount.save({ id: accountId, name, email, password })
-      await repositoryAddress.save({ id, accountId, surname, zipCode, district, street, number, complement })
+      await repositoryAddress.save({ id, accountId, surname, zipCode, district, street, number, complement, active })
 
       const result = await sut.checkById({ id })
 
@@ -101,7 +101,7 @@ describe('AddressRepository', () => {
   describe('delete()', () => {
     it('Should delete a address on success', async () => {
       await repositoryAccount.save({ id: accountId, name, email, password })
-      await repositoryAddress.save({ id, accountId, surname, zipCode, district, street, number, complement })
+      await repositoryAddress.save({ id, accountId, surname, zipCode, district, street, number, complement, active })
 
       await sut.delete({ id })
 

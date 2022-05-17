@@ -16,7 +16,7 @@ jest.mock('@/infra/gateways/zipcode-api')
 
 describe('Address routes', () => {
   const { name, email, password, passwordConfirmation } = accountParams
-  const { id, surname, zipCode, district, street, number, complement } = addressParams
+  const { id, surname, zipCode, district, street, number, complement, active } = addressParams
 
   let token: string
 
@@ -123,7 +123,7 @@ describe('Address routes', () => {
   describe('PUT /address/:id', () => {
     it('Should return 204 on success', async () => {
       const account = await repositoryAccount.find()
-      await repositoryAddress.save({ id, accountId: account[0].id, surname, zipCode, district, street, number, complement })
+      await repositoryAddress.save({ id, accountId: account[0].id, surname, zipCode, district, street, number, complement, active })
 
       const { status } = await request(app)
         .put(`/api/address/${id}`)
@@ -147,7 +147,7 @@ describe('Address routes', () => {
   describe('DELETE /address/:id', () => {
     it('Should return 204 on success', async () => {
       const account = await repositoryAccount.find()
-      await repositoryAddress.save({ id, accountId: account[0].id, surname, zipCode, district, street, number, complement })
+      await repositoryAddress.save({ id, accountId: account[0].id, surname, zipCode, district, street, number, complement, active })
 
       const { status } = await request(app)
         .delete(`/api/address/${id}`)
