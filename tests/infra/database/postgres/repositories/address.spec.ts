@@ -13,7 +13,7 @@ describe('AddressRepository', () => {
   let sut: AddressRepository
 
   const { id: accountId, name, email, password } = accountParams
-  const { id, surname, zipCode, district, street, number, complement } = addressParams
+  const { id, surname, zipCode, district, street, number, complement, active } = addressParams
 
   let connection: PgConnection
   let database: IMemoryDb
@@ -47,7 +47,7 @@ describe('AddressRepository', () => {
     it('Should create a address on success', async () => {
       await repositoryAccount.save({ id: accountId, name, email, password })
 
-      await sut.create({ accountId, surname, zipCode, district, street, number, complement })
+      await sut.create({ accountId, surname, zipCode, district, street, number, complement, active })
 
       expect(await repositoryAddress.findOne(id)).toBeTruthy()
     })

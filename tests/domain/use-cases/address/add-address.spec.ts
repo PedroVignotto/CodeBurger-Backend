@@ -17,7 +17,8 @@ describe('AddAddressUseCase', () => {
 
   beforeAll(() => {
     searchAddressByZipCode.search.mockResolvedValue({ district, street })
-    addressRepository.create.mockResolvedValue({ id, surname, zipCode, district, street, number, complement })
+    addressRepository.list.mockResolvedValue([])
+    addressRepository.create.mockResolvedValue({ id, surname, zipCode, district, street, number, complement, active: true })
   })
 
   beforeEach(() => {
@@ -54,10 +55,10 @@ describe('AddAddressUseCase', () => {
     expect(addressRepository.list).toHaveBeenCalledTimes(1)
   })
 
-  it('Should call AddAddressRepository with correct values', async () => {
+  it('Should call AddAddressRepository with active true if the user does not have addresses', async () => {
     await sut({ accountId, surname, zipCode, district, street, number, complement })
 
-    expect(addressRepository.create).toHaveBeenCalledWith({ accountId, surname, zipCode, district, street, number, complement })
+    expect(addressRepository.create).toHaveBeenCalledWith({ accountId, surname, zipCode, district, street, number, complement, active: true })
     expect(addressRepository.create).toHaveBeenCalledTimes(1)
   })
 
@@ -72,6 +73,6 @@ describe('AddAddressUseCase', () => {
   it('Should return address on success', async () => {
     const result = await sut({ accountId, surname, zipCode, district, street, number, complement })
 
-    expect(result).toEqual({ id, surname, zipCode, district, street, number, complement })
+    expect(result).toEqual({ id, surname, zipCode, district, street, number, complement, active: true })
   })
 })
