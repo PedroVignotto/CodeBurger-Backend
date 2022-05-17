@@ -12,5 +12,6 @@ export namespace ListAddressesRepository {
     street: string
     number: number
     complement?: string
+    active: boolean
   }>
 }
