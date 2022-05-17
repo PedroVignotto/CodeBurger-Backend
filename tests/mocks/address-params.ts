@@ -8,5 +8,6 @@ export const addressParams = {
   street: faker.address.streetName(),
   number: faker.datatype.number(),
   complement: faker.random.words(3),
+  active: faker.datatype.boolean(),
   error: new Error(faker.random.word())
 }

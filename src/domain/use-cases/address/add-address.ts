@@ -12,7 +12,11 @@ export const addAddressUseCase: Setup = (searchAddressByZipCode, addressReposito
 
   if (!address) throw new FieldNotFoundError('zipCode')
 
-  await addressRepository.list({ accountId })
+  let active = false
 
-  return await addressRepository.create({ accountId, zipCode: zipCode.replace('-', ''), ...input })
+  const addresses = await addressRepository.list({ accountId })
+
+  if (addresses.length < 1) active = true
+
+  return await addressRepository.create({ accountId, zipCode: zipCode.replace('-', ''), ...input, active })
 }

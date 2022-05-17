@@ -11,6 +11,7 @@ export namespace AddAddressRepository {
     street: string
     number: number
     complement?: string
+    active: boolean
   }
   export type Output ={
     id: string
@@ -20,5 +21,6 @@ export namespace AddAddressRepository {
     street: string
     number: number
     complement?: string
+    active: boolean
   }
 }
