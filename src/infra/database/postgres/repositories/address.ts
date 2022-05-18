@@ -17,7 +17,7 @@ export class AddressRepository extends PgRepository implements Setup {
   async list ({ accountId }: ListAddressesRepository.Input): Promise<ListAddressesRepository.Output> {
     const repository = this.getRepository(Address)
 
-    return await repository.find({ accountId })
+    return await repository.find({ where: { accountId }, order: { street: 'ASC' } })
   }
 
   async update ({ id, ...input }: UpdateAddressRepository.Input): Promise<UpdateAddressRepository.Output> {
