@@ -13,7 +13,7 @@ import { NonExistentFieldError } from '@/domain/errors'
 describe('Order routes', () => {
   const { name: accountName, email, password, passwordConfirmation } = accountParams
   const { id: productId, name: productName, description, price } = productParams
-  const { note, total, paymentMode } = orderParams
+  const { total } = orderParams
 
   let token: string
 
@@ -55,7 +55,7 @@ describe('Order routes', () => {
 
       const { status } = await request(app)
         .post('/api/order')
-        .send({ productsId: [productId], note, total: price, paymentMode })
+        .send({ productsId: [productId], total: price })
         .set({ authorization: `Bearer: ${token}` })
 
       expect(status).toBe(201)
@@ -64,17 +64,16 @@ describe('Order routes', () => {
     it('Should return 400 if has invalid data', async () => {
       const { status, body: { error } } = await request(app)
         .post('/api/order')
-        .send({ productsId: [productId], note })
         .set({ authorization: `Bearer: ${token}` })
 
       expect(status).toBe(400)
-      expect(error).toBe(new RequiredFieldError('paymentMode').message)
+      expect(error).toBe(new RequiredFieldError('productsId').message)
     })
 
     it('Should return 400 if the products do not exists', async () => {
       const { status, body: { error } } = await request(app)
         .post('/api/order')
-        .send({ productsId: [], note, total, paymentMode })
+        .send({ productsId: [], total })
         .set({ authorization: `Bearer: ${token}` })
 
       expect(status).toBe(400)
@@ -86,7 +85,7 @@ describe('Order routes', () => {
     it('Should return 200 on success', async () => {
       const product = await repositoryProduct.save({ id: productId, name: productName, description, price })
       await request(app).post('/api/order')
-        .send({ productsId: [productId], note, total: price, paymentMode })
+        .send({ productsId: [productId], total: price })
         .set({ authorization: `Bearer: ${token}` })
 
       const { status, body } = await request(app)
@@ -94,7 +93,7 @@ describe('Order routes', () => {
         .set({ authorization: `Bearer: ${token}` })
 
       expect(status).toBe(200)
-      expect(body).toMatchObject([{ products: [product], note, total: price, paymentMode, status: 'opened' }])
+      expect(body).toMatchObject([{ products: [product], total: price, status: 'opened' }])
     })
   })
 
@@ -102,7 +101,7 @@ describe('Order routes', () => {
     it('Should return 204 on success', async () => {
       await repositoryProduct.save({ id: productId, name: productName, description, price })
       await request(app).post('/api/order')
-        .send({ productsId: [productId], note, total: price, paymentMode })
+        .send({ productsId: [productId], total: price })
         .set({ authorization: `Bearer: ${token}` })
       const order = await repositoryOrder.find()
 

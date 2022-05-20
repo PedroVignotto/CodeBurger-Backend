@@ -6,12 +6,12 @@ describe('ListOrdersController', () => {
   let sut: ListOrdersController
 
   const { id: accountId } = accountParams
-  const { id, note, total, paymentMode, status, createdAt, updatedAt } = orderParams
+  const { id, total, status, createdAt, updatedAt } = orderParams
 
   const listOrder: jest.Mock = jest.fn()
 
   beforeAll(() => {
-    listOrder.mockResolvedValue([{ id, note, total, paymentMode, status, createdAt, updatedAt }])
+    listOrder.mockResolvedValue([{ id, total, status, createdAt, updatedAt }])
   })
 
   beforeEach(() => {
@@ -33,6 +33,6 @@ describe('ListOrdersController', () => {
     const { statusCode, data } = await sut.handle({ accountId })
 
     expect(statusCode).toBe(200)
-    expect(data).toEqual([{ id, note, total, paymentMode, status, createdAt, updatedAt }])
+    expect(data).toEqual([{ id, total, status, createdAt, updatedAt }])
   })
 })

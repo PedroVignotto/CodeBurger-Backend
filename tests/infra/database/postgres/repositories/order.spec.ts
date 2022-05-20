@@ -14,7 +14,7 @@ describe('OrderRepository', () => {
 
   const { id: accountId, name: accountName, email, password } = accountParams
   const { id: productId, name: productName, description, price } = productParams
-  const { id, note, total, paymentMode } = orderParams
+  const { id, total } = orderParams
 
   let connection: PgConnection
   let database: IMemoryDb
@@ -51,7 +51,7 @@ describe('OrderRepository', () => {
       await repositoryAccount.save({ id: accountId, name: accountName, email, password })
       const product = await repositoryProduct.save({ id: productId, name: productName, description, price })
 
-      await sut.create({ accountId, products: [product], note, total, paymentMode })
+      await sut.create({ accountId, products: [product], total })
 
       expect(await repositoryOrder.findOne(id)).toBeTruthy()
     })
@@ -61,7 +61,7 @@ describe('OrderRepository', () => {
     it('Should return all user orders', async () => {
       await repositoryAccount.save({ id: accountId, name: accountName, email, password })
       const product = await repositoryProduct.save({ id: productId, name: productName, description, price })
-      const { accountId: removeAccountId, ...order } = await repositoryOrder.save({ id, accountId, products: [product], paymentMode, total, note })
+      const { accountId: removeAccountId, ...order } = await repositoryOrder.save({ id, accountId, products: [product], total })
 
       const result = await sut.list({ accountId })
 
@@ -85,7 +85,7 @@ describe('OrderRepository', () => {
     it('Should return true if order already exists', async () => {
       await repositoryAccount.save({ id: accountId, name: accountName, email, password })
       const product = await repositoryProduct.save({ id: productId, name: productName, description, price })
-      await repositoryOrder.save({ id, accountId, products: [product], paymentMode, total, note })
+      await repositoryOrder.save({ id, accountId, products: [product], total })
 
       const result = await sut.checkById({ id })
 
@@ -97,7 +97,7 @@ describe('OrderRepository', () => {
     it('Should update order on success', async () => {
       await repositoryAccount.save({ id: accountId, name: accountName, email, password })
       const product = await repositoryProduct.save({ id: productId, name: productName, description, price })
-      await repositoryOrder.save({ id, accountId, products: [product], paymentMode, total, note })
+      await repositoryOrder.save({ id, accountId, products: [product], total })
 
       await sut.update({ id, status: 'completed' })
 

@@ -3,11 +3,11 @@ import { LoadProductRepository } from '@/domain/contracts/database/repositories/
 import { NonExistentFieldError } from '@/domain/errors'
 
 type Setup = (productRepository: LoadProductRepository, orderRepository: AddOrderRepository) => AddOrder
-type Input = { accountId: string, productsId: string[], note?: string, paymentMode: string }
+type Input = { accountId: string, productsId: string[] }
 type Output = void
 export type AddOrder = (input: Input) => Promise<Output>
 
-export const addOrderUseCase: Setup = (productRepository, orderRepository) => async ({ accountId, productsId, note, paymentMode }) => {
+export const addOrderUseCase: Setup = (productRepository, orderRepository) => async ({ accountId, productsId }) => {
   const result = await Promise.all(productsId.map(async id => await productRepository.load({ id })))
 
   const products = result.filter(item => item) as Product[]
@@ -16,5 +16,5 @@ export const addOrderUseCase: Setup = (productRepository, orderRepository) => as
 
   const total = products.reduce((oldPrice, product) => oldPrice + +product.price, 0)
 
-  await orderRepository.create({ accountId, products, note, total, paymentMode })
+  await orderRepository.create({ accountId, products, total })
 }

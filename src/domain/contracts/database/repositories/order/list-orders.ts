@@ -10,9 +10,7 @@ export namespace ListOrdersRepository {
 export type Order = {
   id: string
   products: Product[]
-  note?: string
   total: number
-  paymentMode: string
   status: string
   createdAt: Date
   updatedAt: Date

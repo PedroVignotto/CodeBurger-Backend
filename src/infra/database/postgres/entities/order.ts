@@ -17,14 +17,8 @@ export class Order {
   @JoinTable({ name: 'ordersProducts', joinColumns: [{ name: 'orderId' }], inverseJoinColumns: [{ name: 'productId' }] })
   products!: Product[]
 
-  @Column({ nullable: true })
-  note!: string
-
   @Column({ type: 'decimal' })
   total!: number
-
-  @Column()
-  paymentMode!: string
 
   @Column({ default: 'opened' })
   status!: string

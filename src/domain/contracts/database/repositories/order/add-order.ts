@@ -3,7 +3,7 @@ export interface AddOrderRepository {
 }
 
 export namespace AddOrderRepository {
-  export type Input = { accountId: string, products: Product[], note?: string, total: number, paymentMode: string }
+  export type Input = { accountId: string, products: Product[], total: number }
   export type Output = void
 }
 

@@ -3,7 +3,7 @@ import { HttpResponse, created } from '@/application/helpers'
 import { ValidationBuilder as Builder, Validator } from '@/application/validation'
 import { AddOrder } from '@/domain/use-cases/order'
 
-type HttpRequest = { accountId: string, productsId: string[], note?: string, paymentMode: string }
+type HttpRequest = { accountId: string, productsId: string[] }
 
 export class AddOrderController extends Controller {
   constructor (private readonly addOrder: AddOrder) { super() }
@@ -14,10 +14,9 @@ export class AddOrderController extends Controller {
     return created(undefined)
   }
 
-  override buildValidators ({ productsId, paymentMode }: HttpRequest): Validator[] {
+  override buildValidators ({ productsId }: HttpRequest): Validator[] {
     return [
-      ...Builder.of(productsId, 'productsId').required().build(),
-      ...Builder.of(paymentMode, 'paymentMode').required().build()
+      ...Builder.of(productsId, 'productsId').required().build()
     ]
   }
 }

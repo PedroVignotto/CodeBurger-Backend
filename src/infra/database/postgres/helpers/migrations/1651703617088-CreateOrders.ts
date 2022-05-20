@@ -16,17 +16,8 @@ export class CreateOrders1651703617088 implements MigrationInterface {
             type: 'uuid'
           },
           {
-            name: 'note',
-            type: 'varchar',
-            isNullable: true
-          },
-          {
             name: 'total',
             type: 'numeric'
-          },
-          {
-            name: 'paymentMode',
-            type: 'varchar'
           },
           {
             name: 'status',
